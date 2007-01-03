@@ -5,5 +5,5 @@ urlpatterns = patterns('',
     # (r'^fc3/', include('fc3.foo.urls')),
 
     # Uncomment this for admin:
-#     (r'^admin/', include('django.contrib.admin.urls')),
+    (r'^admin/', include('django.contrib.admin.urls')),
 )
