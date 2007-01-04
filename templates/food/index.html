@@ -1,0 +1,10 @@
+<h2>All Cocktails</h2>
+{% if all_recipes %}
+    <ul>
+    {% for recipe in all_recipes %}
+        <li><a href="{{ recipe.slug }}">{{ recipe.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recipes are available.</p>
+{% endif %}

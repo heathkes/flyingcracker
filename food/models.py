@@ -30,9 +30,10 @@ class Category(models.Model):
     
 class Recipe(models.Model):
     title = models.CharField(maxlength=50, unique=True, db_index=True)
+    slug = models.SlugField(prepopulate_from=('title',))
     pub_date = models.DateField('date published', null=True)
-    directions = models.TextField(blank=True)
-    description = models.TextField(blank=True)
+    directions = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     attributes = models.ManyToManyField(Attribute)
     categories = models.ManyToManyField(Category)
     CLASS_CHOICES = (
@@ -47,7 +48,7 @@ class Recipe(models.Model):
     class Admin:
         fields = (
             (None, {
-                'fields': ('title', 'attributes', 'categories', 'rclass', 'pub_date')
+                'fields': ('title', 'slug', 'attributes', 'categories', 'rclass', 'pub_date')
             }),
             ('directions & description', {
                 'classes': 'collapse',
@@ -59,8 +60,8 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     foodstuff = models.ForeignKey(Foodstuff, core=True)
     recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=3)
-    quantity = models.CharField(maxlength=20, blank=True)
-    modifier = models.CharField(maxlength=50, blank=True)
+    quantity = models.CharField(maxlength=20, blank=True, null=True)
+    modifier = models.CharField(maxlength=50, blank=True, null=True)
     rank = models.IntegerField()
     def __str__(self):
         return self.foodstuff.title
