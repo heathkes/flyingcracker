@@ -1,1 +1,16 @@
 <h2>{{ recipe.title }}</h2>
+<table>
+	{% for i in ingredients %}
+	<tr>
+		<td>{{ i.quantity }}</td>
+		<td>{{ i.title }}</td>
+		<td>{{ i.modifier }}</td>
+	</tr>
+	{% endfor %}
+</table>
+<br />
+{{ recipe.directions }}<br />
+{{ recipe.description }}<br />
+<br />added {{ recipe.pub_date|date:"F j, Y" }}<br />
+<br />
+<a href="../">Cocktail List</a>
