@@ -27,7 +27,7 @@ def foodstuff(request):
     
 def foodstuff_detail(request, foodstuff_slug):
     f = get_object_or_404(Foodstuff, slug=foodstuff_slug)
-    recipe_list = []
+    ingredient_list = f.ingredient_set.all().order_by('recipe')
     
-    return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'recipes' : recipe_list})
+    return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'ingredients' : ingredient_list})
     

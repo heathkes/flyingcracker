@@ -2,7 +2,7 @@
 {% if all_foodstuff %}
     <ul>
     {% for foodstuff in all_foodstuff %}
-        <li><a href="{{ foodstuff.slug }}">{{ foodstuff.title }}</a></li>
+        <li><a href="{{ foodstuff.slug }}">{{ foodstuff }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

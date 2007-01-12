@@ -1,7 +1,17 @@
-<h2>{{ foodstuff.title }}</h2>
-{{ foodstuff.description }}<br />
-<br />
-<!-- Add link to display all cocktails using this ingredient -->
-<a href="">Show all cocktails made with this ingredient</a><br />
-<br />
-<a href="../">All Ingredients</a>
+{% load markup %}
+<h2>{{ foodstuff }}</h2>
+{% if foodstuff.description %}
+{{ foodstuff.description|textile }}
+{% else %}
+No description for {{ foodstuff }}
+{% endif %}
+{% if ingredients %}
+<h3>Recipes using {{ foodstuff }}</h3>
+<ul>
+	{% for i in ingredients %}
+		<li><a href="../../{{ i.recipe.slug }}">{{ i.recipe }}</a></li>
+	{% endfor %}
+</ul>
+{% endif %}
+<a href="../">All Ingredients</a><br />
+<a href="../..">All Cocktails</a>
