@@ -3,6 +3,8 @@ from django.db import models
 # Create your models here.
 class Foodstuff(models.Model):
     title = models.CharField(maxlength=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+    slug = models.SlugField(prepopulate_from=('title',))
     def __str__(self):
         return self.title
     class Meta:

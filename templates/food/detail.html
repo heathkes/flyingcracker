@@ -3,7 +3,7 @@
 	{% for i in ingredients %}
 	<tr>
 		<td>{{ i.quantity }}</td>
-		<td>{{ i.title }}</td>
+		<td><a href="../ingredient/{{ i.slug }}">{{ i.title }}</a></td>
 		<td>{{ i.modifier }}</td>
 	</tr>
 	{% endfor %}
@@ -13,4 +13,4 @@
 {{ recipe.description }}<br />
 <br />added {{ recipe.pub_date|date:"F j, Y" }}<br />
 <br />
-<a href="../">Cocktail List</a>
+<a href="../">All Cocktails</a>
