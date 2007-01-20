@@ -1,9 +1,9 @@
 {% load markup %}
 <h2>{{ foodstuff }}</h2>
 {% if foodstuff.description %}
-{{ foodstuff.description|textile }}
+{{ foodstuff.description|textile }}<br />
 {% else %}
-No description for {{ foodstuff }}
+No description for {{ foodstuff }}<br />
 {% endif %}
 {% if ingredients %}
 <h3>Recipes using {{ foodstuff }}</h3>
@@ -14,4 +14,4 @@ No description for {{ foodstuff }}
 </ul>
 {% endif %}
 <a href="../">All Ingredients</a><br />
-<a href="../..">All Cocktails</a>
+<a href="../..">All Recipes</a>
