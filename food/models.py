@@ -36,6 +36,7 @@ class Recipe(models.Model):
     pub_date = models.DateField('date published', null=True)
     directions = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    teaser = models.CharField(maxlength=100, blank=True, null=True)
     attributes = models.ManyToManyField(Attribute)
     categories = models.ManyToManyField(Category)
     CLASS_CHOICES = (
@@ -50,7 +51,7 @@ class Recipe(models.Model):
     class Admin:
         fields = (
             (None, {
-                'fields': ('title', 'slug', 'attributes', 'categories', 'rclass', 'pub_date')
+                'fields': ('title', 'slug', 'teaser', 'attributes', 'categories', 'rclass', 'pub_date')
             }),
             ('directions & description', {
                 'classes': 'collapse',
@@ -69,3 +70,14 @@ class Ingredient(models.Model):
         return self.foodstuff.title
     class Meta:
         ordering = ['rank']
+
+class Link(models.Model):
+    title = models.CharField(maxlength=50, unique=True)
+    url = models.CharField(maxlength=250)
+    rank = models.IntegerField()
+    def __str__(self):
+        return self.title
+    class Meta:
+        ordering = ['rank']
+    class Admin:
+        pass

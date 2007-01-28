@@ -1,10 +1,15 @@
-<h2>All Ingredients</h2>
+{% extends "cocktail.html" %}
+
+{% block body %}
 {% if all_foodstuff %}
-    <ul>
-    {% for foodstuff in all_foodstuff %}
-        <li><a href="{{ foodstuff.slug }}">{{ foodstuff }}</a></li>
-    {% endfor %}
-    </ul>
+   <h4>All Ingredients</h4>
+   <ul>
+   {% for foodstuff in all_foodstuff %}
+      <li><a href="{{ foodstuff.slug }}">{{ foodstuff }}</a></li>
+   {% endfor %}
+   </ul>
 {% else %}
-    <p>No ingredients in the database.</p>
+   No ingredients in the database.
 {% endif %}
+{% endblock %}
+

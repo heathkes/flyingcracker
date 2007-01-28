@@ -1,10 +1,11 @@
 # Create your views here.
-from fc3.food.models import Recipe, Foodstuff
+from fc3.food.models import Recipe, Foodstuff, Link
 from django.shortcuts import render_to_response, get_object_or_404
 
 def all_recipes(request, recipe_type=""):
     all_recipes = Recipe.objects.filter(rclass=recipe_type).order_by('title')
-    return render_to_response('food/all_recipes.html', {'all_recipes' : all_recipes})
+    all_links = Link.objects.all()
+    return render_to_response('food/all_recipes.html', {'all_recipes' : all_recipes, 'all_links' : all_links})
     
 def recipe_detail(request, slug, recipe_type=""):
     r = get_object_or_404(Recipe, slug=slug)
@@ -19,15 +20,18 @@ def recipe_detail(request, slug, recipe_type=""):
         ingredient_dict['modifier'] = i.modifier
         ingredient_list.append(ingredient_dict)
     
-    return render_to_response('food/recipe_detail.html', {'recipe' : r, 'ingredients' : ingredient_list})    
+    all_links = Link.objects.all()
+    return render_to_response('food/recipe_detail.html', {'recipe' : r, 'ingredients' : ingredient_list, 'all_links' : all_links})
     
-def foodstuff(request, recipe_type=""):
-    all_foodstuff = Foodstuff.objects.filter(rclass=recipe_type).order_by('title')
-    return render_to_response('food/all_foodstuffs.html', {'all_foodstuff' : all_foodstuff})
+def all_foodstuffs(request, recipe_type=""):
+    all_foodstuff = Foodstuff.objects.all().order_by('title')
+    all_links = Link.objects.all()
+    return render_to_response('food/all_foodstuffs.html', {'all_foodstuff' : all_foodstuff, 'all_links' : all_links})
     
 def foodstuff_detail(request, slug, recipe_type=""):
     f = get_object_or_404(Foodstuff, slug=slug)
     ingredient_list = f.ingredient_set.all().order_by('recipe')
+    all_links = Link.objects.all()
     
-    return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'ingredients' : ingredient_list})
+    return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'ingredients' : ingredient_list, 'all_links' : all_links})
     

@@ -3,11 +3,11 @@
 <project id="BD41D085-EEF2-4A3B-80B3-127FF7B67217" name="fc3.kpf" kpf_version="3">
 <file url="templates/food/recipe_detail.html" idref="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" id="A198A621-9513-4B6F-8F58-BD54D9579368" name="recipe_detail.html">
 </file>
-<file url="templates/food/all_foodstuffs.html" idref="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" id="C5BB0E10-5FD1-4328-B85E-39BDE6AE1E92" name="all_foodstuffs.html">
-</file>
 <file url="templates/food/foodstuff_detail.html" idref="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" id="67F0C109-B41A-4913-8F9D-7B3B763A6180" name="foodstuff_detail.html">
 </file>
 <file url="templates/food/all_recipes.html" idref="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" id="56C6F222-D993-4C1D-A74C-5C4B428B9CDF" name="all_recipes.html">
+</file>
+<file url="templates/food/all_foodstuffs.html" idref="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" id="dec519c0-730e-451f-95a3-c9e068e8f690" name="all_foodstuffs.html">
 </file>
 <folder idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="8907611D-DF35-4B8D-BF11-DA4F62F20B51" name="food">
 </folder>
@@ -19,14 +19,18 @@
 </file>
 <file url="urls.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="231cba35-3e63-40d4-af01-191c564bcc71" name="urls.py">
 </file>
+<folder idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="cc6cb60f-8ae9-45a0-9515-ca900d0a8224" name="static">
+</folder>
 <file url="food/views.py" idref="8907611D-DF35-4B8D-BF11-DA4F62F20B51" id="D39253A6-CCE0-475C-BDE6-0260FD21E425" name="views.py">
 </file>
 <file url="food/urls.py" idref="8907611D-DF35-4B8D-BF11-DA4F62F20B51" id="D4C6EB7D-8512-40D8-8559-3BB9A9D190D5" name="urls.py">
 </file>
 <file url="manage.py" idref="8907611D-DF35-4B8D-BF11-DA4F62F20B51" id="bf2fa4d7-015f-4e4d-a7c2-6269b3e6f113" name="manage.py">
 </file>
+<file url="static/css/f3.css" idref="cc6cb60f-8ae9-45a0-9515-ca900d0a8224" id="90236f3c-5166-4c55-8b32-cbbdddf07bd6" name="f3.css">
+</file>
 <folder idref="535C0A68-F669-458F-8F03-0936D4D6EFA7" id="909E3472-B4AB-4B03-B7ED-D5CC4EBFDF7D" name="food">
 </folder>
-<file url="templates/F3base.html" idref="535C0A68-F669-458F-8F03-0936D4D6EFA7" id="51705389-d9c2-4229-9902-4fe4af0f2adf" name="F3base.html">
+<file url="templates/base.html" idref="535C0A68-F669-458F-8F03-0936D4D6EFA7" id="fcef533a-5cf9-4d76-9db4-446fdbf409ac" name="base.html">
 </file>
 </project>
