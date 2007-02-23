@@ -1,20 +1,15 @@
 # Django settings for fc3 project.
+import os
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+#PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, '..'))
+PROJECT_DIR = BASE_DIR
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
 MANAGERS = ADMINS
-
-DATABASE_ENGINE = 'mysql' # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = 'fc3'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'root'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'M5VmF61b'         # Not used with sqlite3.
-DATABASE_HOST = 'localhost'             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. All choices can be found here:
 # http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
@@ -67,7 +62,6 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/Documents and Settings/graham/My Documents/fc3/templates',
 )
 
 INSTALLED_APPS = (
@@ -79,3 +73,5 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'fc3.food',
 )
+
+from settings_local import *
