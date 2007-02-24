@@ -12,7 +12,7 @@ def recipe_detail(request, slug, recipe_type=""):
     
     # get ingredients for this recipe
     ingredient_list = []
-    for i in r.ingredient_set.all().order_by('rank'):
+    for i in r.ingredients.all().order_by('rank'):
         ingredient_dict = {}
         ingredient_dict['title'] = i.foodstuff.title
         ingredient_dict['slug'] = i.foodstuff.slug
@@ -30,7 +30,7 @@ def all_foodstuffs(request, recipe_type=""):
     
 def foodstuff_detail(request, slug, recipe_type=""):
     f = get_object_or_404(Foodstuff, slug=slug)
-    ingredient_list = f.ingredient_set.all().order_by('recipe')
+    ingredient_list = f.ingredients.all().order_by('recipe')
     all_links = Link.objects.all()
     
     return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'ingredients' : ingredient_list, 'all_links' : all_links})

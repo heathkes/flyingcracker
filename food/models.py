@@ -61,8 +61,8 @@ class Recipe(models.Model):
         list_filter = ['rclass']
         
 class Ingredient(models.Model):
-    foodstuff = models.ForeignKey(Foodstuff, core=True)
-    recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=3)
+    foodstuff = models.ForeignKey(Foodstuff, core=True, related_name="ingredients")
+    recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=3, related_name="ingredients")
     quantity = models.CharField(maxlength=20, blank=True, null=True)
     modifier = models.CharField(maxlength=50, blank=True, null=True)
     rank = models.IntegerField()
@@ -70,6 +70,8 @@ class Ingredient(models.Model):
         return self.foodstuff.title
     class Meta:
         ordering = ['rank']
+        verbose_name = "recipe ingredient"
+        verbose_name_plural = "recipe_ingredients"
 
 class Link(models.Model):
     title = models.CharField(maxlength=50, unique=True)
