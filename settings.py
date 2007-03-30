@@ -75,4 +75,13 @@ INSTALLED_APPS = (
     'fc3.blog',
 )
 
-from settings_local import *
+# import local settings overriding the defaults
+try:
+    from settings_local import *
+except ImportError:
+    try:
+        from mod_python import apache
+        apache.log_error( "settings_local.py not found!", apache.APLOG_NOTICE )
+    except ImportError:
+        import sys
+        sys.stderr.write( "settings_local.py not found!\n" )
