@@ -9,10 +9,11 @@ def get_static_path():
 
 urlpatterns = patterns('',
    (r'^admin/', include('django.contrib.admin.urls')),
-   
    (r'^food/', include('fc3.food.urls'), {'recipe_type': 'F'}),
-   
    (r'^cocktail/', include('fc3.food.urls'), {'recipe_type': 'D'}),
    
+   (r'^blog/', include('fc3.blog.urls')),
+   (r'^comments/', include('django.contrib.comments.urls.comments')),
    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': get_static_path() }),
+   (r'^$', include('fc3.blog.urls')),
 )

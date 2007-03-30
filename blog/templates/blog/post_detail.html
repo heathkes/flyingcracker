@@ -1,0 +1,19 @@
+{% extends "blog.html" %}
+
+{% block body %}
+    <div class="story">
+        <div class="Box">
+            <div class="Header">
+                <div class="Title">
+                    {{ object }}
+                </div>
+                <div class="Date">
+                    {{ object.pub_date }}
+                </div>
+            </div>
+            <div class="Body">
+                {{ object.body }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

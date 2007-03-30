@@ -57,10 +57,10 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'fc3.urls'
 
+from unipath import FSPath as Path
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    Path(__file__).ancestor(2).child("templates"),
+    Path(__file__).parent.child("templates"),
 )
 
 INSTALLED_APPS = (
@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.comments',
     'fc3.food',
+    'fc3.blog',
 )
 
 from settings_local import *
