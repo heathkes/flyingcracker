@@ -1,7 +1,8 @@
 {% extends "blog.html" %}
 
 {% block body %}
-{% for post in latest %}
+{{ year }}
+{% for post in object_list %}
 	<div class="list">
 		<div class="Box">
 			<div class="Title">
