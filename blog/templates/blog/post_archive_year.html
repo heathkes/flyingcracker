@@ -9,7 +9,7 @@ Posts from {{ year }}
 				<a href="{{ post.get_absolute_url }}">{{ post }}</a>
 				&nbsp;-&nbsp;
 				<span class="Date">
-					{{ post.pub_date }}
+					{{ post.pub_date|date:"M j, Y" }}
 				</span>
 			</div>
 			<div class="Body">
