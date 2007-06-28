@@ -1,0 +1,68 @@
+{% extends "weather.html" %}
+{% load markup %}
+
+{% block body %}
+	<div class="weatherItem">
+		<div class="Box">
+      <div class="Header">
+	      <div class="Title">
+		      Crested Butte South Current Conditions
+	      </div> <!-- Title -->
+
+	      <div class="Date">
+          {{ current.timestamp }}
+        </div> <!-- Date -->
+      </div> <!-- Header -->
+
+      <div class="Body">
+      <table bgcolor="white" border="0" cellpadding="3" cellspacing="2">
+   
+      <!-- HIGH/LOW HEADINGS -->
+        <tr>
+        <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td class="currweatherMinorItem">Todays Highs</td>
+		    <td class="currweatherMinorItem">Todays Lows</td>
+	      </tr>
+   
+      <!-- TEMPERATURE -->
+        <tr>
+		    <td class="currweatherHead">Temp:</td>
+	   	  <td class="currweatherMajorItem">{{ current.temp }}&#186</td>
+		    <td class="currweatherHead">Rel. Humidity:</td>
+	   	  <td class="currweatherMajorItem">{{ current.humidity }}%</td>
+        </tr>
+
+      <!-- BAROMETRIC PRESSURE -->
+        <tr>   
+        <td class="currweatherHead">Baro:</td>
+        <td class="currweatherMajorItem">{{ current.barometer }}</td>
+        <td class="currweatherHead">3 Hr. Trend:</td>
+        <td class="currweatherMajorItem">{{ current.baro_trend }}</td>
+        </tr>
+
+      <!-- WIND -->
+        <tr>   
+        <td class="currweatherHead">Wind:</td>
+        <td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed }}</td>
+        <td class="currweatherHead">Wind Chill:</td>
+        <td class="currweatherMajorItem">{{ current.windchill }}&#186</td>
+        </tr>
+
+      <!-- DEWPOINT -->
+        <tr>
+        <td class="currweatherHead">Dewpoint:</td>
+        <td class="currweatherMajorItem">{{ current.dewpoint }}&#186</td>
+        </tr>
+      </table>
+
+      </div> <!-- Body -->
+    </div>  <!-- Box -->
+  </div>  <!-- weatherItem -->
+
+
+
+{% endblock %}
+

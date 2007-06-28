@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.comments',
     'fc3.weatherstation',
+    'fc3.weather',
     'fc3.food',
     'fc3.blog',
 )

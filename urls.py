@@ -15,6 +15,7 @@ urlpatterns = patterns('',
    (r'^blog/',              include('fc3.blog.urls')),
    (r'^comments/',          include('django.contrib.comments.urls.comments')),
    (r'^weatherstation/',    include('fc3.weatherstation.urls')),
+   (r'^weather/',           include('fc3.weather.urls')),
    (r'^$',                  include('fc3.blog.urls')),
 )
 
