@@ -6,7 +6,7 @@ class Post(models.Model):
    slug = models.SlugField(prepopulate_from=('title',), help_text='Automatically built from the title.')
    teaser = models.TextField()
    author = models.ForeignKey(User)
-   pub_date = models.DateTimeField('Date published')
+   pub_date = models.DateTimeField('Date this post will get published')
    body = models.TextField()
    enable_comments = models.BooleanField(default=True)
     

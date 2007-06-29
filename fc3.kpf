@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
 <project id="BD41D085-EEF2-4A3B-80B3-127FF7B67217" name="fc3.kpf" kpf_version="3">
-<file url="food/models.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="e9ecbb4f-41ee-4e4c-b2eb-9d2f978e7570" name="models.py">
-</file>
-<file url="food/views.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="3b71e862-255c-441b-9a7a-4450af6367f1" name="views.py">
-</file>
-<file url="food/urls.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="f407c46a-2d7c-4c7e-975e-e02e461266a4" name="urls.py">
-</file>
 <file url="settings.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="5c75afc3-487a-47d4-a05b-b3c073b3460a" name="settings.py">
 </file>
 <file url="urls.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="231cba35-3e63-40d4-af01-191c564bcc71" name="urls.py">
 </file>
 <file url="manage.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" id="21458081-eaed-4691-ad7d-0fc3f2257d27" name="manage.py">
 </file>
+<file url="food/models.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="e9ecbb4f-41ee-4e4c-b2eb-9d2f978e7570" name="models.py">
+</file>
+<file url="food/views.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="3b71e862-255c-441b-9a7a-4450af6367f1" name="views.py">
+</file>
+<file url="food/urls.py" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" id="f407c46a-2d7c-4c7e-975e-e02e461266a4" name="urls.py">
+</file>
 <preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217">
   <string id="import_type">useFolders</string>
   <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*</string>
-  <boolean id="import_recursive">1</boolean>
   <string id="import_include_matches"></string>
+  <boolean id="import_recursive">1</boolean>
   <boolean id="import_live">1</boolean>
 </preference-set>
 </project>

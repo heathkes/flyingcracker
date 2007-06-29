@@ -71,11 +71,27 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.markup',
     'django.contrib.comments',
+    'django.contrib.humanize',
     'fc3.weatherstation',
     'fc3.weather',
     'fc3.food',
     'fc3.blog',
+    'fc3.registration',
 )
+
+AUTHENTICATION_BACKENDS = (
+    "email-auth.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+ACCOUNT_ACTIVATION_DAYS = 10
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'gmsearch@flyingcracker.com'
+EMAIL_HOST_PASSWORD = 'scalzo'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'graham@flyingcracker.com'
 
 # import local settings overriding the defaults
 try:

@@ -9,14 +9,15 @@ def get_static_path():
    return os.path.abspath(os.path.join(os.path.dirname(file), "static"))
 
 urlpatterns = patterns('',
-   (r'^admin/',             include('django.contrib.admin.urls')),
-   (r'^food/',              include('fc3.food.urls'), {'recipe_type': 'F'}),
-   (r'^cocktail/',          include('fc3.food.urls'), {'recipe_type': 'D'}),
-   (r'^blog/',              include('fc3.blog.urls')),
-   (r'^comments/',          include('django.contrib.comments.urls.comments')),
+   (r'^admin/',      include('django.contrib.admin.urls')),
+   (r'^accounts/',   include('registration.urls')),
+   (r'^food/',       include('fc3.food.urls'), {'recipe_type': 'F'}),
+   (r'^cocktail/',   include('fc3.food.urls'), {'recipe_type': 'D'}),
+   (r'^blog/',       include('fc3.blog.urls')),
+   (r'^comments/',   include('django.contrib.comments.urls.comments')),
    (r'^weatherstation/',    include('fc3.weatherstation.urls')),
    (r'^weather/',           include('fc3.weather.urls')),
-   (r'^$',                  include('fc3.blog.urls')),
+   (r'^$',           include('fc3.blog.urls')),
 )
 
 if settings.DEBUG:
