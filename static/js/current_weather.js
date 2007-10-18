@@ -3,8 +3,8 @@ var current_weather = {
         // Grab the elements we'll need.
         current_weather.weather_div = document.getElementById('CurrentWeather');
         
-        // This is so we can fade it in later.
-        YAHOO.util.Dom.setStyle(current_weather.weather_div, 'opacity', 0);
+        // This is so we can fade it later.
+        YAHOO.util.Dom.setStyle(current_weather.weather_div, 'opacity', 1);
         
         // Ask for data every so often.
         setInterval(refresh_func, 15000);
