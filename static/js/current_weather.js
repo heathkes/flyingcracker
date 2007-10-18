@@ -41,7 +41,7 @@ var current_weather = {
         },
     
         failure: function(o) {
-            ; // alert('An error has occurred');
+            var a = 1; // alert('An error has occurred');
         }
     
     }
