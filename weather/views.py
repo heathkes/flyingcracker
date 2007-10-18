@@ -12,3 +12,14 @@ def current(request):
         return HttpResponse(simplejson.dumps(current), mimetype='application/javascript')
     else:
         return render_to_response('weather/current.html', {'current' : current})
+
+def current_with_ajax(request):
+    # get latest weather reading
+    current = Weather.objects.latest('timestamp')
+    
+    xhr = request.GET.has_key('xhr')
+    if xhr:
+        return HttpResponse(simplejson.dumps(current), mimetype='application/javascript')
+    else:
+        return render_to_response('weather/current_with_ajax.html', {'current' : current})
+

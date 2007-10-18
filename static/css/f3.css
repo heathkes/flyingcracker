@@ -431,6 +431,9 @@ th.flowHead{
 .weatherItem .Body p {
 	font-size: 1em;
 }
+.weatherItem .CurrentWeather {
+	
+}
 .weatherItem .ForecastWarning {
 	font-size: 1.0em;
 	font-weight: bold;

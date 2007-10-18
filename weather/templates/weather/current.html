@@ -1,23 +1,24 @@
 {% extends "weather.html" %}
+
 {% load markup %}
 
 {% block body %}
 	<div class="weatherItem">
 		<div class="Box">
-      <div class="Header">
-	      <div class="Title">
-		      Crested Butte South Current Conditions
-	      </div> <!-- Title -->
+			<div class="Header">
+				<div class="Title">
+					Crested Butte South Current Conditions
+				</div> <!-- Title -->
 
-	      <div class="Date">
-          {{ current.timestamp }}
-        </div> <!-- Date -->
-      </div> <!-- Header -->
+				<div class="Date">
+					{{ current.timestamp }}
+				</div> <!-- Date -->
+			</div> <!-- Header -->
 
-      <div class="Body">
-      <table border="0" cellpadding="3" cellspacing="2">
+			<div class="Body">
+				<table border="0" cellpadding="3" cellspacing="2">
    
-      <!-- HIGH/LOW HEADINGS -->
+			<!-- HIGH/LOW HEADINGS -->
         <tr>
         <td>&nbsp;</td>
 		    <td>&nbsp;</td>
