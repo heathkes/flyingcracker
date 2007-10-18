@@ -7,7 +7,7 @@ var current_weather = {
         YAHOO.util.Dom.setStyle(current_weather.weather_div, 'opacity', 1);
         
         // Ask for data every so often.
-        setInterval(refresh_func, 15000);
+        setInterval(current_weather.refresh_func, 15000);
     },
     
     refresh_func: function() {
