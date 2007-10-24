@@ -26,11 +26,13 @@ var current_weather = {
             var weather_fade_in = new YAHOO.util.Anim(current_weather.weather_div,
                 { opacity: { to: 1 } }, 0.5, YAHOO.util.Easing.easeIn);
 
+			var val_timestamp = document.getElementById('current_timestamp');
             var val_temp = document.getElementById('current_temp');
             var val_humidity = document.getElementById('current_humidity');
             var val_barometer = document.getElementById('current_barometer');
             
             weather_fade_out.onComplete.subscribe(function() {
+				val_timestamp.nodeValue = response_obj.timestamp;
                 val_temp.nodeValue = response_obj.temp;
                 val_humidity.nodeValue = response_obj.humidity;
                 val_barometer.nodeValue = response_obj.barometer;
