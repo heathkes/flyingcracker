@@ -32,10 +32,10 @@ var current_weather = {
             var val_barometer = document.getElementById('current_barometer');
             
             weather_fade_out.onComplete.subscribe(function() {
-				val_timestamp.nodeValue = response_obj.timestamp;
-                val_temp.nodeValue = response_obj.temp;
-                val_humidity.nodeValue = response_obj.humidity;
-                val_barometer.nodeValue = response_obj.barometer;
+				val_timestamp.innerHTML = response_obj.timestamp;
+				val_temp.innerHTML = response_obj.temp;
+                val_humidity.innerHTML = response_obj.humidity;
+                val_barometer.innerHTML = response_obj.barometer;
                 weather_fade_in.animate();
                 });
             
@@ -48,11 +48,4 @@ var current_weather = {
     
     }
 };
-YAHOO.util.Event.addListener(window, 'load', function() {
-	var myDebugger = new YAHOO.extension.Debugger();
-	// dbr.logReader is the LogReader instance
-
-	// just call YAHOO.log(message) to log messages
-	// Type directly in the input field to debug values
-});
 YAHOO.util.Event.addListener(window, 'load', current_weather.init);
