@@ -19,7 +19,8 @@ def current(request):
         # Note that the current Django JSON serializer cannot serialize a single object, just a queryset.
         # Therefore we need to reference the object.__dict__ with the DjangoJSONEncoder.
         # [  We expected to be able to call simplejson.dumps(current, mimetype=...)  ]
-        return HttpResponse(simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder), mimetype='application/javascript')
+        json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
+        return HttpResponse(json, mimetype='application/javascript')
     else:
         return render_to_response('weather/current.html', {'current' : current})
 
