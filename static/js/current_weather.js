@@ -46,5 +46,11 @@ var current_weather = {
     
     }
 };
+YAHOO.util.Event.addListener(window, 'load', function() {
+	var myDebugger = new YAHOO.extension.Debugger();
+	// dbr.logReader is the LogReader instance
 
+	// just call YAHOO.log(message) to log messages
+	// Type directly in the input field to debug values
+});
 YAHOO.util.Event.addListener(window, 'load', current_weather.init);
