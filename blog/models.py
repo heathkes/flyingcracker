@@ -20,7 +20,19 @@ class Post(models.Model):
         list_display = ('title', 'author', 'pub_date',)
         search_fields = ('title', 'body',)
         date_hierarchy = 'pub_date'
-        js = ['/static/js/tiny_mce/tiny_mce.js', '/static/js/textareas.js']      
+#        js = ['/static/js/tiny_mce/tiny_mce.js', '/static/js/textareas.js']      
+        js = (
+            # Utility dependencies
+            'http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js',
+            'http://yui.yahooapis.com/2.3.1/build/element/element-beta-min.js',
+            # Needed for Menus, Buttons and Overlays used in the RTE Toolbar
+            'http://yui.yahooapis.com/2.3.1/build/container/container_core-min.js',
+            'http://yui.yahooapis.com/2.3.1/build/menu/menu-min.js',
+            'http://yui.yahooapis.com/2.3.1/build/button/button-beta-min.js',
+            # Source file for Rich Text Editor
+            'http://yui.yahooapis.com/2.3.1/build/editor/editor-beta-min.js',
+            '/static/js/yuitextareas.js',
+            )
 
     class Meta:
         get_latest_by = 'pub_date'
