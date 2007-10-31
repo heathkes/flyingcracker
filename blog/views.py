@@ -23,7 +23,6 @@ def upload_file(request):
             result = {"status": "upload failed"}
             
         json = simplejson.dumps(result, cls=DjangoJSONEncoder)
-#        return HttpResponse(json, mimetype='application/javascript')
-        return HttpResponse(json, mimetype='text/html')
+        return HttpResponse(json, mimetype='text/html')  # try mimetype='application/javascript'
     else:
         return HttpResponse('sorry')
