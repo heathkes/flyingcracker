@@ -14,7 +14,6 @@ def upload_file(request):
             filename = file['filename']
 
             filepath ='%s/%s' % (settings.MEDIA_ROOT, filename)
-#            filepath = '%s/%s' % ('./img', filename)
             fd = open(filepath, 'wb')
             fd.write(file['content'])
             fd.close()
