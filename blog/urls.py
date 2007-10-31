@@ -13,3 +13,7 @@ urlpatterns = patterns('django.views.generic',
     (r'^(?P<year>\d{4})/$',                                     'date_based.archive_year',  dict(blog_dict, make_object_list=True)),
     (r'^/?$',                                                   'date_based.archive_index', blog_dict),
  )
+
+urlpatterns += patterns('fc3.blog.views',
+    (r'^upload/$',  'upload_file'),
+ )

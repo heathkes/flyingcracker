@@ -4,6 +4,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = BASE_DIR
 
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
+
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -24,14 +29,6 @@ SITE_ID = 1
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/'
-
-# URL that handles the media served from MEDIA_ROOT.
-# Example: "http://media.lawrence.com"
-MEDIA_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

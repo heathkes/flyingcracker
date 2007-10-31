@@ -31,6 +31,16 @@ class Post(models.Model):
             'http://yui.yahooapis.com/2.3.1/build/button/button-beta-min.js',
             # Source file for Rich Text Editor
             'http://yui.yahooapis.com/2.3.1/build/editor/editor-beta-min.js',
+            # Source file for Connection Manager
+#            'http://yui.yahooapis.com/2.3.1/build/connection/connection-min.js',
+            '/static/js/yui/connection-debug.js',
+            # Required for YUI Logger
+            'http://yui.yahooapis.com/2.3.1/build/logger/logger-min.js',
+            # Enable console logging
+            '/static/js/console-logger.js',
+            # Image uploader code
+            '/static/js/yui-image-uploader.js',
+            # Invoke the RTE
             '/static/js/yuitextareas.js',
             )
 
