@@ -7,7 +7,7 @@ PROJECT_DIR = BASE_DIR
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

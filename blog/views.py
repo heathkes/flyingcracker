@@ -13,11 +13,11 @@ def upload_file(request):
             filetype = file['content-type']
             filename = file['filename']
 
-            filepath ='%s/%s' % (settings.MEDIA_ROOT, filename)
+            filepath ='%s/%s' % (settings.STATIC_ROOT, filename)
             fd = open(filepath, 'wb')
             fd.write(file['content'])
             fd.close()
-            fileurl = '%s/%s' % (settings.MEDIA_URL, filename)
+            fileurl = '%s/%s' % (settings.STATIC_URL, filename)
             result = {"status": "UPLOADED", "image_url": fileurl}
         else:
             result = {"status": "upload failed"}
