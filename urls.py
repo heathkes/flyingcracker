@@ -4,7 +4,7 @@ from django.conf import settings
 urlpatterns = patterns('',
    (r'^admin/',             include('django.contrib.admin.urls')),
    (r'^accounts/',          include('registration.urls')),
-   (r'^cam/',               include('cam.urls')),
+   (r'^cam/',               include('fc3.cam.urls')),
    (r'^food/',              include('fc3.food.urls'), {'recipe_type': 'F'}),
    (r'^cocktail/',          include('fc3.food.urls'), {'recipe_type': 'D'}),
    (r'^blog/',              include('fc3.blog.urls')),
