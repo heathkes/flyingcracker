@@ -69,7 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.comments',
     'django.contrib.humanize',
-    'django_evolution',
+    'fc3.django_evolution',
     'fc3.weatherstation',
     'fc3.weather',
     'fc3.food',
