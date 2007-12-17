@@ -19,7 +19,7 @@ class Cam(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-title']
+        ordering = ['title']
         
     class Admin:
         # Admin options go here
