@@ -1,0 +1,32 @@
+{% block content %}
+
+<script language="javascript">
+function reDir(id) {
+    if (id == "")
+        return false;
+    var loc = "/cam/";
+    loc = loc.concat(id.toString(), "/");
+    window.location=loc;
+}
+</script>
+
+<body>
+    <form id="form1" action="." method="post">
+        <select onchange=reDir(this.options[this.selectedIndex].value);>
+            {% for cam in camlist %}
+                <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
+                    {{ cam.title }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <img alt="{{ image.title }}" src="{{ image.url }}"
+    <form id="form2" action="." method="post">
+        <select onchange=reDir(this.options[this.selectedIndex].value);>
+            {% for cam in camlist %}
+                <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
+                    {{ cam.title }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</body>
+{% endblock content %}

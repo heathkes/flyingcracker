@@ -2,7 +2,7 @@ from django.db import models
 from datetime import *
 
 class Weather(models.Model):
-    station_id = models.CharField(maxlength=10)
+    station_id = models.CharField(max_length=10)
     timestamp = models.DateTimeField('Date of reading', unique=True)
    
     wind_dir = models.IntegerField(null=True)

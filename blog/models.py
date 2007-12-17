@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Post(models.Model):
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     slug = models.SlugField(prepopulate_from=('title',), help_text='Automatically built from the title.')
     teaser = models.TextField()
     author = models.ForeignKey(User)
