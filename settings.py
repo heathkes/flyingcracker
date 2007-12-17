@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     'fc3.weather',
     'fc3.food',
     'fc3.blog',
-//    'fc3.registration',
+#    'fc3.registration',
     'fc3.cam',
 )
 
