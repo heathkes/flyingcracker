@@ -5,7 +5,7 @@ urlpatterns = patterns('',
    (r'^admin/',             include('django.contrib.admin.urls')),
    (r'^comments/',          include('django.contrib.comments.urls.comments')),
    
-//   (r'^accounts/',          include('fc3.registration.urls')),
+#   (r'^accounts/',          include('fc3.registration.urls')),
    (r'^cam/',               include('fc3.cam.urls')),
    (r'^food/',              include('fc3.food.urls'), {'recipe_type': 'F'}),
    (r'^cocktail/',          include('fc3.food.urls'), {'recipe_type': 'D'}),
