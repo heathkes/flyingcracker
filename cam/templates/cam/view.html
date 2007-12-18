@@ -48,7 +48,9 @@ function reCat(id) {
         </select>
     </div>
 </form>
+<div>
 <img alt="{{ image.title }}" src="{{ image.url }}"
+</div>
 <form id="form2" action="." method="post">
     <select onchange=reDir(this.options[this.selectedIndex].value);>
         {% for cam in camlist %}
