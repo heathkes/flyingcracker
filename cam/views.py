@@ -12,7 +12,7 @@ def camview(request, id=None):
         cam_list, image, category = get_cam_list(cat_id)
     else:
         if id is None:
-            image = Cam.objects.get(title="Whetstone")
+            image = Cam.objects.get(title__contains="Whetstone")
         else:
             image = get_object_or_404(Cam, id=id)
             
