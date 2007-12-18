@@ -2,11 +2,12 @@
 
 {% block header %}
 {{ block.super }}
-<!--[if !IE]>-->
-<link media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" rel="stylesheet" >
-<link media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" rel="stylesheet" >
-<!--[endif]>-->    
 <meta name="viewport" content="width=device-width" />
+
+<!--[if !IE]>-->
+<link rel="stylesheet" media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" >
+<link rel="stylesheet" media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" >
+<!--<![endif]-->    
 {% endblock %}
 
 {% block content %}
