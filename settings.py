@@ -79,7 +79,7 @@ INSTALLED_APPS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    "email-auth.EmailBackend",
+    "fc3.email-auth.EmailBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 

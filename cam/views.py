@@ -1,25 +1,45 @@
 from fc3.cam.models import Cam, Category
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
+from fc3.json import JsonResponse
 
 CAM_CATEGORY = "cam_category"
 
-def camview(request, id=None):
+def cam_list(request):
+    # get a list of webcam images associated with this Category
+    cat_id = request.POST.get('cat')
+    if cat_id:
+        category = Category.objects.get(id=cat_id)
+        if category.title == "All Categories":
+            cam_list = Cam.objects.all()
+        else:
+            cam_list = Cam.objects.belongs_to_category(cat_id)
+            
+        response_dict = {}
+        index = 0
+        obj_dict = {}
+        for obj in cam_list:
+            obj_dict[index] = dict({'id': obj.id, 'title': obj.title})
+            index = index + 1
+            
+        obj_dict['length'] = index
+        obj_dict['category'] = cat_id
+        response_dict['images'] = obj_dict
+        
+        xhr = request.GET.has_key('xhr')
+        if xhr:
+            return JsonResponse(response_dict)
+
+def cam_view(request, id=None):
     cat_list = Category.objects.all()
     
-    cat_id = request.GET.get('cat')
-    if cat_id:
-        cam_list, image, category = get_cam_list(cat_id)
-    else:
-        if id is None:
-            image = get_default_image()
-        else:
-            image = get_object_or_404(Cam, id=id)
-            
-        # check browser for category cookie
-        cat_id = request.COOKIES.get(CAM_CATEGORY)
-        cam_list, junk, category = get_cam_list(cat_id)
+    # check browser for category cookie
+    cat_id = request.COOKIES.get(CAM_CATEGORY)
+    cam_list, image, category = get_cam_list(cat_id)
 
+    if id:
+        image = get_object_or_404(Cam, id=id)
+            
     c = RequestContext(request, {
                 'catlist': cat_list,
                 'category': category,

@@ -7,7 +7,13 @@
 <!--[if !IE]>-->
 <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" >
 <link rel="stylesheet" media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" >
-<!--<![endif]-->    
+<!--<![endif]-->
+
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.0/build/connection/connection-min.js"></script>
+<!-- My source -->
+<script type="text/javascript" src="/static/js/cam_list.js"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -32,7 +38,7 @@ function reCat(id) {
 <div>
     <div class="cam_form_category">
     <form action="." method="post">
-        <select onchange=reCat(this.options[this.selectedIndex].value);>
+        <select id="id_category">
         {% for cat in catlist %}
             <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
                 {{ cat.title }}</option>
@@ -41,7 +47,7 @@ function reCat(id) {
     </form>
     </div>
     <form action="." method="post">
-        <select onchange=reDir(this.options[this.selectedIndex].value);>
+        <select id="id_image" onchange=reDir(this.options[this.selectedIndex].value);>
         {% for cam in camlist %}
             <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
                 {{ cam.title }}</option>
@@ -53,13 +59,6 @@ function reCat(id) {
 <div>
 <img alt="{{ image.title }}" src="{{ image.url }}"
 </div>
-<form action="." method="post">
-    <select onchange=reDir(this.options[this.selectedIndex].value);>
-    {% for cam in camlist %}
-        <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
-            {{ cam.title }}</option>
-    {% endfor %}
-    </select>
-</form>
+{{ image.title }}
 
 {% endblock content %}
