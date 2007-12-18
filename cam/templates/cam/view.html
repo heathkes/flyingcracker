@@ -29,34 +29,39 @@ function reCat(id) {
 }
 </script>
 
-<form id="form0" action="." method="post">
-    <div>
-        <div class="cam_form_category">
-        Categories:
-        <select onchange=reCat(this.options[this.selectedIndex].value);>
-            {% for cat in catlist %}
-                <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
-                    {{ cat.title }}</option>
-            {% endfor %}
-        </select>
-        </div>
-        <select onchange=reDir(this.options[this.selectedIndex].value);>
-            {% for cam in camlist %}
-                <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
-                    {{ cam.title }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</form>
 <div>
-<img alt="{{ image.title }}" src="{{ image.url }}"
-</div>
-<form id="form2" action="." method="post">
-    <select onchange=reDir(this.options[this.selectedIndex].value);>
+    <div class="cam_form_category">
+    Categories:<br />
+    <form action="." method="post">
+        <select onchange=reCat(this.options[this.selectedIndex].value);>
+        {% for cat in catlist %}
+            <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
+                {{ cat.title }}</option>
+        {% endfor %}
+        </select>
+    </form>
+    </div>
+    Images:</br >
+    <form action="." method="post">
+        <select onchange=reDir(this.options[this.selectedIndex].value);>
         {% for cam in camlist %}
             <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
                 {{ cam.title }}</option>
         {% endfor %}
+        </select>
+    </form>
+</div>
+
+<div>
+<img alt="{{ image.title }}" src="{{ image.url }}"
+</div>
+Images:<br />
+<form action="." method="post">
+    <select onchange=reDir(this.options[this.selectedIndex].value);>
+    {% for cam in camlist %}
+        <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
+            {{ cam.title }}</option>
+    {% endfor %}
     </select>
 </form>
 
