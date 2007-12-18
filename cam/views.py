@@ -12,7 +12,7 @@ def camview(request, id=None):
         cam_list, image, category = get_cam_list(cat_id)
     else:
         if id is None:
-            image = Cam.objects.get(title__contains="Whetstone")
+            image = get_default_image()
         else:
             image = get_object_or_404(Cam, id=id)
             
@@ -38,20 +38,24 @@ def get_cam_list(cat_id):
             category = Category.objects.get(id=cat_id)
             if category.title == "All Categories":
                 cam_list = Cam.objects.all()
-                image = Cam.objects.get(title="Whetstone")
+                image = get_default_image()
             else:
                 cam_list = Cam.objects.filter(category=category)
                 image = cam_list[0]
         except:
             cam_list = Cam.objects.all()
-            image = Cam.objects.get(title="Whetstone")
-            category = Category.objects.get(title="All Categories")
+            image = get_default_image()
+            category = get_default_category()
     else:
         cam_list = Cam.objects.all()
-        image = Cam.objects.get(title="Whetstone")
-        category = Category.objects.get(title="All Categories")
+        image = get_default_image()
+        category = get_default_category()
     return cam_list, image, category
 
+def get_default_image():
+    return Cam.objects.get(title__contains="Whetstone")
+def get_default_category():
+    return Category.objects.get(title="All Categories")
     
 from django.conf import settings
 import datetime
