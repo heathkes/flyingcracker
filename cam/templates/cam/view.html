@@ -1,3 +1,5 @@
+{% extends "cam.html" %}
+
 {% block content %}
 
 <script language="javascript">
@@ -8,9 +10,25 @@ function reDir(id) {
     loc = loc.concat(id.toString(), "/");
     window.location=loc;
 }
+function reCat(id) {
+    if (id == "")
+        return false;
+    var loc = "/cam/?cat=";
+    loc = loc.concat(id.toString());
+    window.location=loc;
+}
 </script>
 
 <body>
+    <form id="form0" action="." method="post">
+        Categories:
+        <select onchange=reCat(this.options[this.selectedIndex].value);>
+            {% for cat in catlist %}
+                <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
+                    {{ cat.title }}</option>
+            {% endfor %}
+        </select>
+    </form>
     <form id="form1" action="." method="post">
         <select onchange=reDir(this.options[this.selectedIndex].value);>
             {% for cam in camlist %}
