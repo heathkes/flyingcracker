@@ -1,5 +1,14 @@
 {% extends "cam.html" %}
 
+{% block header %}
+{{ block.super }}
+<style type="text/css">
+.cam_form_category {
+	float: right;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
 <script language="javascript">
@@ -21,6 +30,7 @@ function reCat(id) {
 
 <body>
     <form id="form0" action="." method="post">
+        <div class="cam_form_category">
         Categories:
         <select onchange=reCat(this.options[this.selectedIndex].value);>
             {% for cat in catlist %}
@@ -28,8 +38,7 @@ function reCat(id) {
                     {{ cat.title }}</option>
             {% endfor %}
         </select>
-    </form>
-    <form id="form1" action="." method="post">
+        </div>
         <select onchange=reDir(this.options[this.selectedIndex].value);>
             {% for cam in camlist %}
                 <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
