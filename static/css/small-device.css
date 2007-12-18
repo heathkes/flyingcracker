@@ -1,6 +1,7 @@
 .cam_form_category {
-	float: right;
+	position: absolute;
+    right: 0px;
 }
 div {
-    -webkit-text-size-adjust:200%;
+    -webkit-text-size-adjust:100%;
 } 

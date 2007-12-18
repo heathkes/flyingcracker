@@ -31,7 +31,6 @@ function reCat(id) {
 
 <div>
     <div class="cam_form_category">
-    Categories:<br />
     <form action="." method="post">
         <select onchange=reCat(this.options[this.selectedIndex].value);>
         {% for cat in catlist %}
@@ -41,7 +40,6 @@ function reCat(id) {
         </select>
     </form>
     </div>
-    Images:</br >
     <form action="." method="post">
         <select onchange=reDir(this.options[this.selectedIndex].value);>
         {% for cam in camlist %}
@@ -55,7 +53,6 @@ function reCat(id) {
 <div>
 <img alt="{{ image.title }}" src="{{ image.url }}"
 </div>
-Images:<br />
 <form action="." method="post">
     <select onchange=reDir(this.options[this.selectedIndex].value);>
     {% for cam in camlist %}
