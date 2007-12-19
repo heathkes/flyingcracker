@@ -39,5 +39,3 @@ class Cam(models.Model):
         (None, {
             'fields': ('title', 'url', 'category', 'state')
         }),
-        # Admin options go here
-        pass
