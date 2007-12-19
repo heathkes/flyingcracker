@@ -23,7 +23,7 @@ class CamManager(models.Manager):
     
 class Cam(models.Model):
     title = models.CharField(max_length=100)
-    state = models.USStateField()
+    state = models.USStateField(default="CO")
     url = models.URLField()
     category = models.ForeignKey(Category)
     objects = CamManager()
