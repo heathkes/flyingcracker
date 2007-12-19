@@ -32,8 +32,12 @@ class Cam(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title']
+        ordering = ['title','url',]
         
     class Admin:
+        fields = (
+        (None, {
+            'fields': ('title', 'url', 'category', 'state')
+        }),
         # Admin options go here
         pass
