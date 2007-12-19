@@ -36,6 +36,7 @@ class Cam(models.Model):
         
     class Admin:
         fields = (
-        (None, {
-            'fields': ('title', 'url', 'category', 'state')
-        }),
+            (None, {
+                'fields': ('title', 'url', 'category', 'state')
+            }),
+        )
