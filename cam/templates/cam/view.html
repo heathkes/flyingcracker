@@ -59,6 +59,10 @@ function reCat(id) {
 <div>
 <img alt="{{ image.title }}" src="{{ image.url }}"
 </div>
+{% if image.description %}
+{{ image.description }}
+{% else %}
 {{ image.title }}
+{% endif %}
 
 {% endblock content %}

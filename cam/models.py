@@ -23,9 +23,10 @@ class CamManager(models.Manager):
     
 class Cam(models.Model):
     title = models.CharField(max_length=100)
-    state = models.USStateField(default="CO")
     url = models.URLField()
+    description = models.TextField(blank=True)
     category = models.ForeignKey(Category)
+    state = models.USStateField(default="CO")
     objects = CamManager()
 
     def __str__(self):
@@ -37,6 +38,6 @@ class Cam(models.Model):
     class Admin:
         fields = (
             (None, {
-                'fields': ('title', 'url', 'category', 'state')
+                'fields': ('title', 'url', 'category', 'description', 'state')
             }),
         )
