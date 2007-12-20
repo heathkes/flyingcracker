@@ -70,7 +70,8 @@ function reCat(id) {
 
 
 <style>
-label { display:block;float:left;width:45%;clear:left; }
+
+label {float:left;text-align:right;width:30%;padding-right:5px; }
 </style>
 
 <script language="javascript">
@@ -127,6 +128,7 @@ function init() {
 YAHOO.util.Event.onDOMReady(init);
 </script>
 
+<br />
 <div>
     <button id="suggest">Suggest Cam</button> 
 </div>
@@ -136,7 +138,7 @@ YAHOO.util.Event.onDOMReady(init);
     <div class="bd">
         <form method="POST" action="/cam/suggest/">
             <label for="url">URL address:</label><input type="textbox" name="url" />
-            <label for="description">Description:</label><input type="textbox" name="description" />
+            <label for="description">Description:</label><textarea id="id_description" name="description" rows="2" cols="40"></textarea>
         </form>
     </div>
 </div>
