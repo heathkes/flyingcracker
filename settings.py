@@ -85,13 +85,6 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'gmsearch@flyingcracker.com'
-EMAIL_HOST_PASSWORD = 'scalzo'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'graham@flyingcracker.com'
-
 # import local settings overriding the defaults
 try:
     from settings_local import *

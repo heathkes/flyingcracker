@@ -1,6 +1,7 @@
 from fc3.cam.models import Cam, Category
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template.loader import render_to_string
 from fc3.json import JsonResponse
 
 CAM_CATEGORY = "cam_category"
@@ -51,6 +52,20 @@ def cam_view(request, id=None):
     if cat_id:
         set_cookie(response, CAM_CATEGORY, cat_id)
     return response
+
+def cam_suggestion(request):
+    url = request.POST.get('url')
+    description = request.POST.get('description')
+    
+    from django.core.mail import send_mail
+    
+    subject = "webcam suggestion"
+    message = render_to_string('suggestion/suggestion_email.txt',
+                               { 'cam_url': url,
+                                 'cam_description': description })
+    
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, ["webcam@flyingcracker.com"])
+    return JsonResponse({'success': True})
 
 def get_cam_list(cat_id):
     if cat_id:
