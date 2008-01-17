@@ -35,7 +35,7 @@ def weather(request):
         json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
         return HttpResponse(json, mimetype='application/javascript')
     else:
-        if current.wind_speed < 1.0:
+        if int(float(current.wind_speed)) < 1:
             wind = "Calm"
         else:
             wind = "%s at %d mph" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
