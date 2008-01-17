@@ -47,12 +47,14 @@ dl.table-display
 {% block content %}
 
 <div>
+    Crested Butte South
+    Current Conditions
     <dl class="table-display">
         <dt>Temp:</dt><dd>{{ current.temp|floatformat:"-2" }}&#186;</dd>
         <dt>Humidity:</dt><dd>{{ current.humidity }}%</dd>
         <dt>Baro:</dt><dd>{{ current.barometer }}</dd>
         <dt>Trend:</dt><dd>{{ current.baro_trend }}</dd>
-        <dt>Wind:</dt><dd>{{ current.wind_dir }} at {{ current.wind_speed|floatformat:"-2" }}</dd>
+        <dt>Wind:</dt><dd>{{ wind }}</dd>
     </dl>
     data current as of {{ current.timestamp }}
 </div>
