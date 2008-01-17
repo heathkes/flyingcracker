@@ -60,7 +60,7 @@ dir_table = {
 }
 
 def wind_dir_to_english(dir):
-    for key,val in dir_table:
+    for key,val in dir_table.items():
         if dir >= (val-11.25) and dir < (val+11.25):
         return key
     return 'N'
