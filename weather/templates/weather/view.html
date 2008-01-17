@@ -54,7 +54,7 @@ dl.table-display
         <dt>Humidity:</dt><dd>{{ current.humidity }}%</dd>
         <dt>Baro:</dt><dd>{{ current.barometer }}</dd>
         <dt>Trend:</dt><dd>{{ current.baro_trend }}</dd>
-        <dt>Wind:</dt><dd>{{ wind }}</dd>
+        <dt>Wind:</dt><dd>{{ wind|safe }}</dd>
     </dl>
     data current as of {{ current.timestamp }}
 </div>
