@@ -22,7 +22,8 @@ dl.table-display
     margin: 0 0 0 0;
     padding: .3em;
     text-align: right;
-    width: 20%;
+    width: 40%;
+    font-size: 2em;
 }
 
 .table-display dd
@@ -30,7 +31,8 @@ dl.table-display
     float: left;
     margin: 0 0 0 0;
     padding: 0.3em;
-    width: 70%;
+    width: 50%;
+    font-size: 2em;
 }
 </style>
 {% endblock extrastyle %}
@@ -46,13 +48,13 @@ dl.table-display
 
 <div>
     <dl class="table-display">
-        <dt>Temp:</dt><dd>{{ current.temp }}&#186;</dd>
+        <dt>Temp:</dt><dd>{{ current.temp|floatformat:"-2" }}&#186;</dd>
         <dt>Humidity:</dt><dd>{{ current.humidity }}%</dd>
         <dt>Baro:</dt><dd>{{ current.barometer }}</dd>
         <dt>Trend:</dt><dd>{{ current.baro_trend }}</dd>
-        <dt>Wind:</dt><dd>{{ current.wind_dir }} at {{ current.wind_speed }}</dd>
+        <dt>Wind:</dt><dd>{{ current.wind_dir }} at {{ current.wind_speed|floatformat:"-2" }}</dd>
     </dl>
-    {{ current.timestamp }}
+    data current as of {{ current.timestamp }}
 </div>
 
 {% endblock content %}
