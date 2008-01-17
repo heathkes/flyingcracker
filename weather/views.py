@@ -38,5 +38,29 @@ def weather(request):
         if current.wind_speed < 1.0:
             wind = "Calm"
         else:
-            wind = "%d&#186; at %d mph" % (current.wind_dir, current.wind_speed)
+            wind = "%s at %d mph" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
         return render_to_response('weather/view.html', {'current' : current, 'wind': wind})
+
+dir_table = {
+    'NNE': 22.5,
+    'NE': 45,
+    'ENE': 67.5,
+    'E': 90,
+    'ESE': 112.5,
+    'SE': 135,
+    'SSE': 157.5,
+    'S': 180,
+    'SSW': 202.5,
+    'SW': 225,
+    'WSW': 247.5,
+    'W': 270,
+    'WNW': 292.5,
+    'NW': 315,
+    'NNW': 337.5
+}
+
+def wind_dir_to_english(dir):
+    for key,val in dir_table:
+        if dir >= (val-11.25) and dir < (val+11.25):
+        return key
+    return 'N'
