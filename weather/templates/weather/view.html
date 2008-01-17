@@ -1,0 +1,58 @@
+{% extends "weather2.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<meta name="viewport" content="width=device-width" />
+
+<!--[if !IE]>-->
+<link rel="stylesheet" media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" >
+<link rel="stylesheet" media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" >
+<!--<![endif]-->
+
+<style>
+dl.table-display
+{
+    margin: 0;
+    padding: 0;
+}
+
+.table-display dt
+{
+    float: left;
+    margin: 0 0 0 0;
+    padding: .3em;
+    text-align: right;
+    width: 20%;
+}
+
+.table-display dd
+{
+    float: left;
+    margin: 0 0 0 0;
+    padding: 0.3em;
+    width: 70%;
+}
+</style>
+{% endblock extrastyle %}
+
+{% block javascript %}
+{{ block.super }}
+
+<!-- My source -->
+<!-- <script type="text/javascript" src="/static/js/weather.js"></script> -->
+{% endblock javascript %}
+
+{% block content %}
+
+<div>
+    <dl class="table-display">
+        <dt>Temp:</dt><dd>{{ current.temp }}&#186;</dd>
+        <dt>Humidity:</dt><dd>{{ current.humidity }}%</dd>
+        <dt>Baro:</dt><dd>{{ current.barometer }}</dd>
+        <dt>Trend:</dt><dd>{{ current.baro_trend }}</dd>
+        <dt>Wind:</dt><dd>{{ current.wind_dir }} at {{ current.wind_speed }}</dd>
+    </dl>
+    {{ current.timestamp }}
+</div>
+
+{% endblock content %}

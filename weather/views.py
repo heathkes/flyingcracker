@@ -24,3 +24,15 @@ def current(request):
     else:
         return render_to_response('weather/current.html', {'current' : current})
 
+def weather(request):
+    # get latest weather reading
+    current = Weather.objects.latest('timestamp')
+    xhr = request.GET.has_key('xhr')
+    if xhr:
+        # Note that the current Django JSON serializer cannot serialize a single object, just a queryset.
+        # Therefore we need to reference the object.__dict__ with the DjangoJSONEncoder.
+        # [  We expected to be able to call simplejson.dumps(current, mimetype=...)  ]
+        json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
+        return HttpResponse(json, mimetype='application/javascript')
+    else:
+        return render_to_response('weather/view.html', {'current' : current})
