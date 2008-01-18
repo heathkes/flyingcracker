@@ -33,7 +33,7 @@
 {% block hd %}
     {{ block.super }}
     Crested Butte South Current Conditions<br />
-    {{ current.timestamp }}
+    {{ current.timestamp|date:"H:i \M\T D M j, Y" }}
 {% endblock hd %}
 
 {% block bd %}

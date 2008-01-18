@@ -6,7 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from decimal import *
 import socket
 
-USIWAN = socket.gethostbyname("usi.dyndns.org")
+USI_WAN = socket.gethostbyname("usi.dyndns.org")
 
 def current_no_ajax(request):
     # get latest weather reading
@@ -55,7 +55,7 @@ def weather(request):
             else:
                 trend = "%3.2f" % trend
 
-        if request.META.get('REMOTE_ADDR') == USIWAN:
+        if request.META.get('REMOTE_ADDR') == USI_WAN:
             indoor = current.temp_indoor
         else:
             indoor = None
