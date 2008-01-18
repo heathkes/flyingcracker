@@ -59,6 +59,7 @@ def weather(request):
             indoor = current.temp_indoor
         else:
             indoor = None
+        indoor = request.META.get('REMOTE_ADDR')
         return render_to_response('weather/view.html', {'current' : current,
                                                         'wind': wind,
                                                         'trend': trend,
