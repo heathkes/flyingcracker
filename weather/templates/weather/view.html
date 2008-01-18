@@ -10,23 +10,24 @@
 	min-width:480px;/* optional but recommended */
 }
 #curr_temp {
-    font-size: 6em;
+    font-size: 5em;
     text-align: center;
+    margin: 5px;
 }
 #curr_press {
-    font-size: 2em;
+    font-size: 4em;
     text-align: right;
 }
 #curr_trend {
-    font-size: 2em;
+    font-size: 4em;
     text-align: left;
 }
 #curr_wind {
-    font-size: 2em;
+    font-size: 3em;
     text-align: center;
 }
 #curr_humidity {
-    font-size: 2em;
+    font-size: 3em;
     text-align: center;
 }
 .warning {
@@ -53,6 +54,6 @@
     <div id="curr_press" class="yui-u first">{{ current.barometer }}</div>
     <div id="curr_trend" class="yui-u">{{ trend|safe }}</div>
 </div>
-<div id="curr_wind" class="yui-b">{{ wind|safe }}</div>
-<div id="curr_humidity" class="yui-b">{{ current.humidity }}%</div>
+<div id="curr_wind" class="yui-b">wind {{ wind|safe }}</div>
+<div id="curr_humidity" class="yui-b">humidity {{ current.humidity }}%</div>
 {% endblock bd %}
