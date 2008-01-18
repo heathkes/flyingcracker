@@ -10,23 +10,11 @@
 	min-width:480px;/* optional but recommended */
 }
 #curr_temp {
-    font-size: 5em;
+    font-size: 6em;
     text-align: center;
     margin: 5px;
 }
-#curr_press {
-    font-size: 4em;
-    text-align: right;
-}
-#curr_trend {
-    font-size: 4em;
-    text-align: left;
-}
-#curr_wind {
-    font-size: 3em;
-    text-align: center;
-}
-#curr_humidity {
+#curr_press, #curr_trend, #curr_wind, #curr_humidity, #curr_indoor {
     font-size: 3em;
     text-align: center;
 }
@@ -56,4 +44,5 @@
 </div>
 <div id="curr_wind" class="yui-b">wind {{ wind|safe }}</div>
 <div id="curr_humidity" class="yui-b">humidity {{ current.humidity }}%</div>
+{% if indoor %}<div id="curr_indoor" class="yui-b">office {{ indoor }}&#186;%</div>{% endif %}
 {% endblock bd %}

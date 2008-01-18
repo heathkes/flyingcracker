@@ -4,6 +4,9 @@ from fc3.weatherstation.models import Weather
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from decimal import *
+import socket
+
+USIWAN = socket.gethostbyname("usi.dyndns.org")
 
 def current_no_ajax(request):
     # get latest weather reading
@@ -51,7 +54,15 @@ def weather(request):
                 trend = '<span class="warning">%3.2f</span>' % trend
             else:
                 trend = "%3.2f" % trend
-        return render_to_response('weather/view.html', {'current' : current, 'wind': wind, 'trend': trend})
+
+        if request.META.get('REMOTE_ADDR') == USIWAN:
+            indoor = current.temp_indoor
+        else:
+            indoor = None
+        return render_to_response('weather/view.html', {'current' : current,
+                                                        'wind': wind,
+                                                        'trend': trend,
+                                                        'indoor': indoor})
 
 dir_table = {
     'NNE': 22.5,
