@@ -2,34 +2,12 @@
 
 {% block extrastyle %}
 {{ block.super }}
-<meta name="viewport" content="width=device-width" />
-
-<!--[if !IE]>-->
-<link rel="stylesheet" media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" >
-<link rel="stylesheet" media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" >
-<!--<![endif]-->
-
 <style>
-dl.table-display {
-    margin: 0;
-    padding: 0;
-}
-
-.table-display dt {
-    float: left;
-    margin: 0 0 0 0;
-    padding: .3em;
-    text-align: right;
-    width: 35%;
-    font-size: 2em;
-}
-
-.table-display dd {
-    float: left;
-    margin: 0 0 0 0;
-    padding: 0.3em;
-    width: 55%;
-    font-size: 2em;
+#custom-doc {
+	margin:auto;text-align:left; /* leave unchanged */
+	width:36.92em;/* non-IE */
+	*width:36.03em;/* IE */
+	min-width:480px;/* optional but recommended */
 }
 #curr_temp {
     font-size: 6em;
