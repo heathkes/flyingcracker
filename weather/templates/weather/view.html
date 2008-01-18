@@ -61,23 +61,13 @@ dl.table-display {
 {% endblock hd %}
 
 {% block bd %}
-<div class="yui-b">
-    <span id="curr_temp">{{ current.temp|floatformat:"-2" }}&#186; F</span>
+<div class="yui-b" class="curr_temp">{{ current.temp|floatformat:"-2" }}&#186; F</div>
+<div class="yui-g">
+    <div class="yui-u first" class="curr_press">{{ current.barometer }}</div>
+    <div class="yui-u" class="curr_trend">{{ current.baro_trend }}</div>
 </div>
 <div class="yui-g">
-    <div class="yui-u first">
-        <span id="curr_press">{{ current.barometer }}</span>
-    </div>
-    <div class="yui-u">
-        <span id="curr_trend">{{ current.baro_trend }}</span>
-    </div>
-</div>
-<div class="yui-g">
-    <div class="yui-u first">
-        <span id="curr_wind">{{ wind|safe }}</span>
-    </div>
-    <div class="yui-u">
-        <span id="curr_humidity">{{ current.humidity }}%</span>
-    </div>
+    <div class="yui-u first" class="curr_wind">{{ wind|safe }}</div>
+    <div class="yui-u" class="curr_humidity">{{ current.humidity }}%</div>
 </div>    
 {% endblock bd %}
