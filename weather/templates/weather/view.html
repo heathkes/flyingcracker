@@ -10,14 +10,12 @@
 <!--<![endif]-->
 
 <style>
-dl.table-display
-{
+dl.table-display {
     margin: 0;
     padding: 0;
 }
 
-.table-display dt
-{
+.table-display dt {
     float: left;
     margin: 0 0 0 0;
     padding: .3em;
@@ -26,37 +24,60 @@ dl.table-display
     font-size: 2em;
 }
 
-.table-display dd
-{
+.table-display dd {
     float: left;
     margin: 0 0 0 0;
     padding: 0.3em;
     width: 55%;
     font-size: 2em;
 }
+#curr_temp {
+    font-size: 4em;
+}
+#curr_press {
+    font-size: 2em;
+}
+#curr_trend {
+    font-size: 2em;
+}
+#curr_wind {
+    font-size: 2em;
+}
+#curr_humidity {
+    font-size: em;
+}
 </style>
 {% endblock extrastyle %}
 
 {% block javascript %}
 {{ block.super }}
-
-<!-- My source -->
 <!-- <script type="text/javascript" src="/static/js/weather.js"></script> -->
 {% endblock javascript %}
 
-{% block content %}
+{% block hd %}
+    {{ block.super }}
+    Crested Butte South Current Conditions<br />
+    {{ current.timestamp }}
+{% endblock hd %}
 
-<div>
-    Crested Butte South
-    Current Conditions
-    <dl class="table-display">
-        <dt>Temp:</dt><dd>{{ current.temp|floatformat:"-2" }}&#186;</dd>
-        <dt>Humidity:</dt><dd>{{ current.humidity }}%</dd>
-        <dt>Baro:</dt><dd>{{ current.barometer }}</dd>
-        <dt>Trend:</dt><dd>{{ current.baro_trend }}</dd>
-        <dt>Wind:</dt><dd>{{ wind|safe }}</dd>
-    </dl>
-    data current as of {{ current.timestamp }}
+{% block bd %}
+<div class="yui-b">
+    <span id="curr_temp">{{ current.temp|floatformat:"-2" }}&#186; F</span>
 </div>
-
-{% endblock content %}
+<div class="yui-g">
+    <div class="yui-u first">
+        <span id="curr_press">{{ current.barometer }}</span>
+    </div>
+    <div class="yui-u">
+        <span id="curr_trend">{{ current.baro_trend }}</span>
+    </div>
+</div>
+<div class="yui-g">
+    <div class="yui-u first">
+        <span id="curr_wind">{{ wind|safe }}</span>
+    </div>
+    <div class="yui-u">
+        <span id="curr_humidity">{{ current.humidity }}%</span>
+    </div>
+</div>    
+{% endblock bd %}

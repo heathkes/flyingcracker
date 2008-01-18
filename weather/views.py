@@ -39,7 +39,12 @@ def weather(request):
             wind = "Calm"
         else:
             wind = "%s at %d mph" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
-        return render_to_response('weather/view.html', {'current' : current, 'wind': wind})
+            
+        if current.baro_trend > 0.0:
+            trend = "+%s" % current.baro_trend
+        else:
+            trend = current.baro_trend
+        return render_to_response('weather/view.html', {'current' : current, 'wind': wind, 'trend': trend})
 
 dir_table = {
     'NNE': 22.5,
