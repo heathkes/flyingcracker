@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from fc3.weatherstation.models import Weather
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
+from decimal import *
 
 def current_no_ajax(request):
     # get latest weather reading
@@ -35,15 +36,21 @@ def weather(request):
         json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
         return HttpResponse(json, mimetype='application/javascript')
     else:
+        # set wind string
         if int(float(current.wind_speed)) < 1:
             wind = "Calm"
         else:
-            wind = "%s at %d mph" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
-            
-        if current.baro_trend > 0.0:
-            trend = "+%s" % current.baro_trend
+            wind = "%s @ %d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
+        
+        # set barometric pressure trend string
+        trend = current.baro_trend
+        if trend > Decimal(0):
+            trend = "+%3.2f" % trend
         else:
-            trend = current.baro_trend
+            if trend < Decimal("-0.09"):
+                trend = '<span class="warning">%3.2f</span>' % trend
+            else:
+                trend = "%3.2f" % trend
         return render_to_response('weather/view.html', {'current' : current, 'wind': wind, 'trend': trend})
 
 dir_table = {

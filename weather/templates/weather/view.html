@@ -32,19 +32,28 @@ dl.table-display {
     font-size: 2em;
 }
 #curr_temp {
-    font-size: 4em;
+    font-size: 6em;
+    text-align: center;
 }
 #curr_press {
     font-size: 2em;
+    text-align: right;
 }
 #curr_trend {
     font-size: 2em;
+    text-align: left;
 }
 #curr_wind {
     font-size: 2em;
+    text-align: center;
 }
 #curr_humidity {
     font-size: 2em;
+    text-align: center;
+}
+.warning {
+    color: red;
+    font-weight: bold;
 }
 </style>
 {% endblock extrastyle %}
@@ -61,13 +70,11 @@ dl.table-display {
 {% endblock hd %}
 
 {% block bd %}
-<div id="curr_temp" class="yui-b">{{ current.temp|floatformat:"-2" }}&#186; F</div>
+<div id="curr_temp" class="yui-b">{{ current.temp|floatformat:"-2" }}&#186;</div>
 <div class="yui-g">
     <div id="curr_press" class="yui-u first">{{ current.barometer }}</div>
-    <div id="curr_trend" class="yui-u">{{ current.baro_trend }}</div>
+    <div id="curr_trend" class="yui-u">{{ trend|safe }}</div>
 </div>
-<div class="yui-g">
-    <div id="curr_wind" class="yui-u first">{{ wind|safe }}</div>
-    <div id="curr_humidity" class="yui-u">{{ current.humidity }}%</div>
-</div>    
+<div id="curr_wind" class="yui-b">{{ wind|safe }}</div>
+<div id="curr_humidity" class="yui-b">{{ current.humidity }}%</div>
 {% endblock bd %}
