@@ -50,6 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'django.middleware.http.SetRemoteAddrFromForwardedFor',
 )
 
 ROOT_URLCONF = 'fc3.urls'
