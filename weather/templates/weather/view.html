@@ -18,6 +18,9 @@
     font-size: 3em;
     text-align: center;
 }
+.curr_title {
+    text-align: center;
+}
 .warning {
     color: red;
     font-weight: bold;
@@ -38,6 +41,10 @@
 
 {% block bd %}
 <div id="curr_temp" class="yui-b">{{ current.temp|floatformat:"-2" }}&#186;</div>
+<div class="yui-g">
+    <div class="yui-u first"></div>
+    <div class="yui-u curr_title">3-hour trend</div>
+</div>
 <div class="yui-g">
     <div id="curr_press" class="yui-u first">{{ current.barometer }}</div>
     <div id="curr_trend" class="yui-u">{{ trend|safe }}</div>
