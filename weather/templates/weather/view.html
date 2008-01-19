@@ -51,5 +51,5 @@
 </div>
 <div id="curr_wind" class="yui-b"><span class="curr_title" style="display: none">wind </span>{{ wind|safe }}</div>
 <div id="curr_humidity" class="yui-b"><span class="curr_title" style="display: none">humidity </span>{{ current.humidity }}%</div>
-{% if indoor %}<div id="curr_indoor" class="yui-b"><span class="curr_title" style="display: none">office </span>{{ indoor }}&#186;%</div>{% endif %}
+{% if indoor %}<div id="curr_indoor" class="yui-b"><span class="curr_title" style="display: none">office </span>{{ indoor|floatformat:"-2" }}&#186;</div>{% endif %}
 {% endblock bd %}
