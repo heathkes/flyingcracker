@@ -56,7 +56,7 @@ def weather(request):
                 trend = "%3.2f" % trend
 
         if request.META.get('REMOTE_ADDR') == USI_WAN:
-            indoor = current.temp_indoor
+            indoor = current.temp_inside
         else:
             indoor = None
         return render_to_response('weather/view.html', {'current' : current,
