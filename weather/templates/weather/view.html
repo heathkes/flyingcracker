@@ -33,7 +33,7 @@
 
 {% block javascript %}
 {{ block.super }}
-<!-- <script type="text/javascript" src="/static/js/weather.js"></script> -->
+<script type="text/javascript" src="/static/js/weather.js"></script>
 {% endblock javascript %}
 
 {% block hd %}
@@ -57,4 +57,5 @@
 </div>
 <div id="curr_wind" class="yui-b"><span class="curr_title" style="display: none">wind </span>{{ wind|safe }}</div>
 <div id="curr_humidity" class="yui-b"><span class="curr_title" style="display: none">humidity </span>{{ current.humidity }}%</div>
+<div class="yui-b"><button id="title_toggle"></div>
 {% endblock bd %}
