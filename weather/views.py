@@ -68,15 +68,15 @@ dir_table = {
     'NNE': 22.5,
     'NE': 45,
     'ENE': 67.5,
-    'E': 90,
+    'East': 90,
     'ESE': 112.5,
     'SE': 135,
     'SSE': 157.5,
-    'S': 180,
+    'South': 180,
     'SSW': 202.5,
     'SW': 225,
     'WSW': 247.5,
-    'W': 270,
+    'West': 270,
     'WNW': 292.5,
     'NW': 315,
     'NNW': 337.5
@@ -86,4 +86,4 @@ def wind_dir_to_english(dir):
     for key,val in dir_table.items():
         if dir >= (val-11.25) and dir < (val+11.25):
             return key
-    return 'N'
+    return 'North'
