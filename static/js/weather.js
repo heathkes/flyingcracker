@@ -13,13 +13,13 @@ var current_weather = {
     title_toggle: function(e) {
         var elements = YAHOO.util.Dom.getElementsByClassName('curr_title', 'span');
         if (elements) {
-            var state = elements[0].style.display;
-            if (state == 'none')
-                state = '';
+            var state = elements[0].style.visibility;
+            if (state == 'hidden')
+                state = 'visible';
             else
-                state = 'none';
+                state = 'hidden';
             for (i=0; i<elements.length; i++) {
-                elements[i].style.display = state;
+                elements[i].style.visibility = state;
             }
         }
     }

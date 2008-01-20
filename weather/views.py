@@ -43,7 +43,7 @@ def weather(request):
         if int(float(current.wind_speed)) < 1:
             wind = "Calm"
         else:
-            wind = "%s @ %d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
+            wind = "%s<br />%d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
         
         # set barometric pressure trend string
         trend = current.baro_trend
