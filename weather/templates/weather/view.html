@@ -14,9 +14,12 @@
     text-align: center;
     margin: 5px;
 }
-#curr_press, #curr_trend, #curr_wind, #curr_humidity, #curr_indoor {
+#curr_press, #curr_trend, #curr_wind, #curr_humidity {
     font-size: 3em;
     text-align: center;
+}
+#curr_indoor {
+    font-size: 5em;
 }
 .curr_title {
     text-align: center;
@@ -40,7 +43,10 @@
 {% endblock hd %}
 
 {% block bd %}
-<div id="curr_temp" class="yui-b">{{ current.temp|floatformat:"-2" }}&#186;</div>
+<div id="curr_temp" class="yui-b">
+    {{ current.temp|floatformat:"-2" }}&#186;
+{% if indoor %}&nbsp;/&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>{% endif %}
+</div>
 <div class="yui-g">
     <div class="yui-u first"><span class="curr_title" style="display: none">barometer</span></div>
     <div class="yui-u"><span class="curr_title" style="display: none">3-hour trend</span></div>
@@ -51,5 +57,4 @@
 </div>
 <div id="curr_wind" class="yui-b"><span class="curr_title" style="display: none">wind </span>{{ wind|safe }}</div>
 <div id="curr_humidity" class="yui-b"><span class="curr_title" style="display: none">humidity </span>{{ current.humidity }}%</div>
-{% if indoor %}<div id="curr_indoor" class="yui-b"><span class="curr_title" style="display: none">office </span>{{ indoor|floatformat:"-2" }}&#186;</div>{% endif %}
 {% endblock bd %}
