@@ -45,7 +45,7 @@
 {% block bd %}
 <div id="curr_temp" class="yui-b">
     {{ current.temp|floatformat:"-2" }}&#186;
-{% if indoor %}&nbsp;/&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>{% endif %}
+{% if indoor %}&nbsp;&middot;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>{% endif %}
 </div>
 <div class="yui-g">
     <div class="yui-u first"><span class="curr_title" style="display: none">barometer</span></div>
