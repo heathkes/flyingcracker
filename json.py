@@ -1,30 +1,31 @@
 from django.http import HttpResponse
-from django.utils import simplejson
-from django.core.serializers.json import DjangoJSONEncoder
-import types
-from django.db import models
-from django.utils import simplejson as json
-from django.newforms.util import ErrorDict, ErrorList
-from django.utils.encoding import force_unicode
-from django.core.serializers.json import DateTimeAwareJSONEncoder
-from decimal import *
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
-        HttpResponse.__init__(self, json_encode(data), mimetype='application/javascript')
+        HttpResponse.__init__(self, json_encode2(data), mimetype='application/javascript')
 
-def json_encode(data):
+from django.core.serializers.json import DateTimeAwareJSONEncoder
+from django.db import models
+from django.utils.functional import Promise
+from django.utils.encoding import force_unicode
+from django.utils import simplejson as json
+
+def json_encode2(data):
     """
     The main issues with django's default json serializer is that properties that
-    had been added to a object dynamically are being ignored (and it also has 
+    had been added to an object dynamically are being ignored (and it also has 
     problems with some models).
     """
 
     def _any(data):
         ret = None
-        if type(data) is types.ListType:
+        # Opps, we used to check if it is of type list, but that fails 
+        # i.e. in the case of django.newforms.utils.ErrorList, which extends
+        # the type "list". Oh man, that was a dumb mistake!
+        if isinstance(data, list):
             ret = _list(data)
-        elif type(data) is types.DictType or isinstance(data, ErrorDict):
+        # Same as for lists above.
+        elif isinstance(data, dict):
             ret = _dict(data)
         elif isinstance(data, Decimal):
             # json.dumps() cant handle Decimal
@@ -34,7 +35,11 @@ def json_encode(data):
             ret = _list(data)
         elif isinstance(data, models.Model):
             ret = _model(data)
-        elif isinstance(data, ErrorList):
+        # here we need to encode the string as unicode (otherwise we get utf-16 in the json-response)
+        elif isinstance(data, basestring):
+            ret = unicode(data)
+        # see http://code.djangoproject.com/ticket/5868
+        elif isinstance(data, Promise):
             ret = force_unicode(data)
         else:
             ret = data
@@ -67,5 +72,3 @@ def json_encode(data):
     ret = _any(data)
     
     return json.dumps(ret, cls=DateTimeAwareJSONEncoder)
-
-

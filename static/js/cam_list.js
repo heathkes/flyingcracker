@@ -4,12 +4,6 @@ var cam_list = {
         YAHOO.util.Event.addListener(document.getElementById('id_category'), 'change', cam_list.request_func);
     },
     
-    click_func: function(e) {
-        var category_select = document.getElementById('id_category');
-        var str = "user selected category "+category_select.value;
-        alert(str);
-    },
-    
     request_func: function(e) {
         // determine the id of the selected category
         var category_select = document.getElementById('id_category');
