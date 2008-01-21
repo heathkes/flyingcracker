@@ -37,6 +37,7 @@
 
 {% block javascript %}
 {{ block.super }}
+<script type="text/javascript" src="/static/js/doc_utils.js"></script>
 <script type="text/javascript" src="/static/js/weather.js"></script>
 {% endblock javascript %}
 
@@ -49,29 +50,55 @@
 {% block bd %}
 <div id="curr_weather">
 <div id="curr_temp" class="yui-b">
-    {{ current.temp|floatformat:"-2" }}&#186;<span class="curr_units" style="display: none">&nbsp;F</span>
-{% if indoor %}&nbsp;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span><span class="curr_units" style="display: none">F</span>{% endif %}
+    {{ current.temp|floatformat:"-2" }}&#186;
+    <span class="curr_units" style="display: {{ show_units }}">&nbsp;F</span>
+{% if indoor %}&nbsp;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>
+    <span class="curr_units" style="display: {{ show_units }}">F</span>
+{% endif %}
 </div>
 <div class="yui-g">
-    <div id="curr_press" class="yui-u first">{{ current.barometer }}<span class="curr_units" style="display: none">&nbsp;inHg</span></div>
-    <div id="curr_trend" class="yui-u">{{ trend|safe }}<span class="curr_units" style="display: none">&nbsp;inHg</span></div>
+    <div id="curr_press" class="yui-u first">
+        {{ current.barometer }}
+        <span class="curr_units" style="display: {{ show_units }}">&nbsp;inHg</span>
+    </div>
+    <div id="curr_trend" class="yui-u">
+        {{ trend|safe }}
+        <span class="curr_units" style="display: {{ show_units }}">&nbsp;inHg</span>
+    </div>
 </div>
 <div class="yui-g" style="margin-bottom: 20px;">
-    <div class="yui-u first"><span class="curr_title" style="visibility: hidden">barometer</span></div>
-    <div class="yui-u"><span class="curr_title" style="visibility: hidden">3-hour trend</span></div>
+    <div class="yui-u first">
+        <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+    </div>
+    <div class="yui-u">
+        <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+    </div>
 </div>
 <div class="yui-g">
-    <div id="curr_press" class="yui-u first">{{ wind|safe }}<span class="curr_units" style="display: none">&nbsp;mph</span></div>
-    <div id="curr_trend" class="yui-u">{{ current.humidity }}%</div>
+    <div id="curr_press" class="yui-u first">
+        {{ wind|safe }}
+        <span class="curr_units" style="display: {{ show_units }}">&nbsp;mph</span>
+    </div>
+    <div id="curr_trend" class="yui-u">
+        {{ current.humidity }}%
+    </div>
 </div>
 <div class="yui-g">
-    <div class="yui-u first"><span class="curr_title" style="visibility: hidden">wind</span></div>
-    <div class="yui-u"><span class="curr_title" style="visibility: hidden">humidity</span></div>
+    <div class="yui-u first">
+        <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+    </div>
+    <div class="yui-u">
+        <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+    </div>
 </div>
 
 <div class="yui-g" style="margin-top: 20px">
-    <div class="yui-u first"><button id="title_toggle">Labels</button></div>
-    <div class="yui-u"><button id="unit_toggle">Units</button></div>
+    <div class="yui-u first">
+        <button id="title_toggle">Labels</button>
+    </div>
+    <div class="yui-u">
+        <button id="unit_toggle">Units</button>
+    </div>
 </div>
 </div>
 {% endblock bd %}

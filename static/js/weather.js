@@ -33,6 +33,7 @@ var current_weather = {
             for (i=0; i<elements.length; i++) {
                 elements[i].style.visibility = state;
             }
+            Set_Cookie("curr_weather_show_titles", state, 7, '/', '', '')
         }
     },
     
@@ -57,6 +58,7 @@ var current_weather = {
                 for (i=0; i<elements.length; i++) {
                     elements[i].style.display = state;
                 }
+                Set_Cookie("curr_weather_show_units", state, 7, '/', '', '')
                 weather_fade_in.animate();
             });
             

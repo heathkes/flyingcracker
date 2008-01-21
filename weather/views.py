@@ -31,6 +31,12 @@ def current(request):
 def weather(request):
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
+    show_titles = request.COOKIES.get("curr_weather_show_titles")
+    if show_titles == None:
+        show_titles = "hidden"
+    show_units = request.COOKIES.get("curr_weather_show_units")
+    if show_units == None:
+        show_units = "none"
     xhr = request.GET.has_key('xhr')
     if xhr:
         # Note that the current Django JSON serializer cannot serialize a single object, just a queryset.
@@ -62,7 +68,9 @@ def weather(request):
         return render_to_response('weather/view.html', {'current' : current,
                                                         'wind': wind,
                                                         'trend': trend,
-                                                        'indoor': indoor})
+                                                        'indoor': indoor,
+                                                        'show_titles': show_titles,
+                                                        'show_units': show_units})
 
 dir_table = {
     'NNE': 22.5,

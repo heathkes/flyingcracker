@@ -68,6 +68,9 @@ def cam_suggestion(request):
     return JsonResponse({'success': True})
 
 def get_cam_list(cat_id):
+    '''
+    Returns a list of images, a "default" image, and the category these images are in.
+    '''
     if cat_id:
         try:
             category = Category.objects.get(id=cat_id)
