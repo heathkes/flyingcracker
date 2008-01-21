@@ -25,6 +25,9 @@
 .curr_title {
     text-align: center;
 }
+.curr_units {
+    font-size: 60%;
+}
 .warning {
     color: red;
     font-weight: bold;
@@ -44,6 +47,7 @@
 {% endblock hd %}
 
 {% block bd %}
+<div id="curr_weather">
 <div id="curr_temp" class="yui-b">
     {{ current.temp|floatformat:"-2" }}&#186;<span class="curr_units" style="display: none">&nbsp;F</span>
 {% if indoor %}&nbsp;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span><span class="curr_units" style="display: none">F</span>{% endif %}
@@ -68,5 +72,6 @@
 <div class="yui-g" style="margin-top: 20px">
     <div class="yui-u first"><button id="title_toggle">Labels</button></div>
     <div class="yui-u"><button id="unit_toggle">Units</button></div>
+</div>
 </div>
 {% endblock bd %}
