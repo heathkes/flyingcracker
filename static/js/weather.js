@@ -61,7 +61,6 @@ var current_weather = {
                 Set_Cookie("curr_weather_show_units", state, 7, '/', '', '');
                 weather_fade_in.animate();
             });
-            
             weather_fade_out.animate();
         }
     }
