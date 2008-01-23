@@ -4,9 +4,6 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
-#branding_cocktails {
-    text-align: left;
-}
 #custom-doc {
 	margin:auto;text-align:left; /* leave unchanged */
 	width:36.92em;/* non-IE */
@@ -20,11 +17,12 @@
 }
 #recipe_select {
     margin-bottom: 10px;
-    float: right;
+    text-align: left;
 }
 #recipe_title {
     font-size: 250%;
     margin-top: 10px;
+    text-align: center;
 }
 #recipe_description {
     font-size: 150%;
@@ -56,10 +54,9 @@
 <script type="text/javascript" src="/static/js/doc_utils.js"></script>
 <script language="javascript">
 function reDir(id) {
-    if (id == "")
-        return false;
     var loc = "/cocktail/";
-    loc = loc.concat(id, "/");
+    if (id != "")
+        loc = loc.concat(id, "/");
     window.location=loc;
 }
 </script>
@@ -70,6 +67,7 @@ function reDir(id) {
     <div class="yui-b" id="recipe_select">
         <form action="." method="post">
             <select id="id_cocktail" onchange=reDir(this.options[this.selectedIndex].value);>
+                <option value="">Select a recipe</option>
             {% for item in recipe_list %}
                 <option value="{{ item.slug }}"{% ifequal item.slug recipe.slug %} selected="selected"{% endifequal %}>
                     {{ item.title }}</option>
@@ -77,9 +75,6 @@ function reDir(id) {
             </select>
         </form>
     </div>
-    
-    <div id="branding_cocktails">Cracklyfinger<br />
-    Cocktails</div>
 {% endblock hd %}
 
 {% block bd %}

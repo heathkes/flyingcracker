@@ -7,6 +7,9 @@ class Foodstuff(models.Model):
     slug = models.SlugField(prepopulate_from=('title',))
     def __str__(self):
         return self.title
+    def permalink(self):
+        return "/cocktail/ingredient/%s/" % self.slug
+    
     class Meta:
         ordering = ['title']
     class Admin:

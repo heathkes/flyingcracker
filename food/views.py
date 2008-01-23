@@ -39,12 +39,13 @@ def all_foodstuffs(request, recipe_type=""):
     return render_to_response('food/all_foodstuffs.html', {'all_foodstuff' : all_foodstuff, 'all_links' : all_links})
     
 def foodstuff_detail(request, slug, recipe_type=""):
+    all_foodstuff = Foodstuff.objects.all().order_by('title')
+    
     f = get_object_or_404(Foodstuff, slug=slug)
     ingredient_list = f.ingredients.all().order_by('recipe')
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        all_recipes = Recipe.objects.filter(rclass=recipe_type).order_by('title')
-        return render_to_response('food/foodstuff_detail_small.html', {'recipe_list' : all_recipes, 'foodstuff' : f, 'ingredients' : ingredient_list})
+        return render_to_response('food/foodstuff_detail_small.html', {'foodstuff_list' : all_foodstuff, 'foodstuff' : f, 'ingredients' : ingredient_list})
     else:
         all_links = Link.objects.all()
         return render_to_response('food/foodstuff_detail.html', {'foodstuff' : f, 'ingredients' : ingredient_list, 'all_links' : all_links})
