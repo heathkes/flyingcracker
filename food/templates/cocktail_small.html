@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>CracklyFinger Cocktails</title>
+    
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}http://yui.yahooapis.com/2.4.1/build/reset-fonts-grids/reset-fonts-grids.css{% endblock %}">
+
+{% block extrastyle %}
+<meta name="viewport" content="width=device-width" />
+
+<!--[if !IE]>-->
+<link rel="stylesheet" media="only screen and (max-width: 480px)" href="/static/css/small-device.css" type="text/css" >
+<link rel="stylesheet" media="screen and (min-device-width: 481px)" href="/static/css/normal-browser.css" type="text/css" >
+<!--<![endif]-->
+
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/fonts/fonts-min.css">
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/base/base-min.css">
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/assets/skins/sam/skin.css">
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/element/element-beta-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/animation/animation-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/button/button-min.js"></script>
+
+<!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/utilities/utilities.js"></script> -->
+<!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script> -->
+<!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/menu/menu-min.js"></script> -->
+<!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/connection/connection-min.js"></script> -->
+{% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+<link rel="apple-touch-icon" href="/static/img/cocktail-icon.png" />
+
+</head>
+
+<body class=" yui-skin-sam">
+    
+<div id="custom-doc>
+    <div id="hd">
+        {% block hd %}
+        {% endblock hd %}
+    </div>
+    <div id="bd">
+        {% block bd %}
+        {% endblock bd %}
+    </div>
+    <div id ="ft">
+        {% block ft %}
+        {% endblock ft %}
+    </div>
+</div> <!-- doc3 -->
+
+</body>
+
+</html>
+

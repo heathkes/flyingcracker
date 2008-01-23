@@ -42,6 +42,7 @@ class Recipe(models.Model):
     CLASS_CHOICES = (
         ('D', 'Drink'),
         ('F', 'Food'),
+        ('I', 'Ingredient'),
     )
     rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, blank=False)
     def __str__(self):

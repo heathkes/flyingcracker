@@ -48,7 +48,7 @@ def cam_view(request, id=None):
                 'image': image,
             })
         
-    response = render_to_response('cam/view.html', c)
+    response = render_to_response('cam/cam_small.html', c)
     if cat_id:
         set_cookie(response, CAM_CATEGORY, cat_id)
     return response

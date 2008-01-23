@@ -1,0 +1,97 @@
+{% extends "cocktail_small.html" %}
+{% load markup %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+#branding_cocktails {
+    text-align: left;
+}
+#custom-doc {
+	margin:auto;text-align:left; /* leave unchanged */
+	width:36.92em;/* non-IE */
+	*width:36.03em;/* IE */
+	min-width:480px;/* optional but recommended */
+}
+#cocktail {
+    text-align: left;
+    font-size: 1em;
+    margin: 10px;
+}
+#recipe_title {
+    font-size: 250%;
+}
+#recipe_select {
+    margin-bottom: 10px;
+    float: right;
+}
+#recipe_description {
+    font-size: 150%;
+}
+#links {
+    text-align: center;
+}
+</style>
+{% endblock extrastyle %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/doc_utils.js"></script>
+<script language="javascript">
+function reDir(id) {
+    if (id == "")
+        return false;
+    var loc = "/cocktail/";
+    loc = loc.concat(id, "/");
+    window.location=loc;
+}
+</script>
+{% endblock javascript %}
+
+{% block hd %}
+    {{ block.super }}
+    <div class="yui-b" id="recipe_select">
+        <form action="." method="post">
+            <select id="id_cocktail" onchange=reDir(this.options[this.selectedIndex].value);>
+            {% for item in recipe_list %}
+                <option value="{{ item.slug }}"{% ifequal item.slug recipe.slug %} selected="selected"{% endifequal %}>
+                    {{ item.title }}</option>
+            {% endfor %}
+            </select>
+        </form>
+    </div>
+    
+    <div id="branding_cocktails">Cracklyfinger<br />
+    Cocktails</div>
+{% endblock hd %}
+
+{% block bd %}
+<div id="cocktail">
+    
+    <div class="yui-b" id="recipe_title">
+        {{ foodstuff }}
+    </div>
+
+    <div class="yui-b" id="recipe_description">
+    {% if foodstuff.description %}
+        {{ foodstuff.description|textile }}
+    {% endif %}
+    </div>
+
+{% if ingredients %}
+        <h4>Recipes using {{ foodstuff }}</h4>
+        <ul>
+	{% for i in ingredients %}
+            <li><a href="../../{{ i.recipe.slug }}">{{ i.recipe }}</a></li>
+	{% endfor %}
+        </ul>
+{% endif %}
+    
+    <div class="yui-b" id="links">
+        <form method="link" action="../../">
+            <input type="submit" value="All Recipes">
+        </form>
+    </div>
+
+</div>
+{% endblock bd %}

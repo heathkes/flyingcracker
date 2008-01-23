@@ -9,6 +9,7 @@ from django.db import models
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.utils import simplejson as json
+from decimal import *
 
 def json_encode2(data):
     """
