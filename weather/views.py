@@ -68,7 +68,7 @@ def weather(request):
                 indoor = current.temp_inside
             else:
                 indoor = None
-            return render_to_response('weather/current_small.html', {'current' : current,
+            return render_to_response('weather/iphone.html', {'current' : current,
                                                             'wind': wind,
                                                             'trend': trend,
                                                             'indoor': indoor,
