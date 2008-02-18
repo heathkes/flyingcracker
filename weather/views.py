@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from fc3.weatherstation.models import Weather
+from fc3.pygooglechart import XYLineChart, Axis
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from decimal import *
@@ -8,7 +9,6 @@ import socket
 import datetime
 import math
 
-from pygooglechart import XYLineChart, Axis
 
 USI_WAN = socket.gethostbyname("usi.dyndns.org")
 
