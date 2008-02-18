@@ -148,25 +148,33 @@ body[orient="landscape"] .panel {
                 </div>
             </div>
             
-            {% ifnotequal wind "Calm" %}
-            <div id="curr_windchill" class="yui-b">
-                {{ current.windchill|floatformat:"-2" }}&#186;
-                <span class="curr_units" style="display: {{ show_units }}">F</span>
+            <div class="yui-g">
+                <div id="curr_windchill" class="yui-u first">
+                {% ifnotequal wind "Calm" %}
+                    {{ current.windchill|floatformat:"-2" }}&#186;
+                    <span class="curr_units" style="display: {{ show_units }}">F</span>
+                {% endifnotequal %}
+                </div>
+                <div id="curr_indoor" class="yui-u">
+                {% if indoor %}
+                    {{ indoor|floatformat:"-2" }}&#186;</span>
+                    <span class="curr_units" style="display: {{ show_units }}">F</span>
+                {% endif %}
+                </div>
             </div>
-            <div class="yui-b weather_title">
-                <span class="curr_title" style="visibility: {{ show_titles }}">windchill temp</span>
+            <div class="yui-g weather_title">
+                <div class="yui-u first">
+                {% ifnotequal wind "Calm" %}
+                    <span class="curr_title" style="visibility: {{ show_titles }}">windchill temp</span>
+                {% endifnotequal %}
+                </div>
+                <div class="yui-u">
+                {% if indoor %}
+                    <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
+                {% endif %}
+                </div>
             </div>
-            {% endifnotequal %}
             
-            {% if indoor %}
-            <div id="curr_indoor" class="yui-b">
-                {{ indoor|floatformat:"-2" }}&#186;</span>
-                <span class="curr_units" style="display: {{ show_units }}">F</span>
-            </div>
-            <div class="yui-b weather_title">
-                <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
-            </div>
-            {% endif %}
             
             
         </div>
