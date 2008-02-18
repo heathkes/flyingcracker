@@ -40,6 +40,7 @@ body[orient="landscape"] .panel {
     font-size: 3em;
     text-align: center;
     margin: 5px;
+    height: 80px;
 }
 #curr_press, #curr_trend, #curr_wind, #curr_humidity, #curr_windchill {
     font-size: 2em;
@@ -100,7 +101,7 @@ body[orient="landscape"] .panel {
         {{ current.timestamp|date:"H:i \M\T D M j, Y" }}</div>
         
         <div id="curr_weather">
-            <div id="curr_temp" class="yui-b">
+            <div id="curr_temp" class="yui-b" style="background: url({{ chart }}) no-repeat top">
                 {{ current.temp|floatformat:"-2" }}&#186;
                 <span class="curr_units" style="display: {{ show_units }}">F</span>
             {% if indoor %}&nbsp;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>

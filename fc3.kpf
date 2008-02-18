@@ -7,8 +7,6 @@
 </file>
 <file id="21458081-eaed-4691-ad7d-0fc3f2257d27" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" name="manage.py" url="manage.py">
 </file>
-<file id="47f99b14-af43-4a29-991e-602423864f09" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217" name="junk.js" url="file:///C:/Documents%20and%20Settings/graham/My%20Documents/Cape%20Software/django/cape/webtools/templates/junk.js">
-</file>
 <file id="e9ecbb4f-41ee-4e4c-b2eb-9d2f978e7570" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" name="models.py" url="food/models.py">
 </file>
 <file id="3b71e862-255c-441b-9a7a-4450af6367f1" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" name="views.py" url="food/views.py">
@@ -18,8 +16,8 @@
 <preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217">
   <string id="import_type">useFolders</string>
   <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*</string>
-  <string id="import_include_matches"></string>
   <boolean id="import_recursive">1</boolean>
+  <string id="import_include_matches"></string>
   <boolean id="import_live">1</boolean>
 </preference-set>
 </project>
