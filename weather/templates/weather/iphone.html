@@ -59,6 +59,18 @@ body[orient="landscape"] .panel {
 #curr_indoor {
     font-size: 2em;
 }
+.temp-left {
+    padding-left: 10px;
+}
+.temp-right {
+    padding-right: 10px;
+}
+.baro-left {
+    padding-left: 15px;
+}
+.baro-right {
+    padding-right: 15px;
+}
 .weather_title {
     margin-bottom: 10px;
 }
@@ -106,32 +118,38 @@ body[orient="landscape"] .panel {
         <a name="top"></a>
         <fieldset>
         <a name="current"></a>
-        <div id="page_title">Crested Butte South Current Conditions<br />
+        <div id="page_title">Crested Butte South Weather<br />
         {{ current.timestamp|date:"H:i \M\T D M j, Y" }}</div>
         
         <div id="curr_weather">
             <div class="yui-g" style="background: url({{ temp_chart }}) no-repeat top">
-                <div id="curr_temp" class="yui-u {% if temp_left %}first{% else %}{% endif %}">
+                <div id="curr_temp" class="yui-u {% if morning %}temp-right{% else %}first temp-left{% endif %}">
                     {{ current.temp|floatformat:"-2" }}&#186;
                     <span class="curr_units" style="display: {{ show_units }}">F</span>
                 </div>
-                <div class="yui-u {% if temp_left %}{% else %}first{% endif %}">
+                <div class="yui-u {% if morning %}first{% else %}{% endif %}">
                 </div>
             </div>
-            <div class="yui-b" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
-                <div id="curr_press" class="yui-b">
-                    {{ current.barometer }}
-                    <span class="curr_units" style="display: {{ show_units }}">inHg</span>
+            <div class="yui-g" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
+                <div class="yui-u {% if morning %}baro-right{% else %}first baro-left{% endif %}">
+                    <div class="yui-b">
+                        <div id="curr_press" class="yui-b">
+                            {{ current.barometer }}
+                            <span class="curr_units" style="display: {{ show_units }}">inHg</span>
+                        </div>
+                        <div class="yui-b weather_title">
+                                <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+                        </div>
+                        <div id="curr_trend" class="yui-b">
+                            {{ trend|safe }}
+                            <span class="curr_units" style="display: {{ show_units }}">inHg</span>
+                        </div>
+                        <div class="yui-b weather_title">
+                                <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="yui-b weather_title">
-                        <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
-                </div>
-                <div id="curr_trend" class="yui-b">
-                    {{ trend|safe }}
-                    <span class="curr_units" style="display: {{ show_units }}">inHg</span>
-                </div>
-                <div class="yui-b weather_title">
-                        <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                <div class="yui-u {% if morning %}first{% else %}{% endif %}">
                 </div>
             </div>
             <div class="yui-g">

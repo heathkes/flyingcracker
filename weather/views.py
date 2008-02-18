@@ -24,8 +24,8 @@ def google_chart(request):
 
 def get_today(request):
     remote = request.META.get('REMOTE_ADDR')
-    if remote.startswith("192.168.5."):  # internal testing machine
-        today = datetime.datetime(2008,2,17)
+    if remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
+        today = datetime.datetime(2008,2,18)
     else:
         today = datetime.datetime.today()
     today = today.replace(hour=0,minute=0,second=0,microsecond=0)
@@ -171,14 +171,14 @@ def weather(request):
                 
             today = datetime.datetime.today()
             if today.hour < 12:
-                temp_left = False
+                morning = True
             else:
-                temp_left = True
+                morning = False
             return render_to_response('weather/iphone.html', {'current' : current,
                                                             'wind': wind,
                                                             'trend': trend,
                                                             'indoor': indoor,
-                                                            'temp_left': temp_left,
+                                                            'morning': morning,
                                                             'show_titles': show_titles,
                                                             'show_units': show_units,
                                                             'temp_chart': today_temp_chart(request, 280, 100),
