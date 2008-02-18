@@ -110,9 +110,13 @@ body[orient="landscape"] .panel {
         {{ current.timestamp|date:"H:i \M\T D M j, Y" }}</div>
         
         <div id="curr_weather">
-            <div id="curr_temp" class="yui-b" style="background: url({{ temp_chart }}) no-repeat top">
-                {{ current.temp|floatformat:"-2" }}&#186;
-                <span class="curr_units" style="display: {{ show_units }}">F</span>
+            <div class="yui-g" style="background: url({{ temp_chart }}) no-repeat top">
+                <div id="curr_temp" class="yui-u {% if temp_left %}first{% else %}{% endif %}">
+                    {{ current.temp|floatformat:"-2" }}&#186;
+                    <span class="curr_units" style="display: {{ show_units }}">F</span>
+                </div>
+                <div class="yui-u {% if temp_left %}{% else %}first{% endif %}">
+                </div>
             </div>
             <div class="yui-b" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
                 <div id="curr_press" class="yui-b">

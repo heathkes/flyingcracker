@@ -169,10 +169,16 @@ def weather(request):
             else:
                 indoor = None
                 
+            today = datetime.datetime.today()
+            if today.hour < 12:
+                temp_left = False
+            else:
+                temp_left = True
             return render_to_response('weather/iphone.html', {'current' : current,
                                                             'wind': wind,
                                                             'trend': trend,
                                                             'indoor': indoor,
+                                                            'temp_left': temp_left,
                                                             'show_titles': show_titles,
                                                             'show_units': show_units,
                                                             'temp_chart': today_temp_chart(request, 280, 100),
