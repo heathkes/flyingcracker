@@ -24,7 +24,7 @@ def google_chart(request):
 
 def get_today(request):
     remote = request.META.get('REMOTE_ADDR')
-    if remote == USI_WAN or remote == "192.168.5.100":  #testing addr
+    if remote.startswith("192.168.5."):  # internal testing machine
         today = datetime.datetime(2008,2,17)
     else:
         today = datetime.datetime.today()
@@ -176,7 +176,7 @@ def weather(request):
                                                             'show_titles': show_titles,
                                                             'show_units': show_units,
                                                             'temp_chart': today_temp_chart(request, 280, 100),
-                                                            'baro_chart': today_baro_chart(request, 280, 150),})
+                                                            'baro_chart': today_baro_chart(request, 280, 120),})
     else:
         return render_to_response('weather/current_no_ajax.html', {'current' : current})
 
