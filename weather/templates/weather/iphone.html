@@ -42,6 +42,9 @@ body[orient="landscape"] .panel {
     margin: 5px;
     height: 80px;
 }
+#curr_barometer_block {
+    height: 80px;
+}
 #curr_press, #curr_trend, #curr_wind, #curr_humidity, #curr_windchill {
     font-size: 2em;
     text-align: center;
@@ -101,39 +104,11 @@ body[orient="landscape"] .panel {
         {{ current.timestamp|date:"H:i \M\T D M j, Y" }}</div>
         
         <div id="curr_weather">
-            <div id="curr_temp" class="yui-b" style="background: url({{ chart }}) no-repeat top">
+            <div id="curr_temp" class="yui-b" style="background: url({{ temp_chart }}) no-repeat top">
                 {{ current.temp|floatformat:"-2" }}&#186;
                 <span class="curr_units" style="display: {{ show_units }}">F</span>
             </div>
-            
-            {% ifnotequal wind "Calm" %}
-            <div id="curr_windchill" class="yui-b">
-                {{ current.windchill|floatformat:"-2" }}&#186;
-                <span class="curr_units" style="display: {{ show_units }}">F</span>
-            </div>
-            <div class="yui-b weather_title">
-                <span class="curr_title" style="visibility: {{ show_titles }}">wind chill</span>
-            </div>
-            {% endifnotequal %}
-            
-            <div class="yui-g">
-                <div id="curr_press" class="yui-u first">
-                    {{ wind|safe }}
-                    <span class="curr_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span>
-                </div>
-                <div id="curr_trend" class="yui-u">
-                    {{ current.humidity }}%
-                </div>
-            </div>
-            <div class="yui-g weather_title">
-                <div class="yui-u first">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
-                </div>
-                <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
-                </div>
-            </div>
-            <div class="yui-g">
+            <div class="yui-g" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
                 <div id="curr_press" class="yui-u first">
                     {{ current.barometer }}
                     <span class="curr_units" style="display: {{ show_units }}">inHg</span>
@@ -151,6 +126,34 @@ body[orient="landscape"] .panel {
                     <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
                 </div>
             </div>
+            <div class="yui-g">
+                <div id="curr_press" class="yui-u first">
+                    {{ wind|safe }}
+                    <span class="curr_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span>
+                </div>
+                <div id="curr_trend" class="yui-u">
+                    {{ current.humidity }}%
+                </div>
+            </div>
+            <div class="yui-g weather_title">
+                <div class="yui-u first">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+                </div>
+                <div class="yui-u">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                </div>
+            </div>
+            
+            
+            {% ifnotequal wind "Calm" %}
+            <div id="curr_windchill" class="yui-b">
+                {{ current.windchill|floatformat:"-2" }}&#186;
+                <span class="curr_units" style="display: {{ show_units }}">F</span>
+            </div>
+            <div class="yui-b weather_title">
+                <span class="curr_title" style="visibility: {{ show_titles }}">windchill temp</span>
+            </div>
+            {% endifnotequal %}
             
             {% if indoor %}
             <div id="curr_indoor" class="yui-b">
