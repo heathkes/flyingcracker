@@ -15,15 +15,24 @@ from fc3.pygooglechart import XYLineChart, Axis
 USI_WAN = socket.gethostbyname("usi.dyndns.org")
 
 def google_chart(request):
-    url = today_baro_chart(280, 200)
-    data_list, max, min = today_baro()
+    url = today_baro_chart(request, 280, 200)
+    data_list, max, min = today_baro(request)
     return render_to_response('weather/plot.html', {'chart': url,
                                                     'data_list': data_list,
                                                     'max': max,
                                                     'min': min,})
 
-def today_temp_chart(width, height):
-    data_list, max, min = today_temp()
+def get_today(request):
+    remote = request.META.get('REMOTE_ADDR')
+    if remote == USI_WAN or remote == "192.168.5.100":  #testing addr
+        today = datetime.datetime(2008,2,17)
+    else:
+        today = datetime.datetime.today()
+    today = today.replace(hour=0,minute=0,second=0,microsecond=0)
+    return today
+    
+def today_temp_chart(request, width, height):
+    data_list, max, min = today_temp(request)
     if len(data_list) == 0:
         return ""
     max = int(math.ceil(float(max)/10.0)*10)    # round up to nearest ten degrees
@@ -42,12 +51,8 @@ def today_temp_chart(width, height):
     chart.set_line_style(0, 3)
     return chart.get_url()
 
-def today_temp():
-    today = datetime.datetime.today()
-    
-    #today = datetime.datetime(2008,2,17)   #testing only
-    
-    today = today.replace(hour=0,minute=0,second=0,microsecond=0)
+def today_temp(request):
+    today = get_today(request)
     qs = Weather.objects.filter(timestamp__gte=today).order_by('timestamp')
     hour = -1
     max = -100
@@ -64,8 +69,8 @@ def today_temp():
                 min = d
     return data, max, min
     
-def today_baro_chart(width, height):
-    data_list, max, min = today_baro()
+def today_baro_chart(request, width, height):
+    data_list, max, min = today_baro(request)
     if len(data_list) == 0:
         return ""
     max = math.ceil(float(max)*10.0)/10.0   #round up to nearest tenth
@@ -85,12 +90,8 @@ def today_baro_chart(width, height):
     url = chart.get_url()
     return url
 
-def today_baro():
-    today = datetime.datetime.today()
-    
-    #today = datetime.datetime(2008,2,17)   #testing only
-    
-    today = today.replace(hour=0,minute=0,second=0,microsecond=0)
+def today_baro(request):
+    today = get_today(request)
     qs = Weather.objects.filter(timestamp__gte=today).order_by('timestamp')
     hour = -1
     max = 20.0
@@ -174,8 +175,8 @@ def weather(request):
                                                             'indoor': indoor,
                                                             'show_titles': show_titles,
                                                             'show_units': show_units,
-                                                            'temp_chart': today_temp_chart(280, 70),
-                                                            'baro_chart': today_baro_chart(280, 70),})
+                                                            'temp_chart': today_temp_chart(request, 280, 100),
+                                                            'baro_chart': today_baro_chart(request, 280, 150),})
     else:
         return render_to_response('weather/current_no_ajax.html', {'current' : current})
 
