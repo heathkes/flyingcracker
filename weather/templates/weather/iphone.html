@@ -104,9 +104,34 @@ body[orient="landscape"] .panel {
             <div id="curr_temp" class="yui-b" style="background: url({{ chart }}) no-repeat top">
                 {{ current.temp|floatformat:"-2" }}&#186;
                 <span class="curr_units" style="display: {{ show_units }}">F</span>
-            {% if indoor %}&nbsp;&nbsp;<span id="curr_indoor">{{ indoor|floatformat:"-2" }}&#186;</span>
+            </div>
+            
+            {% ifnotequal wind "Calm" %}
+            <div id="curr_windchill" class="yui-b">
+                {{ current.windchill|floatformat:"-2" }}&#186;
                 <span class="curr_units" style="display: {{ show_units }}">F</span>
-            {% endif %}
+            </div>
+            <div class="yui-b weather_title">
+                <span class="curr_title" style="visibility: {{ show_titles }}">wind chill</span>
+            </div>
+            {% endifnotequal %}
+            
+            <div class="yui-g">
+                <div id="curr_press" class="yui-u first">
+                    {{ wind|safe }}
+                    <span class="curr_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span>
+                </div>
+                <div id="curr_trend" class="yui-u">
+                    {{ current.humidity }}%
+                </div>
+            </div>
+            <div class="yui-g weather_title">
+                <div class="yui-u first">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+                </div>
+                <div class="yui-u">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                </div>
             </div>
             <div class="yui-g">
                 <div id="curr_press" class="yui-u first">
@@ -126,38 +151,18 @@ body[orient="landscape"] .panel {
                     <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
                 </div>
             </div>
-            <div class="yui-g">
-                <div id="curr_press" class="yui-u first">
-                    {{ wind|safe }}
-                    <span class="curr_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span>
-                </div>
-                <div id="curr_trend" class="yui-u">
-                    {{ current.humidity }}%
-                </div>
+            
+            {% if indoor %}
+            <div id="curr_indoor" class="yui-b">
+                {{ indoor|floatformat:"-2" }}&#186;</span>
+                <span class="curr_units" style="display: {{ show_units }}">F</span>
             </div>
-            <div class="yui-g weather_title">
-                <div class="yui-u first">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
-                </div>
-                <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
-                </div>
+            <div class="yui-b weather_title">
+                <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
             </div>
-            <div class="yui-g">
-                <div id="curr_windchill" class="yui-u first">
-                    {{ current.windchill|floatformat:"-2" }}&#186;
-                    <span class="curr_units" style="display: {{ show_units }}">F</span>
-                </div>
-                <div class="yui-u">
-                </div>
-            </div>
-            <div class="yui-g weather_title">
-                <div class="yui-u first">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">wind chill</span>
-                </div>
-                <div class="yui-u">
-                </div>
-            </div>
+            {% endif %}
+            
+            
         </div>
         
 <script type="text/javascript">
