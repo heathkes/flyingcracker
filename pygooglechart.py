@@ -309,16 +309,16 @@ class Chart(object):
     # URL generation
     # -------------------------------------------------------------------------
 
-    def get_url(self):
-        url_bits = self.get_url_bits()
+    def get_url(self, data_class=None):
+        url_bits = self.get_url_bits(data_class=data_class)
         return self.BASE_URL + '&'.join(url_bits)
 
-    def get_url_bits(self):
+    def get_url_bits(self, data_class=None):
         url_bits = []
         # required arguments
         url_bits.append(self.type_to_url())
         url_bits.append('chs=%ix%i' % (self.width, self.height))
-        url_bits.append(self.data_to_url())
+        url_bits.append(self.data_to_url(data_class=data_class))
         # optional arguments
         if self.title:
             url_bits.append('chtt=%s' % self.title)
@@ -652,8 +652,8 @@ class LineChart(Chart):
         self.grid = '%s,%s,%s,%s' % (x_step, y_step, line_segment, \
             blank_segment)
 
-    def get_url_bits(self):
-        url_bits = Chart.get_url_bits(self)
+    def get_url_bits(self, data_class=None):
+        url_bits = Chart.get_url_bits(self, data_class=data_class)
         if self.line_styles:
             style = []
             # for index, values in self.line_style.items():
@@ -702,8 +702,8 @@ class BarChart(Chart):
     def set_bar_width(self, bar_width):
         self.bar_width = bar_width
 
-    def get_url_bits(self):
-        url_bits = Chart.get_url_bits(self)
+    def get_url_bits(self, data_class=None):
+        url_bits = Chart.get_url_bits(self, data_class=data_class)
         if self.bar_width is not None:
             url_bits.append('chbh=%i' % self.bar_width)
         return url_bits
@@ -744,10 +744,10 @@ class GroupedBarChart(BarChart):
         """Set spacing between groups of bars."""
         self.group_spacing = spacing
 
-    def get_url_bits(self):
+    def get_url_bits(self, data_class=None):
         # Skip 'BarChart.get_url_bits' and call Chart directly so the parent
         # doesn't add "chbh" before we do.
-        url_bits = Chart.get_url_bits(self)
+        url_bits = Chart.get_url_bits(self, data_class=data_class)
         if self.group_spacing is not None:
             if self.bar_spacing is None:
                 raise InvalidParametersException('Bar spacing is required to ' \
@@ -797,8 +797,8 @@ class PieChart(Chart):
     def set_pie_labels(self, labels):
         self.pie_labels = [urllib.quote(a) for a in labels]
 
-    def get_url_bits(self):
-        url_bits = Chart.get_url_bits(self)
+    def get_url_bits(self, data_class=None):
+        url_bits = Chart.get_url_bits(self, data_class=data_class)
         if self.pie_labels:
             url_bits.append('chl=%s' % '|'.join(self.pie_labels))
         return url_bits

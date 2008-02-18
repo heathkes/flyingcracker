@@ -9,7 +9,7 @@ import datetime
 import math
 
 
-from fc3.pygooglechart import XYLineChart, Axis
+from fc3.pygooglechart import XYLineChart, Axis, ExtendedData
 
 
 USI_WAN = socket.gethostbyname("usi.dyndns.org")
@@ -49,7 +49,7 @@ def today_temp_chart(request, width, height):
     chart.set_axis_style(axis_bottom_index, 'B0B0B0')
     chart.set_colours(['66CCFF'])
     chart.set_line_style(0, 3)
-    return chart.get_url()
+    return chart.get_url(ExtendedData)
 
 def today_temp(request):
     today = get_today(request)
@@ -87,7 +87,7 @@ def today_baro_chart(request, width, height):
     chart.set_axis_style(axis_bottom_index, 'B0B0B0')
     chart.set_colours(['FFCC99'])
     chart.set_line_style(0, 3)
-    url = chart.get_url()
+    url = chart.get_url(ExtendedData)
     return url
 
 def today_baro(request):
