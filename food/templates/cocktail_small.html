@@ -16,6 +16,57 @@
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/fonts/fonts-min.css">
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/base/base-min.css">
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/assets/skins/sam/skin.css">
+    
+<style>
+#custom-doc {
+	margin:auto;text-align:left; /* leave unchanged */
+	width:36.92em;/* non-IE */
+	*width:36.03em;/* IE */
+	min-width:480px;/* optional but recommended */
+}
+#cocktail {
+    text-align: left;
+    font-size: 1em;
+    margin: 10px;
+}
+#recipe_select {
+    margin-bottom: 10px;
+    text-align: left;
+}
+#ingredient_select {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+#recipe_title {
+    font-size: 250%;
+    margin-top: 10px;
+    text-align: center;
+}
+#recipe_description {
+    font-size: 150%;
+}
+#recipe_directions {
+    font-size: 150%;
+    margin-top: 5px;
+}
+#instructions {
+    font-size: 150%;
+}
+.i_qty {
+    text-align: right;
+    font-size: 150%;
+}
+.i_title {
+    font-size: 150%;
+    ;
+}
+.i_modifier {
+    margin-left: 10px;
+    font-style: italic;
+}
+</style>
+
 {% endblock %}
 
 {% block javascript %}
@@ -28,6 +79,14 @@
 <!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script> -->
 <!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/menu/menu-min.js"></script> -->
 <!-- <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/connection/connection-min.js"></script> -->
+
+<script type="text/javascript" src="/static/js/doc_utils.js"></script>
+
+<script language="javascript">
+function reDir(loc) {
+    window.location=loc;
+}
+</script>
 {% endblock %}
 
 {% block extrahead %}{% endblock %}
@@ -41,14 +100,40 @@
 <div id="custom-doc>
     <div id="hd">
         {% block hd %}
+        <div class="yui-b" id="recipe_select">
+            <form action="." method="post">
+                <select id="id_cocktail" onchange=reDir(this.options[this.selectedIndex].value);>
+                    <option value="">Select a recipe</option>
+                    {% for item in recipe_list %}
+                    <option value="{% url food-recipe-detail recipe_type=recipe_type,slug=item.slug %}">
+                        {{ item.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
         {% endblock hd %}
     </div>
+
     <div id="bd">
         {% block bd %}
         {% endblock bd %}
     </div>
+
     <div id ="ft">
         {% block ft %}
+        <div class="yui-b" id="ingredient_select">
+            <form action="." method="post">
+                <select id="id_foodstuff" onchange=reDir(this.options[this.selectedIndex].value);>
+                    <option value="">Select an ingredient</option>
+                    {% for item in foodstuff_list %}
+                    <option value="{% url food-ingredient-detail recipe_type=recipe_type,slug=item.slug %}">
+                        {{ item.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
         {% endblock ft %}
     </div>
 </div> <!-- doc3 -->

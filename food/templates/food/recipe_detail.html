@@ -14,7 +14,10 @@
 				{% for i in ingredients %}
 				<tr>
 					<td><span class="qty">{{ i.quantity }}</span></td>
-					<td><span class="name"><a href="../ingredient/{{ i.slug }}">{{ i.title }}</a></span></td>
+					<td><span class="name">
+						<a href="{% url food-ingredient-detail recipe_type=recipe_type,slug=i.slug %}">
+						{{ i.title }}</a>
+					</span></td>
 					<td><span class="modifier">{{ i.modifier }}</span></td>
 				</tr>
 				{% endfor %}
@@ -31,7 +34,7 @@
 			</div>
 			<br />
 			<div>
-				<a href="../">All Recipes</a>
+				<a href="{% url food-recipe-list recipe_type=recipe_type %}">All Recipes</a>
 			</div>
 		</div> <!-- box -->
 	</div> <!-- cocktail -->

@@ -47,8 +47,8 @@
          <ul>
             <!-- HOME link -->			
             <li><a href="/" title="Home">Home</a></li>
-            <li><a href="/cocktail" title="Cocktail">Cocktails</a></li>
-            <li><a href="/food" title="Food">Food</a></li>
+            <li><a href="{% url food-recipe-list recipe_type="cocktail" %}" title="Cocktail">Cocktails</a></li>
+            <li><a href="{% url food-recipe-list recipe_type="food" %}" title="Food">Food</a></li>
          </ul>
       </div> <!-- siteNav -->
 

@@ -441,8 +441,6 @@ class Chart(object):
             # simple encoding. I've found that this isn't sufficient,
             # e.g. examples/line-xy-circle.png. Let's try 100px.
             return SimpleData
-        elif self.height < 500:
-            return TextData
         else:
             return ExtendedData
 

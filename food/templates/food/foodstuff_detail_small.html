@@ -1,63 +1,9 @@
 {% extends "cocktail_small.html" %}
 {% load markup %}
 
-{% block extrastyle %}
-{{ block.super }}
-<style>
-#custom-doc {
-	margin:auto;text-align:left; /* leave unchanged */
-	width:36.92em;/* non-IE */
-	*width:36.03em;/* IE */
-	min-width:480px;/* optional but recommended */
-}
-#cocktail {
-    text-align: left;
-    font-size: 1em;
-    margin: 10px;
-}
-#recipe_title {
-    font-size: 250%;
-}
-#ingredient_select {
-    margin-bottom: 10px;
-    text-align: left;
-}
-#recipe_description {
-    font-size: 150%;
-}
-#links {
-    text-align: center;
-}
-</style>
-{% endblock extrastyle %}
-
-{% block javascript %}
-{{ block.super }}
-<script type="text/javascript" src="/static/js/doc_utils.js"></script>
-<script language="javascript">
-function reDir(link) {
-    window.location=link;
-}
-</script>
-{% endblock javascript %}
-
-{% block hd %}
-    {{ block.super }}
-    <div class="yui-b" id="ingredient_select">
-        <form action="." method="post">
-            <select id="id_foodstuff" onchange=reDir(this.options[this.selectedIndex].value);>
-            {% for item in foodstuff_list %}
-                <option value="{{ item.permalink }}"{% ifequal item.slug foodstuff.slug %} selected="selected"{% endifequal %}>
-                    {{ item.title }}</option>
-            {% endfor %}
-            </select>
-        </form>
-    </div>
-{% endblock hd %}
-
 {% block bd %}
+{% if foodstuff %}
 <div id="cocktail">
-    
     <div class="yui-b" id="recipe_title">
         {{ foodstuff }}
     </div>
@@ -68,20 +14,22 @@ function reDir(link) {
     {% endif %}
     </div>
 
-{% if ingredients %}
-        <h4>Recipes using {{ foodstuff }}</h4>
-        <ul>
+    {% if ingredients %}
+    <h4>Recipes using {{ foodstuff }}</h4>
+    <ul>
 	{% for i in ingredients %}
-            <li><a href="../../{{ i.recipe.slug }}">{{ i.recipe }}</a></li>
+        <li><a href="{% url food-recipe-detail recipe_type=recipe_type,slug=i.recipe.slug %}">{{ i.recipe }}</a></li>
 	{% endfor %}
-        </ul>
-{% endif %}
-    
-    <div class="yui-b" id="links">
-        <form method="link" action="../../">
-            <input type="submit" value="All Recipes">
-        </form>
-    </div>
-
+    </ul>
+    {% else %}
+        No recipes use {{ foodstuff }}
+    {% endif %}
 </div>
+{% else %}
+<div id="cocktail">
+    <div class="yui-b" id="instructions">
+		&nbsp;&nbsp;&nbsp;&nbsp;or<br />
+    </div>
+</div>
+{% endif %}
 {% endblock bd %}

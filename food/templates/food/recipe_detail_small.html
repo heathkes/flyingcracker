@@ -1,0 +1,38 @@
+{% extends "cocktail_small.html" %}
+{% load markup %}
+
+{% block bd %}
+{% if recipe %}
+<div id="cocktail">
+    <div class="yui-b" id="recipe_title">
+        {{ recipe.title }}
+    </div>
+    
+    <div class="yui-gf">
+{% for i in ingredients %}
+        <div id="ingredient">
+            <div class="yui-u first i_qty">{{ i.quantity }}</div>
+            <div class="yui-u">
+                <span class="i_title"><a href="{% url food-ingredient-detail recipe_type=recipe_type,slug=i.slug %}">{{ i.title }}</a></span>
+                <span class="i_modifier">{{ i.modifier }}</span>
+            </div>
+        </div>
+{% endfor %}    
+    </div>
+    
+    <div class="yui-b" id="recipe_directions">
+        {{ recipe.directions|textile }}
+    </div>
+    
+    <div class="yui-b" id="recipe_description">
+        {{ recipe.description|textile }}
+    </div>
+</div>
+{% else %}
+<div id="cocktail">
+    <div class="yui-b" id="instructions">
+		&nbsp;&nbsp;&nbsp;&nbsp;or<br />
+    </div>
+</div>
+{% endif %}
+{% endblock bd %}

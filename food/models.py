@@ -8,7 +8,7 @@ class Foodstuff(models.Model):
     def __str__(self):
         return self.title
     def permalink(self):
-        return "/cocktail/ingredient/%s/" % self.slug
+        return "/food/%s/" % self.slug
     
     class Meta:
         ordering = ['title']
@@ -44,7 +44,7 @@ class Recipe(models.Model):
     categories = models.ManyToManyField(Category)
     CLASS_CHOICES = (
         ('D', 'Drink'),
-        ('F', 'Food'),
+        ('E', 'Eat'),
         ('I', 'Ingredient'),
     )
     rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, blank=False)
