@@ -79,7 +79,7 @@ def foodstuff_detail(request, slug, recipe_type=""):
                                                                  'recipe_type': recipe_type,})
 def get_all_lists(recipe_type):
     all_recipes = Recipe.objects.filter(rclass=db_recipe_type(recipe_type)).order_by('title')
-    all_foodstuffs = Foodstuff.objects.all().order_by('title')
+    all_foodstuffs = Foodstuff.objects.filter(ingredients__recipe__rclass=db_recipe_type(recipe_type)).distinct().order_by('title')
     return all_recipes, all_foodstuffs
 
 def db_recipe_type(recipe_type):
