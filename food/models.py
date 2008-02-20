@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 # Create your models here.
 class Foodstuff(models.Model):
@@ -36,7 +37,7 @@ class Category(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField(prepopulate_from=('title',))
-    pub_date = models.DateField('date published', null=True)
+    pub_date = models.DateField('date published', null=True, default=datetime.now)
     directions = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     teaser = models.CharField(max_length=100, blank=True, null=True)
@@ -47,7 +48,7 @@ class Recipe(models.Model):
         ('E', 'Eat'),
         ('I', 'Ingredient'),
     )
-    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, blank=False)
+    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default='D', blank=False)
     def __str__(self):
         return self.title
     class Meta:
@@ -66,7 +67,7 @@ class Recipe(models.Model):
         
 class Ingredient(models.Model):
     foodstuff = models.ForeignKey(Foodstuff, core=True, related_name="ingredients")
-    recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=3, related_name="ingredients")
+    recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=5, related_name="ingredients")
     quantity = models.CharField(max_length=20, blank=True, null=True)
     modifier = models.CharField(max_length=50, blank=True, null=True)
     rank = models.IntegerField()
