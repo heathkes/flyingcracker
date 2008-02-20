@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'fc3.django_evolution',
+    'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',
     'fc3.food',
