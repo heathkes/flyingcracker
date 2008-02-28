@@ -45,7 +45,7 @@ body[orient="landscape"] .panel {
 #curr_barometer_block {
     height: 130px;
 }
-#curr_trend, #curr_wind, #curr_humidity, #curr_windchill {
+#curr_trend, #curr_windchill {
     font-size: 2em;
     text-align: center;
     line-height: 90%;
@@ -55,6 +55,13 @@ body[orient="landscape"] .panel {
     text-align: center;
     line-height: 90%;
     padding-top: 0.1em;
+}
+#curr_wind, #curr_humidity {
+    font-size: 2em;
+    text-align: center;
+    line-height: 60%;
+    height: 50px;
+    padding-top: 26px;
 }
 #curr_indoor {
     font-size: 2em;
@@ -76,6 +83,9 @@ body[orient="landscape"] .panel {
 }
 .curr_units {
     font-size: 60%;
+}
+#wind_units {
+    font-size: 40%;
 }
 .warning {
     color: red;
@@ -153,9 +163,9 @@ body[orient="landscape"] .panel {
                 </div>
             </div>
             <div class="yui-g">
-                <div id="curr_wind" class="yui-u first">
+                <div id="curr_wind" class="yui-u first"{% ifnotequal wind "Calm" %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endifnotequal %}>
                     {{ wind|safe }}
-                    <span class="curr_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span>
+                    <div><span class="curr_units" id="wind_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span></div>
                 </div>
                 <div id="curr_humidity" class="yui-u">
                     {{ current.humidity }}%

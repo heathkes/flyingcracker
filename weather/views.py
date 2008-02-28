@@ -152,7 +152,10 @@ def weather(request):
             if int(float(current.wind_speed)) < 1:
                 wind = "Calm"
             else:
-                wind = "%s<br />%d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
+                #wind = "%s<br />%d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
+                wind = "%d" % current.wind_speed
+                wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
+                wind_dir = wind_dir.lower()
             
             # set barometric pressure trend string
             trend = current.baro_trend
@@ -176,6 +179,7 @@ def weather(request):
                 morning = False
             return render_to_response('weather/iphone.html', {'current' : current,
                                                             'wind': wind,
+                                                            'wind_dir': wind_dir,
                                                             'trend': trend,
                                                             'indoor': indoor,
                                                             'morning': morning,
