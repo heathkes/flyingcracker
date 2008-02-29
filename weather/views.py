@@ -177,6 +177,9 @@ def weather(request):
                 morning = True
             else:
                 morning = False
+                
+            cbac_forecast = CBACForecast()
+            
             return render_to_response('weather/iphone.html', {'current' : current,
                                                             'wind': wind,
                                                             'wind_dir': wind_dir,
@@ -186,7 +189,9 @@ def weather(request):
                                                             'show_titles': show_titles,
                                                             'show_units': show_units,
                                                             'temp_chart': today_temp_chart(request, 280, 100),
-                                                            'baro_chart': today_baro_chart(request, 280, 120),})
+                                                            'baro_chart': today_baro_chart(request, 280, 120),
+                                                            'cbac': cbac_forecast,
+                                                            })
     else:
         return render_to_response('weather/current_no_ajax.html', {'current' : current})
 
@@ -213,3 +218,66 @@ def wind_dir_to_english(dir):
         if dir >= (val-11.25) and dir < (val+11.25):
             return key
     return 'North'
+
+from elementtree.ElementTree import XML
+from xml.parsers.expat import ExpatError
+import urllib
+import time
+
+class CBAC:
+    pubdate = ''
+    synopsis = ''
+    today = ''
+    tonight = ''
+    tomorrow = ''
+    timestamp = None
+    
+    def __init__(self, pubdate='', synopsis='', today='', tonight='', tomorrow=''):
+        self.synopsis = synopsis
+        self.today = today
+        self.tonight = tonight
+        self.tomorrow = tomorrow
+        self.pubdate = pubdate
+        self.timestamp = time.mktime(time.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z"))
+        
+def CBACForecast():
+    '''
+    Obtain latest CBAC RSS feed
+    Parse into the pieces we want (synopsis, today, tonight, tomorrow)
+    Format nicely into parts
+    '''
+    fname = 'http://cbavalanchecenter.org/rss/'
+    try:
+        f = urllib.urlopen(fname)
+    except IOError:
+        return None
+    
+    try:
+        xml_text = f.read()
+    except IOError:
+        return None
+    else:
+        f.close()
+    
+    try:
+        xml = XML(xml_text)
+    except ExpatError, info:
+        return None;    # fail silently
+    
+    rss = xml
+    channel = rss.find('channel')
+    item = channel.find('item')
+    
+    # Get the data we want
+    pubdate = item.findtext('pubdate')
+    
+    report = item.find('report')
+    forecast = report.find('forecast')
+    
+    today = forecast.findtext('today')
+    tonight = forecast.findtext('tonight')
+    tomorrow = forecast.findtext('tomorrow')
+    
+    synopsis = report.findtext("weathersynopsis")
+    
+    return CBAC(pubdate, synopsis, today, tonight, tomorrow)

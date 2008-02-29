@@ -91,6 +91,15 @@ body[orient="landscape"] .panel {
     color: red;
     font-weight: bold;
 }
+#cbac_forecast {
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.cbac_section {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 </style>
 
 <script type="application/x-javascript">
@@ -206,9 +215,6 @@ body[orient="landscape"] .panel {
                 {% endif %}
                 </div>
             </div>
-            
-            
-            
         </div>
         
 <script type="text/javascript">
@@ -264,7 +270,45 @@ body[orient="landscape"] .panel {
             <span class="toggleOff">Yes</span>
             </div>
         </div>            
-        </fieldset>    
+        </fieldset>
+        
+        <fieldset>
+        <a name="forecast"></a>
+        <div id="page_title">Crested Butte Forecast<br />
+        {{ cbac.pubdate }}</div>
+        
+        <div id="cbac_forecast">
+            <div class="yui-b">
+            {% if cbac %}
+                <div class="cbac_section">
+                    <strong>Synopsis</strong>
+                    <div>
+                        {{ cbac.synopsis }}
+                    </div>
+                </div>
+                <div class="cbac_section">
+                    <strong>Today</strong>
+                    <div>
+                        {{ cbac.today }}
+                    </div>
+                </div>
+                <div class="cbac_section">
+                    <strong>Tonight</strong>
+                    <div>
+                        {{ cbac.tonight }}
+                    </div>
+                </div>
+                <div class="cbac_section">
+                    <strong>Tomorrow</strong>
+                    <div>
+                        {{ cbac.tomorrow }}
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        </fieldset>
+    </div>
 </body>
 
 </html>
