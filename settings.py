@@ -10,6 +10,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ADMINS = (
+    ('Graham Ullrich', 'graham@flyingcracker.com'),
     # ('Your Name', 'your_email@domain.com'),
 )
 
