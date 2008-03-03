@@ -151,6 +151,7 @@ def weather(request):
             # set wind string
             if int(float(current.wind_speed)) < 1:
                 wind = "Calm"
+                wind_dir = None
             else:
                 #wind = "%s<br />%d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
                 wind = "%d" % current.wind_speed

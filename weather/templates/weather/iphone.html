@@ -172,7 +172,7 @@ body[orient="landscape"] .panel {
                 </div>
             </div>
             <div class="yui-g">
-                <div id="curr_wind" class="yui-u first"{% ifnotequal wind "Calm" %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endifnotequal %}>
+                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
                     {{ wind|safe }}
                     <div><span class="curr_units" id="wind_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span></div>
                 </div>
