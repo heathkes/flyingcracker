@@ -10,10 +10,3 @@ In order to use a patched copy of Django, complete the following steps.
   These commands obtain the latest Django source and test code.
 
 4. From the c:\python24\Lib\site_packages delete the 'django' subdir and all files underneath.
-5. In the same subdir, create a new file, django.pth. Populate the file with:
-
-    # Trunk is a svn checkout of:
-    #   http://code.djangoproject.com/svn/django/trunk/
-    #
-    c:/django/trunk/
-
