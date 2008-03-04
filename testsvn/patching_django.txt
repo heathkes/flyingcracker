@@ -3,5 +3,3 @@ In order to use a patched copy of Django, complete the following steps.
 1. Make a global Django dir somewhere, i.e. c:\django.
 2. Create subdir 'trunk' under c:\django.
 3. From c:\django\trunk\ execute:
-
-    svn checkout http://code.djangoproject.com/svn/django/trunk/django django

@@ -1,0 +1,62 @@
+#!/usr/local/bin/python2.4
+
+mail_server = 'mail2.webfaction.com'
+from_email = 'svn@flyingcracker.com'
+to_email = 'graham@flyingcracker.com'
+mailbox_name = 'graham'
+mailbox_password = 'FN9Pf92r8w'
+
+import os
+import smtplib
+import sys
+
+server = smtplib.SMTP(mail_server)
+server.login(mailbox_name, mailbox_password)
+
+repository, revision = sys.argv[1:]
+
+cmd = 'svnlook %s %s --revision=%s'
+author = os.popen(cmd % ('author', repository, revision)).read()
+log = os.popen(cmd % ('log', repository, revision)).read()
+
+
+if len(revision) > 1:
+    changefilesuffix = 'svn%s' % revision[-2:]
+else:
+    changefilesuffix = 'svn0%s' % revision
+    
+logsvnchangefile = 'svn%s' % changefilesuffix
+fbscript = '%s/hooks/logBugDataSVN.pl' % repository
+
+cmd1 = 'svnlook changed -r %(revision)s %(repository)s > /var/tmp/%(logsvnchangefile)s'
+cmd1 = cmd1 % locals()
+
+cmd2 = 'svnlook log -r %(revision)s %(repository)s | perl %(fbscript)s %(revision)s /var/tmp/%(logsvnchangefile)s'
+cmd2 = cmd2 % locals()
+
+cmd1_output = os.popen(cmd1).read()
+cmd2_output = os.popen(cmd2).read()
+
+
+msg = (
+"To: %(to_email)s\r\n"
+"From: %(from_email)s\r\n"
+"Subject: Subversion post-commit\r\n"
+"Content-type: text/plain\r\n"
+"\r\n"
+"Repository: %(repository)s\r\n"
+"Revision: %(revision)s\r\n"
+"Author: %(author)s\r\n"
+"Log:\r\n"
+"%(log)s\r\n"
+#"cmd1: %(cmd1)s\r\n"
+#"output: %(cmd1_output)s\r\n"
+#"\r\n"
+#"cmd2: %(cmd2)s\r\n"
+"logBugData output:\r\n"
+"%(cmd2_output)s\r\n")
+
+msg = msg % locals()
+
+server.sendmail(from_email, to_email, msg)
+server.quit()
