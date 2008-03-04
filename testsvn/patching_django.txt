@@ -8,5 +8,3 @@ In order to use a patched copy of Django, complete the following steps.
     svn checkout http://code.djangoproject.com/svn/django/tests tests
   
   These commands obtain the latest Django source and test code.
-
-4. From the c:\python24\Lib\site_packages delete the 'django' subdir and all files underneath.
