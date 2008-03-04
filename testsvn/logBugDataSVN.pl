@@ -48,7 +48,7 @@ if ($IS_TRIAL && length($TRIAL_ID) > 0)
 
 $wget = 0;
 
-$wget_path = `which wget`;
+$wget_path = "/usr/bin/wget";
 chomp($wget_path);
 if ( -e $wget_path )
 { 
@@ -139,6 +139,7 @@ foreach (@bugIDlist)
 						print "Using wget \n";
 						my $url = $BUGZ_URL_FINAL.$CVSSUBMIT."?ixBug=".$ixBug."&sFile=".escape($sFile)."&sPrev=".$sPrev."&sNew=".$sNew.$sTrialClause;
 						system("$wget_path --no-check-certificate '$url' -q -O /dev/null");
+						print "url: ".$url."\n";
 					}
 					else
 					{
