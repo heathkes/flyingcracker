@@ -16,8 +16,4 @@ In order to use a patched copy of Django, complete the following steps.
     #   http://code.djangoproject.com/svn/django/trunk/
     #
     c:/django/trunk/
-    
-    # Patched versions:
-    #
-    #c:/django/5268-p3297/
 
