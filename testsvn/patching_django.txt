@@ -1,0 +1,45 @@
+In order to use a patched copy of Django, complete the following steps.
+
+1. Make a global Django dir somewhere, i.e. c:\django.
+2. Create subdir 'trunk' under c:\django.
+3. From c:\django\trunk\ execute:
+
+    svn checkout http://code.djangoproject.com/svn/django/trunk/django django
+    svn checkout http://code.djangoproject.com/svn/django/tests tests
+  
+  These commands obtain the latest Django source and test code.
+
+4. From the c:\python24\Lib\site_packages delete the 'django' subdir and all files underneath.
+5. In the same subdir, create a new file, django.pth. Populate the file with:
+
+    # Trunk is a svn checkout of:
+    #   http://code.djangoproject.com/svn/django/trunk/
+    #
+    c:/django/trunk/
+    
+    # Patched versions:
+    #
+    #c:/django/5268-p3297/
+
+5. For each version of Django you want patched,
+
+  a. Create subdir <version>[-p<patch>] under c:\django. In this example, <version> is '5268', patch is '3297'.
+  b. Checkout the desired version of django from:
+  
+     http://code.djangoproject.com/svn/django/trunk/django/
+       into
+     c:\django\5268-p3297\django.
+     
+     Ensure you specify the correct version of Django for your patch!
+     
+  c. Get an original format copy of the .DIFF patch file (for our example) from:
+  
+     http://code.djangoproject.com/attachment/ticket/3297/5268-newforms-file-imagefield.diff?format=raw
+     
+     and save it into c:\django\5268-p3297\.
+  d. Right-click on the .diff file and choose "TortoiseSVN : Apply Patch".
+  e. In the "Browse for Folder" dialog, choose the c:\django\5268-p3297\ directory.
+  f. Once the patch editor appears, right-click in the "File Patches" window and choose "Patch All".
+  g. Comment out any uncommented line in django.pth (see above) and add the absolute path to this patched directory:
+     c:/django/5268-p3297/
+  h. Restart your Django (and Apache) server(s).
