@@ -7,4 +7,4 @@ In order to use a patched copy of Django, complete the following steps.
     svn checkout http://code.djangoproject.com/svn/django/trunk/django django
     svn checkout http://code.djangoproject.com/svn/django/tests tests
   
-  These commands obtain the latest Django source and test code.
+  
