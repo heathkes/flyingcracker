@@ -220,7 +220,7 @@ def wind_dir_to_english(dir):
             return key
     return 'North'
 
-from elementtree.ElementTree import XML
+from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 import urllib
 import time
@@ -239,7 +239,8 @@ class CBAC:
         self.tonight = tonight
         self.tomorrow = tomorrow
         self.pubdate = pubdate
-        self.timestamp = time.mktime(time.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z"))
+        stime = time.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
+        self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
         
 def CBACForecast():
     '''

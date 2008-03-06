@@ -270,7 +270,7 @@ body[orient="landscape"] .panel {
         <fieldset>
         <a name="forecast"></a>
         <div id="page_title">Crested Butte Forecast<br />
-        {{ cbac.pubdate }}</div>
+        {{ cbac.timestamp|date:"H:i \M\T D M j, Y" }}</div>
         
         <div id="cbac_forecast">
             <div class="yui-b">
