@@ -101,7 +101,8 @@ body[orient="landscape"] .panel {
     margin-bottom: 8px;
 }
 #cbac_reporter {
-    font-size: 80%;
+    font-size: 70%;
+    text-align: center;
 }
 </style>
 
@@ -272,7 +273,7 @@ body[orient="landscape"] .panel {
         
         <fieldset>
         <a name="forecast"></a>
-        <div id="page_title">Crested Butte Forecast [<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
+        <div id="page_title">Crested Butte Forecast [courtesy&nbsp;<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
         {% if cbac.stale %}
             <span class="warning">
         {% endif %}
@@ -309,7 +310,7 @@ body[orient="landscape"] .panel {
                     </div>
                 </div>
                 <div id="cbac_reporter">
-                    reported by: {{ cbac.reportedby|lower|capfirst }}
+                    reported by:&nbsp;{{ cbac.reportedby|lower|capfirst }}
                 </div>
             {% endif %}
             </div>
