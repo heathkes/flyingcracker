@@ -100,6 +100,9 @@ body[orient="landscape"] .panel {
     margin-top: 8px;
     margin-bottom: 8px;
 }
+#cbac_reporter {
+    font-size: 80%;
+}
 </style>
 
 <script type="application/x-javascript">
@@ -304,6 +307,9 @@ body[orient="landscape"] .panel {
                     <div>
                         {{ cbac.tomorrow }}
                     </div>
+                </div>
+                <div id="cbac_reporter">
+                    reported by: {{ cbac.reportedby|lower|capfirst }}
                 </div>
             {% endif %}
             </div>

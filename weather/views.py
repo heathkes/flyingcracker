@@ -8,7 +8,6 @@ import socket
 from datetime import datetime
 import math
 
-
 from fc3.pygooglechart import XYLineChart, Axis, ExtendedData
 
 
@@ -223,7 +222,8 @@ def wind_dir_to_english(dir):
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 import urllib
-import time
+from dateutil import parser
+from fc3.weatherstation.tz import USTimeZone
 
 class CBAC:
     pubdate = ''
@@ -240,8 +240,9 @@ class CBAC:
         self.tomorrow = tomorrow
         self.pubdate = pubdate
         self.reportedby = reportedby
-        self.timestamp = datetime.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
-        #self.timestamp = datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
+        self.timestamp = parser.parse(self.pubdate)
+        mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+        self.timestamp = self.timestamp.astimezone(mountain_tz)
         if self.timestamp.day != datetime.today().day:
             self.stale = True
         else:
