@@ -244,7 +244,7 @@ class CBAC:
         #self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
         if self.timestamp.day != datetime.today().day:
             self.stale = True
-        else
+        else:
             self.stale = False
         
 def CBACForecast():
