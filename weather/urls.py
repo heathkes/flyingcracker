@@ -2,6 +2,6 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('fc3.weather.views',
     (r'^current/$', 'current_no_ajax'),
-    (r'^plot/$', 'google_chart'),
-    (r'^$', 'weather'),
+    (r'^plot/$',    'google_chart'),
+    url(r'^$',      'weather', name='weather-current'),
 )
