@@ -310,7 +310,7 @@ body[orient="landscape"] .panel {
                     </div>
                 </div>
                 <div id="cbac_reporter">
-                    reported by:&nbsp;{{ cbac.reportedby|lower|capfirst }}
+                    reported by:&nbsp;{{ cbac.reportedby|slugify|capfirst }}
                 </div>
             {% endif %}
             </div>
