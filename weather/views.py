@@ -242,7 +242,7 @@ class CBAC:
         self.reportedby = reportedby
         self.timestamp = datetime.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
         #self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
-        if self.timestamp.day ! datetime.today().day:
+        if self.timestamp.day != datetime.today().day:
             self.stale = True
         else
             self.stale = False
