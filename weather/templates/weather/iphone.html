@@ -269,9 +269,15 @@ body[orient="landscape"] .panel {
         
         <fieldset>
         <a name="forecast"></a>
-        <div id="page_title">Crested Butte Forecast<br />
-        {{ cbac.timestamp|date:"H:i \M\T D M j, Y" }}</div>
-        
+        <div id="page_title">Crested Butte Forecast [<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
+        {% if cbac.stale %}
+            <span class="warning">
+        {% endif %}
+            {{ cbac.timestamp|date:"H:i \M\T D M j, Y" }}
+        {% if cbac.stale %}
+            </span>
+        {% endif %}
+        </div>
         <div id="cbac_forecast">
             <div class="yui-b">
             {% if cbac %}

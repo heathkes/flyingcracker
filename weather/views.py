@@ -233,14 +233,19 @@ class CBAC:
     tomorrow = ''
     timestamp = None
     
-    def __init__(self, pubdate='', synopsis='', today='', tonight='', tomorrow=''):
+    def __init__(self, pubdate='', synopsis='', today='', tonight='', tomorrow='', reportedby=''):
         self.synopsis = synopsis
         self.today = today
         self.tonight = tonight
         self.tomorrow = tomorrow
         self.pubdate = pubdate
-        stime = time.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
-        self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
+        self.reportedby = reportedby
+        self.timestamp = datetime.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
+        #self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
+        if self.timestamp.day ! datetime.today().day:
+            self.stale = True
+        else
+            self.stale = False
         
 def CBACForecast():
     '''
@@ -282,4 +287,6 @@ def CBACForecast():
     
     synopsis = report.findtext("weathersynopsis")
     
-    return CBAC(pubdate, synopsis, today, tonight, tomorrow)
+    reportedby = report.findtext("reportedby")
+    
+    return CBAC(pubdate, synopsis, today, tonight, tomorrow, reportedby)
