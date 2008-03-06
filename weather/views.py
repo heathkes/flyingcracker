@@ -25,9 +25,9 @@ def google_chart(request):
 def get_today(request):
     remote = request.META.get('REMOTE_ADDR')
     if remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
-        today = datetime.datetime(2008,2,18)
+        today = datetime(2008,2,18)
     else:
-        today = datetime.datetime.today()
+        today = datetime.today()
     today = today.replace(hour=0,minute=0,second=0,microsecond=0)
     return today
     
@@ -173,7 +173,7 @@ def weather(request):
             else:
                 indoor = None
                 
-            today = datetime.datetime.today()
+            today = datetime.today()
             if today.hour < 12:
                 morning = True
             else:
@@ -241,7 +241,7 @@ class CBAC:
         self.pubdate = pubdate
         self.reportedby = reportedby
         self.timestamp = datetime.strptime(self.pubdate, "%a, %d %b %Y %H:%M:%S %Z")
-        #self.timestamp = datetime.datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
+        #self.timestamp = datetime(stime[0], stime[1], stime[2], stime[3], stime[4], stime[5])
         if self.timestamp.day != datetime.today().day:
             self.stale = True
         else:
