@@ -8,10 +8,10 @@
     
     <link rel="apple-touch-icon" href="/static/img/weather-icon.png" />
     <link rel="stylesheet" type="text/css" href="/static/css/iui.css" />
-<!--    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/reset-fonts-grids/reset-fonts-grids.css"> -->
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/grids/grids-min.css">
+<!--    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/reset-fonts-grids/reset-fonts-grids.css"> -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/grids/grids-min.css">
 
-    <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/utilities/utilities.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.5.0/build/utilities/utilities.js"></script>
     <script type="text/javascript" src="/static/js/doc_utils.js"></script>
 <style>
 
@@ -108,13 +108,16 @@ body[orient="landscape"] .panel {
 
 <script type="application/x-javascript">
     
+    function hideAddressBar() {
+        window.scrollTo(0, 1);
+    }
+    
     addEventListener("load", function()
     {
         setTimeout(updateLayout, 0);
     }, false);
 
     var currentWidth = 0;
-    
     function updateLayout()
     {
         if (window.innerWidth != currentWidth)
@@ -125,7 +128,7 @@ body[orient="landscape"] .panel {
             document.body.setAttribute("orient", orient);
             setTimeout(function()
             {
-                window.scrollTo(0, 1);
+                hideAddressBar();
             }, 100);            
         }
     }
@@ -273,7 +276,7 @@ body[orient="landscape"] .panel {
         
         <fieldset>
         <a name="forecast"></a>
-        <div id="page_title">Crested Butte Forecast [courtesy&nbsp;<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
+        <div id="page_title">Crested Butte Forecast [via&nbsp;<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
         {% if cbac.stale %}
             <span class="warning">
         {% endif %}
