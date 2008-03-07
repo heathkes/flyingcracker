@@ -22,8 +22,11 @@ def google_chart(request):
                                                     'min': min,})
 
 def get_today(request):
-    remote = request.META.get('REMOTE_ADDR')
-    if remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
+    if request:
+        remote = request.META.get('REMOTE_ADDR')
+    else:
+        remote = None
+    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
         today = datetime(2008,2,18)
     else:
         today = datetime.today()
@@ -38,7 +41,7 @@ def today_temp_chart(request, width, height):
     min = int(math.floor(float(min)/10.0)*10)   # round down to nearest ten degrees
     chart = XYLineChart(width, height, x_range=(0,24), y_range=(min, max))
     data = data_list
-    chart.add_data((0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24))
+    chart.add_data((0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24))
     chart.add_data(data)
     axis_left_index = chart.set_axis_range(Axis.LEFT, min, max)
     axis_right_index = chart.set_axis_range(Axis.RIGHT, min, max)
@@ -76,7 +79,7 @@ def today_baro_chart(request, width, height):
     min = math.floor(float(min)*10.0)/10.0  #round down to nearest tenth
     chart = XYLineChart(width, height, x_range=(0,24), y_range=(min, max))
     data = data_list
-    chart.add_data((0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24))
+    chart.add_data((0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24))
     chart.add_data(data)
     axis_left_index = chart.set_axis_range(Axis.LEFT, min, max)
     axis_right_index = chart.set_axis_range(Axis.RIGHT, min, max)
