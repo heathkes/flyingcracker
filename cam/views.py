@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from fc3.json import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 CAM_CATEGORY = "cam_category"
 
@@ -91,7 +92,12 @@ def get_cam_list(cat_id):
     return cam_list, image, category
 
 def get_default_image():
-    return Cam.objects.get(title__contains="Whetstone")
+    try:
+        image = Cam.objects.get(title__contains="Whetstone")
+    except ObjectDoesNotExist:
+        image = None
+    return image
+
 def get_default_category():
     return Category.objects.get(title="All Categories")
     

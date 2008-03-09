@@ -7,11 +7,11 @@
     <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
     
     <link rel="apple-touch-icon" href="/static/img/weather-icon.png" />
-    <link rel="stylesheet" type="text/css" href="/static/css/iui.css" />
-<!--    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/reset-fonts-grids/reset-fonts-grids.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/iphone.css" />
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/grids/grids-min.css">
 
-    <script type="text/javascript" src="http://yui.yahooapis.com/2.5.0/build/utilities/utilities.js"></script>
+<!--    <script type="text/javascript" src="http://yui.yahooapis.com/2.5.0/build/utilities/utilities.js"></script> -->
     <script type="text/javascript" src="/static/js/doc_utils.js"></script>
 <style>
 
@@ -19,14 +19,6 @@
 .container {
     position: absolute;
     width: 100%;
-}
-
-body[orient="profile"] .panel {
-    height: 416px;
-}
-
-body[orient="landscape"] .panel {
-    height: 268px;
 }
 
 #page_title {
@@ -95,45 +87,50 @@ body[orient="landscape"] .panel {
     text-align: left;
     padding-left: 10px;
     padding-right: 10px;
+    padding-bottom: 10px;
 }
 .cbac_section {
     margin-top: 8px;
     margin-bottom: 8px;
 }
+.cbac_section strong {
+    font-weight: bold;
+}
 #cbac_reporter {
     font-size: 70%;
     text-align: center;
 }
+.barMenu {
+    background:#6D84A2 url(/static/img/iphone/toolbar.png) repeat-x scroll 0%;
+    margin: 10px 0pt 5px;
+    text-align: center;
+}
+.barMenu a.button {
+    color: #FFFFFF;
+}
+.barMenu span.button {
+    color: #FF9933;
+}
+.fieldset_timestamp {
+    float: right;
+    font-size: 90%;
+}
+.panel > h2 {
+    text-align: left;
+    color: #003333;
+}
 </style>
 
 <script type="application/x-javascript">
-    
+
     function hideAddressBar() {
         window.scrollTo(0, 1);
     }
     
     addEventListener("load", function()
     {
-        setTimeout(updateLayout, 0);
+        setTimeout(hideAddressBar, 0);
     }, false);
-
-    var currentWidth = 0;
-    function updateLayout()
-    {
-        if (window.innerWidth != currentWidth)
-        {
-            currentWidth = window.innerWidth;
-
-            var orient = currentWidth == 320 ? "profile" : "landscape";
-            document.body.setAttribute("orient", orient);
-            setTimeout(function()
-            {
-                hideAddressBar();
-            }, 100);            
-        }
-    }
-
-    setInterval(updateLayout, 400);
     
 </script>
 
@@ -141,83 +138,85 @@ body[orient="landscape"] .panel {
 
 <body>
     <div class="panel" selected="true">
-        <a name="top"></a>
-        <fieldset>
         <a name="current"></a>
-        <div id="page_title">Crested Butte South Weather<br />
-        {{ current.timestamp|date:"H:i \M\T D M j, Y" }}</div>
-        
-        <div id="curr_weather">
-            <div class="yui-g" style="background: url({{ temp_chart }}) no-repeat top">
-                <div id="curr_temp" class="yui-u {% if morning %}temp-right{% else %}first temp-left{% endif %}">
-                    {{ current.temp|floatformat:"-2" }}&#186;
-                    <span class="curr_units" style="display: {{ show_units }}">F</span>
-                </div>
-                <div class="yui-u {% if morning %}first{% else %}{% endif %}">
-                </div>
+        <span class="fieldset_timestamp">{{ current.timestamp|date:"H:i \M\T D M j, Y" }}</span><h2>Crested Butte, CO</h2>
+        <fieldset>
+            <div class="barMenu">
+                <span class="button">Current</span>
+                <a href="#cbac" class="button">CBAC Forecast</a>
+                <a href="#noaa" class="button">NOAA Forecast</a>
             </div>
-            <div class="yui-g" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
-                <div class="yui-u {% if morning %}baro-right{% else %}first baro-left{% endif %}">
-                    <div class="yui-b">
-                        <div id="curr_press" class="yui-b">
-                            {{ current.barometer }}
-                            <span class="curr_units" style="display: {{ show_units }}">inHg</span>
-                        </div>
-                        <div class="yui-b weather_title">
-                                <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
-                        </div>
-                        <div id="curr_trend" class="yui-b">
-                            {{ trend|safe }}
-                            <span class="curr_units" style="display: {{ show_units }}">inHg</span>
-                        </div>
-                        <div class="yui-b weather_title">
-                                <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
-                        </div>
+            <div id="curr_weather">
+                <div class="yui-g" style="background: url({{ temp_chart }}) no-repeat top">
+                    <div id="curr_temp" class="yui-u {% if morning %}temp-right{% else %}first temp-left{% endif %}">
+                        {{ current.temp|floatformat:"-2" }}&#186;
+                        <span class="curr_units" style="display: {{ show_units }}">F</span>
+                    </div>
+                    <div class="yui-u {% if morning %}first{% else %}{% endif %}">
                     </div>
                 </div>
-                <div class="yui-u {% if morning %}first{% else %}{% endif %}">
+                <div class="yui-g" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
+                    <div class="yui-u {% if morning %}baro-right{% else %}first baro-left{% endif %}">
+                        <div class="yui-b">
+                            <div id="curr_press" class="yui-b">
+                                {{ current.barometer }}
+                                <span class="curr_units" style="display: {{ show_units }}">inHg</span>
+                            </div>
+                            <div class="yui-b weather_title">
+                                    <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+                            </div>
+                            <div id="curr_trend" class="yui-b">
+                                {{ trend|safe }}
+                                <span class="curr_units" style="display: {{ show_units }}">inHg</span>
+                            </div>
+                            <div class="yui-b weather_title">
+                                    <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="yui-u {% if morning %}first{% else %}{% endif %}">
+                    </div>
                 </div>
-            </div>
-            <div class="yui-gb">
-                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
-                    {{ wind|safe }}
-                    <div><span class="curr_units" id="wind_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span></div>
+                <div class="yui-gb">
+                    <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
+                        {{ wind|safe }}
+                        <div><span class="curr_units" id="wind_units" style="display: {{ show_units }}">{% ifnotequal wind "Calm" %}mph{% endifnotequal %}</span></div>
+                    </div>
+                    <div id="curr_windchill" class="yui-u">
+                    {% ifnotequal wind "Calm" %}
+                        {{ current.windchill|floatformat:"-2" }}&#186;
+                        <span class="curr_units" style="display: {{ show_units }}">F</span>
+                    {% endifnotequal %}
+                    </div>
+                    <div id="curr_humidity" class="yui-u">
+                        {{ current.humidity }}%
+                    </div>
                 </div>
-                <div id="curr_windchill" class="yui-u">
-                {% ifnotequal wind "Calm" %}
-                    {{ current.windchill|floatformat:"-2" }}&#186;
+                <div class="yui-gb weather_title">
+                    <div class="yui-u first">
+                        <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+                    </div>
+                    <div class="yui-u">
+                    {% ifnotequal wind "Calm" %}
+                        <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
+                    {% endifnotequal %}
+                    </div>
+                    <div class="yui-u">
+                        <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                    </div>
+                </div>
+                <div class="yui-b" id="curr_indoor">
+                {% if indoor %}
+                    {{ indoor|floatformat:"-2" }}&#186;</span>
                     <span class="curr_units" style="display: {{ show_units }}">F</span>
-                {% endifnotequal %}
+                {% endif %}
                 </div>
-                <div id="curr_humidity" class="yui-u">
-                    {{ current.humidity }}%
-                </div>
-            </div>
-            <div class="yui-gb weather_title">
-                <div class="yui-u first">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
-                </div>
-                <div class="yui-u">
-                {% ifnotequal wind "Calm" %}
-                    <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
-                {% endifnotequal %}
-                </div>
-                <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                <div class="yui-b weather_title">
+                {% if indoor %}
+                    <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
+                {% endif %}
                 </div>
             </div>
-            <div class="yui-b" id="curr_indoor">
-            {% if indoor %}
-                {{ indoor|floatformat:"-2" }}&#186;</span>
-                <span class="curr_units" style="display: {{ show_units }}">F</span>
-            {% endif %}
-            </div>
-            <div class="yui-b weather_title">
-            {% if indoor %}
-                <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
-            {% endif %}
-            </div>
-        </div>
         
 <script type="text/javascript">
 	function toggleUnits(element) {
@@ -256,36 +255,31 @@ body[orient="landscape"] .panel {
 	}
 </script>
             
-        <div class="row">
-            <label>Units:</label>
-            <div class="toggle" onclick="toggleUnits(this)" toggled="false">
-            <span class="thumb"></span>
-            <span class="toggleOn">No</span>
-            <span class="toggleOff">Yes</span>
-            </div>
-        </div>            
-        <div class="row">
-            <label>Labels:</label>
-            <div class="toggle" onclick="toggleLabels(this)" toggled="false">
-            <span class="thumb"></span>
-            <span class="toggleOn">No</span>
-            <span class="toggleOff">Yes</span>
-            </div>
-        </div>            
+            <div class="row">
+                <label>Units:</label>
+                <div class="toggle" onclick="toggleUnits(this)" toggled="false">
+                <span class="thumb"></span>
+                <span class="toggleOn">No</span>
+                <span class="toggleOff">Yes</span>
+                </div>
+            </div>            
+            <div class="row">
+                <label>Labels:</label>
+                <div class="toggle" onclick="toggleLabels(this)" toggled="false">
+                <span class="thumb"></span>
+                <span class="toggleOn">No</span>
+                <span class="toggleOff">Yes</span>
+                </div>
+            </div>            
         </fieldset>
         
+        <a name="cbac"></a>
+        <span class="fieldset_timestamp">{{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}</span><h2>CBAC Forecast</h2>
         <fieldset>
-        <a name="forecast"></a>
-        <div id="page_title">Crested Butte Forecast [via&nbsp;<a href="http://www.cbavalanchecenter.org">CBAC</a>]<br />
-            {{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;
-        {% if cbac.stale %}
-            <span class="warning">
-        {% endif %}
-            {{ cbac.timestamp|date:"D M j" }}
-        {% if cbac.stale %}
-            </span>
-        {% endif %}
-            {{ cbac.timestamp|date:", Y" }}
+        <div class="barMenu">
+            <a href="#current" class="button">Current</a>
+            <span class="button">CBAC Forecast</span>
+            <a href="#noaa" class="button">NOAA Forecast</a>
         </div>
         <div id="cbac_forecast">
             <div class="yui-b">
@@ -318,6 +312,20 @@ body[orient="landscape"] .panel {
                     reported by:&nbsp;{{ cbac.reportedby|slugify|capfirst }}
                 </div>
             {% endif %}
+            </div>
+        </div>
+        </fieldset>
+        
+        <a name="noaa"></a>
+        <h2>NOAA Forecast</h2>
+        <fieldset>
+        <div class="barMenu">
+            <a href="#current" class="button">Current</a>
+            <a href="#cbac" class="button">CBAC Forecast</a>
+            <span class="button">NOAA Forecast</span>
+        </div>
+        <div id="noaa_forecast">
+            <div class="yui-b">
             </div>
         </div>
         </fieldset>
