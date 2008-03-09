@@ -186,6 +186,8 @@
                     {% ifnotequal wind "Calm" %}
                         {{ current.windchill|floatformat:"-2" }}&#186;
                         <span class="curr_units" style="display: {{ show_units }}">F</span>
+                    {% else %}
+                        &nbsp;
                     {% endifnotequal %}
                     </div>
                     <div id="curr_humidity" class="yui-u">
@@ -197,24 +199,11 @@
                         <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
                     </div>
                     <div class="yui-u">
-                    {% ifnotequal wind "Calm" %}
-                        <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
-                    {% endifnotequal %}
+                        <span class="curr_title" style="visibility: {{ show_titles }}">{% ifnotequal wind "Calm" %}windchill{% else %}&nbsp;{% endifnotequal %}</span>
                     </div>
                     <div class="yui-u">
                         <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
                     </div>
-                </div>
-                <div class="yui-b" id="curr_indoor">
-                {% if indoor %}
-                    {{ indoor|floatformat:"-2" }}&#186;</span>
-                    <span class="curr_units" style="display: {{ show_units }}">F</span>
-                {% endif %}
-                </div>
-                <div class="yui-b weather_title">
-                {% if indoor %}
-                    <span class="curr_title" style="visibility: {{ show_titles }}">indoor</span>
-                {% endif %}
                 </div>
             </div>
         
