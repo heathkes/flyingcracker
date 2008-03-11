@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
-        HttpResponse.__init__(self, json_encode2(data), mimetype='application/javascript')
+        HttpResponse.__init__(self, json_encode2(data), mimetype='text/javascript')
 
 from django.core.serializers.json import DateTimeAwareJSONEncoder
 from django.db import models

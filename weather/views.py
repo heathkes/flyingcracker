@@ -7,6 +7,7 @@ from decimal import *
 import socket
 from datetime import datetime
 import math
+from fc3.json import JsonResponse
 
 from fc3.pygooglechart import XYLineChart, Axis, ExtendedData
 
@@ -129,6 +130,83 @@ def current(request):
         return HttpResponse(json, mimetype='application/javascript')
     else:
         return render_to_response('weather/current.html', {'current' : current})
+
+def unit_change(request):
+    unit_type = request.POST.get('unit_type')
+    curr_unit = request.POST.get('curr_unit')
+    value = request.POST.get('value')
+    
+    # get new units
+    new_unit = cycle_units(unit_type, curr_unit)
+    # convert current value to new units
+    new_value = convert_value(unit_type, value, curr_unit, new_unit)
+    
+    # save units in user profile
+    # save units in cookie
+    
+    response_dict = {}
+    response_dict.update({'new_unit': new_unit})
+    response_dict.update({'new_value': new_value})
+    response = JsonResponse(response_dict)
+    return response
+
+temp_units = ['F', 'C', 'K']
+baro_units = ['inHg', 'hPa', 'mb']
+speed_units = ['mph', 'kts', 'km/h', 'm/s', 'ft/s']
+
+def cycle_units(unit_type, curr_unit):
+    if unit_type == 'T':
+        return next_in_list(temp_units, curr_unit)
+    elif unit_type == 'B':
+        return next_in_list(baro_units, curr_unit)
+    elif unit_type == 'S':
+        return next_in_list(speed_units, curr_unit)
+    else:
+        return None
+
+def convert_value(unit_type, value, curr_unit, new_unit):
+    if unit_type == 'T':
+        value = int(value, 10)
+        if curr_unit == 'F' and new_unit == 'C':
+            value = (value - 32) / 1.8
+        elif curr_unit == 'C' and new_unit == 'K':
+            value = value + 273.15
+        elif curr_unit == 'K' and new_unit == 'F':
+            value = value * 1.8 - 459.67
+        value = int(round(value))
+    elif unit_type == 'B':
+        value = float(value)
+        if curr_unit == 'inHg' and new_unit == 'hPa':
+            value = value * 33.8639
+            value = int(round(value))
+        elif curr_unit == 'mb' and new_unit == 'inHg':
+            value = value * 0.02953
+            value = '%4.2f' % value
+    elif unit_type == 'S':
+        if value != '' and value != 'Calm':
+            value = int(value, 10)
+            if curr_unit == 'mph' and new_unit == 'kts':
+                value = value * 0.868391
+            elif curr_unit == 'kts' and new_unit == 'km/h':
+                value = value * 1.85325
+            elif curr_unit == 'km/h' and new_unit == 'm/s':
+                value = value * 0.277778
+            elif curr_unit == 'm/s' and new_unit == 'ft/s':
+                value = value * 3.28084
+            elif curr_unit == 'ft/s' and new_unit == 'mph':
+                value = value * 0.681818
+            value = int(round(value))
+    return value
+
+def next_in_list(list, current):
+    end=len(list)-1
+    for index,item in enumerate(list):
+        if item == current:
+            if index == end:
+                return list[0]
+            else:
+                return list[index+1]
+    return None
 
 def weather(request):
     # get latest weather reading
