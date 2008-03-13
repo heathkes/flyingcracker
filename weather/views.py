@@ -161,7 +161,7 @@ def weather(request):
                                                         'show_titles': show_titles,
                                                         'show_units': show_units,
                                                         'temp_chart': today_temp_chart(request, 280, 100),
-                                                        'baro_chart': today_baro_chart(request, 280, 120),
+                                                        'baro_chart': today_baro_chart(request, 292, 120),
                                                         'cbac': cbac_forecast,
                                                         })
     else:
