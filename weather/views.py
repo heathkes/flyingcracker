@@ -110,98 +110,17 @@ def today_baro(request):
             if d < min:
                 min = d
     return data, max, min
-    
-def current_no_ajax(request):
-    # get latest weather reading
-    current = Weather.objects.latest('timestamp')
-    
-    return render_to_response('weather/current_no_ajax.html', {'current' : current})
 
-def current(request):
-    # get latest weather reading
-    current = Weather.objects.latest('timestamp')
-    
-    xhr = request.GET.has_key('xhr')
-    if xhr:
-        # Note that the current Django JSON serializer cannot serialize a single object, just a queryset.
-        # Therefore we need to reference the object.__dict__ with the DjangoJSONEncoder.
-        # [  We expected to be able to call simplejson.dumps(current, mimetype=...)  ]
-        json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
-        return HttpResponse(json, mimetype='application/javascript')
-    else:
-        return render_to_response('weather/current.html', {'current' : current})
+def list_index(needle, list):
+    for index,item in enumerate(list):
+        if item == needle:
+            return index
+    return None
 
-def unit_change(request):
-    unit_type = request.POST.get('unit_type')
-    curr_unit = request.POST.get('curr_unit')
-    value = request.POST.get('value')
-    
-    # get new units
-    new_unit = cycle_units(unit_type, curr_unit)
-    # convert current value to new units
-    new_value = convert_value(unit_type, value, curr_unit, new_unit)
-    
-    # save units in user profile
-    # save units in cookie
-    
-    response_dict = {}
-    response_dict.update({'new_unit': new_unit})
-    response_dict.update({'new_value': new_value})
-    response = JsonResponse(response_dict)
-    return response
-
-temp_units = ['F', 'C', 'K']
-baro_units = ['inHg', 'hPa', 'mb']
-speed_units = ['mph', 'kts', 'km/h', 'm/s', 'ft/s']
-
-def cycle_units(unit_type, curr_unit):
-    if unit_type == 'T':
-        return next_in_list(temp_units, curr_unit)
-    elif unit_type == 'B':
-        return next_in_list(baro_units, curr_unit)
-    elif unit_type == 'S':
-        return next_in_list(speed_units, curr_unit)
-    else:
-        return None
-
-def convert_value(unit_type, value, curr_unit, new_unit):
-    if unit_type == 'T':
-        value = int(value, 10)
-        if curr_unit == 'F' and new_unit == 'C':
-            value = (value - 32) / 1.8
-        elif curr_unit == 'C' and new_unit == 'K':
-            value = value + 273.15
-        elif curr_unit == 'K' and new_unit == 'F':
-            value = value * 1.8 - 459.67
-        value = int(round(value))
-    elif unit_type == 'B':
-        value = float(value)
-        if curr_unit == 'inHg' and new_unit == 'hPa':
-            value = value * 33.8639
-            value = int(round(value))
-        elif curr_unit == 'mb' and new_unit == 'inHg':
-            value = value * 0.02953
-            value = '%4.2f' % value
-    elif unit_type == 'S':
-        if value != '' and value != 'Calm':
-            value = int(value, 10)
-            if curr_unit == 'mph' and new_unit == 'kts':
-                value = value * 0.868391
-            elif curr_unit == 'kts' and new_unit == 'km/h':
-                value = value * 1.85325
-            elif curr_unit == 'km/h' and new_unit == 'm/s':
-                value = value * 0.277778
-            elif curr_unit == 'm/s' and new_unit == 'ft/s':
-                value = value * 3.28084
-            elif curr_unit == 'ft/s' and new_unit == 'mph':
-                value = value * 0.681818
-            value = int(round(value))
-    return value
-
-def next_in_list(list, current):
+def next_in_list(needle, list):
     end=len(list)-1
     for index,item in enumerate(list):
-        if item == current:
+        if item == needle:
             if index == end:
                 return list[0]
             else:
@@ -220,61 +139,168 @@ def weather(request):
         show_units = request.COOKIES.get("curr_weather_show_units")
         if show_units == None:
             show_units = "none"
-        xhr = request.GET.has_key('xhr')
-        if xhr:
-            # Note that the current Django JSON serializer cannot serialize a single object, just a queryset.
-            # Therefore we need to reference the object.__dict__ with the DjangoJSONEncoder.
-            # [  We expected to be able to call simplejson.dumps(current, mimetype=...)  ]
-            json = simplejson.dumps(current.__dict__, cls=DjangoJSONEncoder)
-            return HttpResponse(json, mimetype='application/javascript')
+            
+        # set wind background compass
+        if int(float(current.wind_speed)) < 1:
+            wind_dir = None
         else:
-            # set wind string
-            if int(float(current.wind_speed)) < 1:
-                wind = "Calm"
-                wind_dir = None
-            else:
-                #wind = "%s<br />%d" % (wind_dir_to_english(current.wind_dir), current.wind_speed)
-                wind = "%d" % current.wind_speed
-                wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
-                wind_dir = wind_dir.lower()
+            wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
+            wind_dir = wind_dir.lower()
             
-            # set barometric pressure trend string
-            trend = current.baro_trend
-            if trend > Decimal(0):
-                trend = "+%3.2f" % trend
-            else:
-                if trend < Decimal("-0.09"):
-                    trend = '<span class="warning">%3.2f</span>' % trend
-                else:
-                    trend = "%3.2f" % trend
-    
-            if request.META.get('REMOTE_ADDR') == USI_WAN:
-                indoor = current.temp_inside
-            else:
-                indoor = None
-                
-            today = datetime.today()
-            if today.hour < 12:
-                morning = True
-            else:
-                morning = False
-                
-            cbac_forecast = CBACForecast()
+        today = datetime.today()
+        if today.hour < 12:
+            morning = True
+        else:
+            morning = False
             
-            return render_to_response('weather/iphone.html', {'current' : current,
-                                                            'wind': wind,
-                                                            'wind_dir': wind_dir,
-                                                            'trend': trend,
-                                                            'indoor': indoor,
-                                                            'morning': morning,
-                                                            'show_titles': show_titles,
-                                                            'show_units': show_units,
-                                                            'temp_chart': today_temp_chart(request, 280, 100),
-                                                            'baro_chart': today_baro_chart(request, 280, 120),
-                                                            'cbac': cbac_forecast,
-                                                            })
+        cbac_forecast = CBACForecast()
+        
+        return render_to_response('weather/iphone.html', {
+                                                        'wind_dir': wind_dir,
+                                                        'morning': morning,
+                                                        'show_titles': show_titles,
+                                                        'show_units': show_units,
+                                                        'temp_chart': today_temp_chart(request, 280, 100),
+                                                        'baro_chart': today_baro_chart(request, 280, 120),
+                                                        'cbac': cbac_forecast,
+                                                        })
     else:
         return render_to_response('weather/current_no_ajax.html', {'current' : current})
+
+
+temp_units = ['F', 'C']
+baro_units = ['in', 'mb']
+speed_units = ['mph', 'kts', 'km/h', 'm/s', 'ft/s']
+
+def calc_temps(value):
+    value = float(value)
+    vlist = []
+    for unit in temp_units:
+        if unit == 'C':
+            nv = (value-32)/1.8
+        else:
+            nv = value
+        vlist.append("%d" % int(round(nv)))
+    return vlist
+
+def calc_baros(value):
+    value = float(value)
+    vlist = []
+    for unit in baro_units:
+        if unit == 'mb':
+            vlist.append("%d" % int(round(value*33.8639)))
+        else:
+            vlist.append("%4.2f" % value)
+    return vlist
+
+def calc_trends(value):
+    trend = float(value)
+    vlist = []
+    for unit in baro_units:
+        if unit == 'mb':
+            nv = int(round(trend*33.8639))
+            if value > Decimal(0):
+                nv = "+%d" % nv
+            else:
+                if value < Decimal("-0.09"):
+                    nv = '<span class="warning">%d</span>' % nv
+                else:
+                    nv = "%d" % nv
+        else:
+            nv = trend
+            if value > Decimal(0):
+                nv = "+%3.2f" % nv
+            else:
+                if value < Decimal("-0.09"):
+                    nv = '<span class="warning">%3.2f</span>' % nv
+                else:
+                    nv = "%3.2f" % nv
+        vlist.append(nv)
+    return vlist
+
+def calc_speeds(value):
+    value = float(value)
+    vlist = []
+    for unit in speed_units:
+        if value == 0:
+            vlist.append('Calm')
+        else:
+            if unit == 'kts':
+                nv = value * 0.868391
+            elif unit == 'km/h':
+                nv = value*1.609344
+            elif unit == 'm/s':
+                nv = value*0.44704
+            elif unit == 'ft/s':
+                nv = value*1.46667
+            else:
+                nv = value
+            vlist.append("%d" % int(round(nv)))
+    return vlist
+
+from django.template.defaultfilters import date
+
+def current(request):
+    xhr = request.GET.has_key('xhr')
+    if xhr:
+        # get latest weather reading
+        current = Weather.objects.latest('timestamp')
+        
+        timestamp = date(current.timestamp, "H:i \M\T D M j,Y")
+
+        temp_list = calc_temps(current.temp)
+        baro_list = calc_baros(current.barometer)
+        trend_list = calc_trends(current.baro_trend)
+        
+        if int(float(current.wind_speed)) < 1:
+            wind = 0
+        else:
+            wind = current.wind_speed
+        wind_list = calc_speeds(wind)
+        
+        temp_unit = request.COOKIES.get("temp_unit")
+        if temp_unit is None:
+            temp_unit = temp_units[0]
+        baro_unit = request.COOKIES.get("baro_unit")
+        if baro_unit is None:
+            baro_unit = baro_units[0]
+        speed_unit = request.COOKIES.get("speed_unit")
+        if speed_unit is None:
+            speed_unit = speed_units[0]
+        
+        windchill_list = calc_temps(current.windchill)
+        
+        response_dict = {}
+        response_dict.update({'timestamp': timestamp})
+        response_dict.update({'temp_units': temp_units})
+        response_dict.update({'baro_units': baro_units})
+        response_dict.update({'speed_units': speed_units})
+        response_dict.update({'temp_unit': temp_unit})
+        response_dict.update({'baro_unit': baro_unit})
+        response_dict.update({'speed_unit': speed_unit})
+        response_dict.update({'temp': temp_list})
+        response_dict.update({'press': baro_list})
+        response_dict.update({'trend': trend_list})
+        response_dict.update({'wind': wind_list})
+        response_dict.update({'windchill': windchill_list})
+        response_dict.update({'humidity': current.humidity})
+        response = JsonResponse(response_dict)
+        return response
+
+def unit_change(request):
+    '''
+    Set the user preference for units.
+    '''
+    type = request.POST.get('type')
+    unit = request.POST.get('unit')
+    
+    # set user preference
+    
+    response_dict = {}
+    response_dict.update({'type': type})
+    response_dict.update({'unit': unit})
+    response = JsonResponse(response_dict)
+    return response
 
 dir_table = {
     'NNE': 22.5,
