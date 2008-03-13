@@ -122,11 +122,13 @@ var current_weather = {
     },
     
     speed_change_units: function(e, el) {
-        current_weather.current.speed_unit = current_weather.current.speed_units.next(current_weather.current.speed_unit);
-        current_weather.update_speeds();
-        unit = current_weather.current.speed_unit;
-        Set_Cookie("speed_unit", unit, 7, '/', '', '');
-        update_server_units('S', unit);
+        if (current_weather.current.speed_unit != '') {
+            current_weather.current.speed_unit = current_weather.current.speed_units.next(current_weather.current.speed_unit);
+            current_weather.update_speeds();
+            unit = current_weather.current.speed_unit;
+            Set_Cookie("speed_unit", unit, 7, '/', '', '');
+            update_server_units('S', unit);
+        }
     },
         
     update_temps: function() {
