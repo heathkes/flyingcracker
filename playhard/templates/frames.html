@@ -1,0 +1,19 @@
+{% extends "search.html" %}
+
+{% block bd %}
+{{ block.super }}
+<frameset rows="70,*" cols="2000" frameborder="NO" border="0" framespacing="0">
+  <frame src="/static/playhard/top.html" name="top" scrolling="no" noresize >
+  <frameset rows="*" cols="400,400,400,400,400" framespacing="0" frameborder="NO" border="0">
+    <frame src="/static/playhard/blank.html" name="f1" scrolling="yes" noresize>
+    <frame src="/static/playhard/blank.html" name="f2" scrolling="yes" noresize>
+    <frame src="/static/playhard/blank.html" name="f3" scrolling="yes" noresize>
+    <frame src="/static/playhard/blank.html" name="f4" scrolling="yes" noresize>
+    <frame src="/static/playhard/blank.html" name="f5" scrolling="yes" noresize>
+  </frameset>
+</frameset>
+
+<noframes><body>
+Playhard Search Comparison: Compare Search Engine Results. Needs frames.
+</body></noframes>
+{% endblock bd %}

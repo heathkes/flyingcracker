@@ -1,0 +1,72 @@
+{% extends "iframesearch.html" %}
+
+
+{% block extrastyle %}
+    #wide2500-doc {
+        margin:auto;text-align:left; /* leave unchanged */
+        width:192.31em;/* non-IE */
+        *width:187.50em;/* IE */
+        min-width:2500px;/* optional but recommended */
+    }
+{% endblock extrastyle %}
+
+
+{% block content %}
+<div id="wide2500_doc">
+    
+    <div id="hd">
+        <table width="100%" border="0" cellspacing="0" cellpadding="3">
+            <form name="form" method="get" action="">
+            <tr>
+                <td>
+                    <font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>Playhard Search Comparison:</strong><br />
+                    Compare the search results for query:</font> 
+                    <input type="text" name="q" onkeypress="return blockEnter(event);" />
+                    <input type="button" name="Button" value="Go" onClick="setiFrames()" /><br />
+                    <font size="1" face="Verdana, Arial, Helvetica, sans-serif">(requires JavaScript) (<a href="/" target="_top">Home</a>)</font>
+                </td>
+            </tr>
+            </form>
+        </table>
+    </div>
+    
+    <div id="bd">
+        <div class="yui-b">
+            <div class="yui-gb">
+                <div class="yui-g first">
+                    <div class="yui-u first">
+                        <iframe name="if1" src="">
+                        </iframe>
+                    </div>
+                    <div class="yui-u">
+                        <iframe name="if2" src="">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="yui-g">
+                    <div class="yui-u first">
+                        <iframe name="if3" src="">
+                        </iframe>
+                    </div>
+                    <div class="yui-u">
+                        <iframe name="if4" src="">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="yui-g">
+                    <div class="yui-u first">
+                        <iframe name="if5" src="">
+                        </iframe>
+                    </div>
+                    <div class="yui-u">
+                        <iframe name="if6" src="">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ft">{% block ft %}{% endblock ft %}</div>
+</div>
+{% endblock content %}
+
