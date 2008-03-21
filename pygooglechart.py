@@ -83,7 +83,10 @@ class Data(object):
     def float_scale_value(cls, value, range):
         lower, upper = range
         max_value = cls.max_value()
-        scaled = (value-lower) * (float(max_value)/(upper-lower))
+        if (upper-lower) != 0:
+            scaled = (value-lower) * (float(max_value)/(upper-lower))
+        else:
+            scaled = (value-lower) * float(max_value)
         return scaled
     
     @classmethod
