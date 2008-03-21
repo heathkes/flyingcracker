@@ -71,7 +71,7 @@ var current_weather = {
     },
     
     retrieve_current: function() {
-        var cObj = YAHOO.util.Connect.asyncRequest('GET', '/weather/current?xhr', current_weather.retrieve_current_callback);
+        var cObj = YAHOO.util.Connect.asyncRequest('GET', '/weather/current/?xhr', current_weather.retrieve_current_callback);
     },
     
     retrieve_current_callback: {
@@ -224,4 +224,5 @@ var current_weather = {
 };
 
 YAHOO.util.Event.addListener(window, 'load', current_weather.init);
+YAHOO.util.Event.addListener("refresh-button", 'click', current_weather.retrieve_current);
 
