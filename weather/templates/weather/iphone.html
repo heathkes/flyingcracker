@@ -8,15 +8,16 @@
     
     <link rel="apple-touch-icon" href="/static/img/weather-icon.png" />
     <link rel="stylesheet" type="text/css" href="/static/css/iphone.css" />
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/reset-fonts-grids/reset-fonts-grids.css">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.0/build/grids/grids-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/reset-fonts-grids/reset-fonts-grids.css">
         
-    <script type="text/javascript" src="http://yui.yahooapis.com/2.5.0/build/utilities/utilities.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/json/json-beta-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/connection/connection-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/json/json-min.js"></script>
+    
     <script type="text/javascript" src="/static/js/doc_utils.js"></script>
     <script type="text/javascript" src="/static/js/weather.js"></script>
+    
 <style>
-
 
 .container {
     position: absolute;
@@ -189,7 +190,8 @@
                         <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
                     </div>
                     <div id="curr_humidity" class="yui-u">
-                        <span class="humidity_value"></span>%
+                        <span class="humidity_value"></span>
+                        <span class="curr_units">%</span>
                     </div>
                 </div>
                 <div class="yui-gb weather_title">
@@ -206,19 +208,19 @@
             </div>
         
             <div class="row">
-                <label>Units:</label>
-                <div class="toggle" onclick="toggleUnits(this)" toggled="false">
+                <label>Show Units:</label>
+                <div class="toggle" onclick="toggleUnits(this)" toggled="{{ unit_state }}">
                 <span class="thumb"></span>
-                <span class="toggleOn">No</span>
-                <span class="toggleOff">Yes</span>
+                <span class="toggleOn">Yes</span>
+                <span class="toggleOff">No</span>
                 </div>
             </div>            
             <div class="row">
-                <label>Labels:</label>
-                <div class="toggle" onclick="toggleLabels(this)" toggled="false">
+                <label>Show Labels:</label>
+                <div class="toggle" onclick="toggleLabels(this)" toggled="{{ title_state }}">
                 <span class="thumb"></span>
-                <span class="toggleOn">No</span>
-                <span class="toggleOff">Yes</span>
+                <span class="toggleOn">Yes</span>
+                <span class="toggleOff">No</span>
                 </div>
             </div>            
         </fieldset>

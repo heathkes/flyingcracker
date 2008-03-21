@@ -1,4 +1,5 @@
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.http import HttpResponse
 from fc3.weatherstation.models import Weather
 from django.utils import simplejson
@@ -136,9 +137,17 @@ def weather(request):
         show_titles = request.COOKIES.get("curr_weather_show_titles")
         if show_titles == None:
             show_titles = "hidden"
+        if show_titles == "hidden":
+            title_state = "false"
+        else:
+            title_state = "true"
         show_units = request.COOKIES.get("curr_weather_show_units")
         if show_units == None:
             show_units = "none"
+        if show_units == "none":
+            unit_state = "false"
+        else:
+            unit_state = "true"
             
         # set wind background compass
         if int(float(current.wind_speed)) < 1:
@@ -154,16 +163,19 @@ def weather(request):
             morning = False
             
         cbac_forecast = CBACForecast()
+        c = RequestContext(request, {
+                'wind_dir': wind_dir,
+                'morning': morning,
+                'show_titles': show_titles,
+                'show_units': show_units,
+                'temp_chart': today_temp_chart(request, 280, 100),
+                'baro_chart': today_baro_chart(request, 292, 120),
+                'cbac': cbac_forecast,
+                'unit_state': unit_state,
+                'title_state': title_state,
+                })
         
-        return render_to_response('weather/iphone.html', {
-                                                        'wind_dir': wind_dir,
-                                                        'morning': morning,
-                                                        'show_titles': show_titles,
-                                                        'show_units': show_units,
-                                                        'temp_chart': today_temp_chart(request, 280, 100),
-                                                        'baro_chart': today_baro_chart(request, 292, 120),
-                                                        'cbac': cbac_forecast,
-                                                        })
+        return render_to_response('weather/iphone.html', c)
     else:
         return render_to_response('weather/current_no_ajax.html', {'current' : current})
 

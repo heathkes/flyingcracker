@@ -61,8 +61,8 @@ function toggleLabels(element) {
 var current_weather = {
     
     init: function() {
-        current_weather.current = null;
-        current_weather.retrieve_current();
+        current_weather.current = null;     // this holds all current weather data
+        current_weather.retrieve_current(); // ask for the latest data
         
         // find all temp_value elements, assign a click handler
         current_weather.assign_listener('temp_value', 'curr_weather', current_weather.temp_change_units);
@@ -82,6 +82,7 @@ var current_weather = {
             }
             catch (e) {
                 alert("Invalid server response in retrieve_current_callback "+o.responseText+", please contact flyingcracker.com")
+                alert(e);
             }
             if (response_obj) {
                 current_weather.current = response_obj;
