@@ -81,6 +81,8 @@ class Data(object):
 
     @classmethod
     def float_scale_value(cls, value, range):
+        if value == None:
+            return None
         lower, upper = range
         max_value = cls.max_value()
         if (upper-lower) != 0:
@@ -91,16 +93,22 @@ class Data(object):
     
     @classmethod
     def clip_value(cls, value):
+        if value == None:
+            return None
         clipped = max(0, min(value, cls.max_value()))
         return clipped
 
     @classmethod
     def int_scale_value(cls, value, range):
+        if value == None:
+            return None
         scaled = int(round(cls.float_scale_value(value, range)))
         return scaled
 
     @classmethod
     def scale_value(cls, value, range):
+        if value == None:
+            return None
         scaled = cls.int_scale_value(value, range)
         clipped = cls.clip_value(scaled)
         return clipped
