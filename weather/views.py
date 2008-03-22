@@ -14,37 +14,25 @@ from fc3.pygooglechart import XYLineChart, Axis, ExtendedData
 
 
 USI_WAN = socket.gethostbyname("usi.dyndns.org")
-
-def google_chart(request):
-    url = today_baro_chart(request, 280, 200)
-    data_list, max, min = today_baro(request)
-    return render_to_response('weather/plot.html', {'chart': url,
-                                                    'data_list': data_list,
-                                                    'max': max,
-                                                    'min': min,})
-
-def get_today(request):
-    if request:
-        remote = request.META.get('REMOTE_ADDR')
-    else:
-        remote = None
-    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
-        today = datetime(2008,2,18)
-    else:
-        today = datetime.today()
-    today = today.replace(hour=0,minute=0,second=0,microsecond=0)
-    return today
     
-def today_temp_chart(request, width, height):
-    data_list, max, min = today_temp(request)
+def temp_chart(date_qs, width, height):
+    '''
+    Given a queryset of weather data for a day, produces a Google Chart URL
+    to plot temperatures for that day.
+    '''
+    data_list, max, min = day_temp(date_qs)
     if len(data_list) == 0:
         return ""
     max = int(math.ceil(float(max)/10.0)*10)    # round up to nearest ten degrees
     min = int(math.floor(float(min)/10.0)*10)   # round down to nearest ten degrees
     return weather_chart(data_list, max, min, width, height, ['66CCFF'])
     
-def today_baro_chart(request, width, height):
-    data_list, max, min = today_baro(request)
+def baro_chart(date_qs, width, height):
+    '''
+    Given a queryset of weather data for a day, produces a Google Chart URL
+    to plot barometric pressures for that day.
+    '''
+    data_list, max, min = day_baro(date_qs)
     if len(data_list) == 0:
         return ""
     max = math.ceil(float(max)*10.0)/10.0   #round up to nearest tenth
@@ -66,16 +54,33 @@ def weather_chart(data_list, max, min, width, height, colors):
     chart.set_line_style(0, 3)
     return chart.get_url(ExtendedData)
 
-def today_temp(request):
+def today_weather(request):
     today = get_today(request)
-    qs = Weather.objects.filter(timestamp__gte=today).order_by('timestamp')
+    return Weather.objects.filter(timestamp__gte=today).order_by('timestamp')
+
+def get_today(request):
+    if request:
+        remote = request.META.get('REMOTE_ADDR')
+    else:
+        remote = None
+    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
+        today = datetime(2008,2,18)
+    else:
+        today = datetime.today()
+    today = today.replace(hour=0,minute=0,second=0,microsecond=0)
+    return today
+    
+def day_temp(date_qs):
     hour = -1
     max = -100
     min = 200
     data = []
-    for rec in qs:
-        if hour != rec.timestamp.hour:
-            hour = rec.timestamp.hour
+    for rec in date_qs:
+        if rec.timestamp.hour > hour:
+            hour = hour + 1
+            while hour < rec.timestamp.hour:    # fill in missing hours with None
+                data.append(None)
+                hour = hour + 1
             d = int(rec.temp)
             data.append(d)
             if d > max:
@@ -84,16 +89,17 @@ def today_temp(request):
                 min = d
     return data, max, min
 
-def today_baro(request):
-    today = get_today(request)
-    qs = Weather.objects.filter(timestamp__gte=today).order_by('timestamp')
+def day_baro(date_qs):
     hour = -1
     max = 20.0
     min = 40.0
     data = []
-    for rec in qs:
-        if hour != rec.timestamp.hour:
-            hour = rec.timestamp.hour
+    for rec in date_qs:
+        if rec.timestamp.hour > hour:
+            hour = hour + 1
+            while hour < rec.timestamp.hour:    # fill in missing hours with None
+                data.append(None)
+                hour = hour + 1
             d=float(rec.barometer)
             data.append(d)
             if d > max:
@@ -152,14 +158,18 @@ def weather(request):
         else:
             morning = False
             
+        date_qs = today_weather(request)
+        t_chart = temp_chart(date_qs, 280, 100)
+        b_chart = baro_chart(date_qs, 292, 120)
+        
         cbac_forecast = CBACForecast()
         c = RequestContext(request, {
                 'wind_dir': wind_dir,
                 'morning': morning,
                 'show_titles': show_titles,
                 'show_units': show_units,
-                'temp_chart': today_temp_chart(request, 280, 100),
-                'baro_chart': today_baro_chart(request, 292, 120),
+                'temp_chart': t_chart,
+                'baro_chart': b_chart,
                 'cbac': cbac_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
