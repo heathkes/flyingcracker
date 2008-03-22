@@ -64,6 +64,10 @@ var current_weather = {
         current_weather.current = null;     // this holds all current weather data
         current_weather.retrieve_current(); // ask for the latest data
         
+        // Grab an elements we'll need so we can fade it later.
+        current_weather.weather_div = document.getElementById('curr_weather');
+        YAHOO.util.Dom.setStyle(current_weather.weather_div, 'opacity', 1);
+        
         // find all temp_value elements, assign a click handler
         current_weather.assign_listener('temp_value', 'curr_weather', current_weather.temp_change_units);
         current_weather.assign_listener('baro_value', 'curr_weather', current_weather.baro_change_units);
@@ -86,7 +90,20 @@ var current_weather = {
             }
             if (response_obj) {
                 current_weather.current = response_obj;
-                current_weather.update_all();
+                
+                // Set up the animation on the results div.
+                var weather_fade_out = new YAHOO.util.Anim(current_weather.weather_div,
+                    { opacity: { to: 0 } }, 0.5, YAHOO.util.Easing.easeOut);
+                
+                var weather_fade_in = new YAHOO.util.Anim(current_weather.weather_div,
+                    { opacity: { to: 1 } }, 0.5, YAHOO.util.Easing.easeIn);
+                
+                weather_fade_out.onComplete.subscribe(function() {
+                    current_weather.update_all();
+                    weather_fade_in.animate();
+                    });
+                
+                weather_fade_out.animate();
             }
         },
     

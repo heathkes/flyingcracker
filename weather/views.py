@@ -41,6 +41,17 @@ def today_temp_chart(request, width, height):
         return ""
     max = int(math.ceil(float(max)/10.0)*10)    # round up to nearest ten degrees
     min = int(math.floor(float(min)/10.0)*10)   # round down to nearest ten degrees
+    return weather_chart(data_list, max, min, width, height, ['66CCFF'])
+    
+def today_baro_chart(request, width, height):
+    data_list, max, min = today_baro(request)
+    if len(data_list) == 0:
+        return ""
+    max = math.ceil(float(max)*10.0)/10.0   #round up to nearest tenth
+    min = math.floor(float(min)*10.0)/10.0  #round down to nearest tenth
+    return weather_chart(data_list, max, min, width, height, ['FFCC99'])
+
+def weather_chart(data_list, max, min, width, height, colors):
     chart = XYLineChart(width, height, x_range=(0,24), y_range=(min, max))
     data = data_list
     chart.add_data((0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24))
@@ -51,7 +62,7 @@ def today_temp_chart(request, width, height):
     chart.set_axis_style(axis_left_index, '909090')
     chart.set_axis_style(axis_right_index, '909090')
     chart.set_axis_style(axis_bottom_index, 'B0B0B0')
-    chart.set_colours(['66CCFF'])
+    chart.set_colours(colors)
     chart.set_line_style(0, 3)
     return chart.get_url(ExtendedData)
 
@@ -72,27 +83,6 @@ def today_temp(request):
             if d < min:
                 min = d
     return data, max, min
-    
-def today_baro_chart(request, width, height):
-    data_list, max, min = today_baro(request)
-    if len(data_list) == 0:
-        return ""
-    max = math.ceil(float(max)*10.0)/10.0   #round up to nearest tenth
-    min = math.floor(float(min)*10.0)/10.0  #round down to nearest tenth
-    chart = XYLineChart(width, height, x_range=(0,24), y_range=(min, max))
-    data = data_list
-    chart.add_data((0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24))
-    chart.add_data(data)
-    axis_left_index = chart.set_axis_range(Axis.LEFT, min, max)
-    axis_right_index = chart.set_axis_range(Axis.RIGHT, min, max)
-    axis_bottom_index = chart.set_axis_labels(Axis.BOTTOM, ['', '3a', '6a', '9a', '12', '3p', '6p', '9p', ''])
-    chart.set_axis_style(axis_left_index, '909090')
-    chart.set_axis_style(axis_right_index, '909090')
-    chart.set_axis_style(axis_bottom_index, 'B0B0B0')
-    chart.set_colours(['FFCC99'])
-    chart.set_line_style(0, 3)
-    url = chart.get_url(ExtendedData)
-    return url
 
 def today_baro(request):
     today = get_today(request)
