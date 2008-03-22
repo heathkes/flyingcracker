@@ -301,7 +301,7 @@ def current(request):
         response_dict.update({'baro_unit': baro_unit})
         response_dict.update({'speed_unit': speed_unit})
         response_dict.update({'temp': temp_list})
-        response_dict.update({'press': baro_list})
+        response_dict.update({'baro': baro_list})
         response_dict.update({'trend': trend_list})
         response_dict.update({'wind': wind_list})
         response_dict.update({'wind_dir': wind_dir})

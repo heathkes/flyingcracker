@@ -160,8 +160,8 @@ var current_weather = {
             unit_els = YAHOO.util.Dom.getElementsByClassName('curr_units', '', parent);
             unit_els[0].innerHTML = current_weather.current.baro_unit;
             switch (parent.id) {
-                case 'curr_press':
-                    arr[i].innerHTML = current_weather.current.press[val_index]
+                case 'curr_baro':
+                    arr[i].innerHTML = current_weather.current.baro[val_index]
                     break;
                 case 'curr_trend':
                     arr[i].innerHTML = current_weather.current.trend[val_index]
@@ -188,7 +188,22 @@ var current_weather = {
             }
         }
     },
+
+    update_charts: function() {
+        var parent = null;
+        el = document.getElementById('curr_temp');
+        if (el) {
+            parent = el.parentNode;
+            set_style(parent, "background: url("+current_weather.current.temp_chart+") no-repeat top");
+        }
         
+        el = document.getElementById('curr_baro');
+        if (el) {
+            parent = el.parentNode;
+            set_style(parent, "background: url("+current_weather.current.baro_chart+") no-repeat top");
+        }
+    },
+    
     update_all: function() {
         var el = document.getElementById('curr_timestamp');
         if (el) {
@@ -213,18 +228,7 @@ var current_weather = {
             }
         }
         
-        var parent = null;
-        el = document.getElementById('curr_temp');
-        if (el) {
-            parent = el.parentNode;
-            set_style(parent, "background: url("+current_weather.current.temp_chart+") no-repeat top");
-        }
-        
-        el = document.getElementById('curr_baro');
-        if (el) {
-            parent = el.parentNode;
-            set_style(parent, "background: url("+current_weather.current.baro_chart+") no-repeat top");
-        }
+        current_weather.update_charts();
     },
     
     update_server_units: function(type, unit) {
