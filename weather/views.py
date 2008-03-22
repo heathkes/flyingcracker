@@ -266,8 +266,11 @@ def current(request):
         
         if int(float(current.wind_speed)) < 1:
             wind = 0
+            wind_dir = None
         else:
             wind = current.wind_speed
+            wind_dir = "wind-%s.png" % wind_dir_to_english(wind)
+            wind_dir = wind_dir.lower()
         wind_list = calc_speeds(wind)
         
         temp_unit = request.COOKIES.get("temp_unit")
@@ -284,6 +287,8 @@ def current(request):
             wind_units = speed_units
             if speed_unit is None:
                 speed_unit = wind_units[0]
+
+        # set wind background compass
         
         windchill_list = calc_temps(current.windchill)
         
@@ -299,8 +304,12 @@ def current(request):
         response_dict.update({'press': baro_list})
         response_dict.update({'trend': trend_list})
         response_dict.update({'wind': wind_list})
+        response_dict.update({'wind_dir': wind_dir})
         response_dict.update({'windchill': windchill_list})
         response_dict.update({'humidity': current.humidity})
+        response_dict.update({'temp_chart': today_temp_chart(request, 280, 100)})
+        response_dict.update({'baro_chart': today_baro_chart(request, 292, 120)})
+        response_dict.update({'test': None})
         response = JsonResponse(response_dict)
         return response
 

@@ -198,9 +198,32 @@ var current_weather = {
         current_weather.update_baros();
         current_weather.update_speeds();
         
-        var el = document.getElementById('curr_humidity');
+        el = document.getElementById('curr_humidity');
         if (el) {
             el.innerHTML = current_weather.current.humidity+"%";
+        }
+        
+        el = document.getElementById('curr_wind');
+        if (el) {
+            if (current_weather.current.wind_dir != null) {
+                set_style(el, "background: url(/static/img/"+current_weather.current.wind_dir+") no-repeat top");
+            }
+            else {
+                set_style(el, "background: none");
+            }
+        }
+        
+        var parent = null;
+        el = document.getElementById('curr_temp');
+        if (el) {
+            parent = el.parentNode;
+            set_style(parent, "background: url("+current_weather.current.temp_chart+") no-repeat top");
+        }
+        
+        el = document.getElementById('curr_baro');
+        if (el) {
+            parent = el.parentNode;
+            set_style(parent, "background: url("+current_weather.current.baro_chart+") no-repeat top");
         }
     },
     
@@ -219,6 +242,16 @@ var current_weather = {
     
         failure: function(o) {
             ;
+        }
+    }
+};
+
+function set_style(el, style) {
+    var arr = el.attributes;
+    for (i=0; i<arr.length; i++) {
+        if (arr[i].name == "style") {
+            arr[i].value = style;
+            break;
         }
     }
 };
