@@ -288,7 +288,9 @@ def current(request):
             if speed_unit is None:
                 speed_unit = wind_units[0]
 
-        # set wind background compass
+        date_qs = today_weather(request)
+        t_chart = temp_chart(date_qs, 280, 100)
+        b_chart = baro_chart(date_qs, 292, 120)
         
         windchill_list = calc_temps(current.windchill)
         
@@ -307,8 +309,8 @@ def current(request):
         response_dict.update({'wind_dir': wind_dir})
         response_dict.update({'windchill': windchill_list})
         response_dict.update({'humidity': current.humidity})
-        response_dict.update({'temp_chart': today_temp_chart(request, 280, 100)})
-        response_dict.update({'baro_chart': today_baro_chart(request, 292, 120)})
+        response_dict.update({'temp_chart': t_chart})
+        response_dict.update({'baro_chart': b_chart})
         response_dict.update({'test': None})
         response = JsonResponse(response_dict)
         return response
