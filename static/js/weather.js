@@ -27,15 +27,12 @@ function toggleUnits(element) {
     var elements = YAHOO.util.Dom.getElementsByClassName('curr_units', 'span');
     
     if (elements) {
-        var state = elements[0].style.display;
+        var state = YAHOO.util.Dom.getStyle(elements[0], 'display');
         if (state == 'none')
             state = '';
         else
             state = 'none';
-            
-        for (i=0; i<elements.length; i++) {
-            elements[i].style.display = state;
-        }
+        YAHOO.util.Dom.setStyle(elements, 'display', state);
         Set_Cookie("curr_weather_show_units", state, 7, '/', '', '');
     }
     element.setAttribute("toggled", element.getAttribute("toggled") != "true");
@@ -44,15 +41,12 @@ function toggleUnits(element) {
 function toggleLabels(element) {
     var elements = YAHOO.util.Dom.getElementsByClassName('curr_title', 'span');
     if (elements) {
-        var state = elements[0].style.visibility;
+        var state = YAHOO.util.Dom.getStyle(elements[0], 'visibility');
         if (state == 'hidden')
             state = 'visible';
         else
             state = 'hidden';
-            
-        for (i=0; i<elements.length; i++) {
-            elements[i].style.visibility = state;
-        }
+        YAHOO.util.Dom.setStyle(elements, 'visibility', state);
         Set_Cookie("curr_weather_show_titles", state, 7, '/', '', '');
     }
     element.setAttribute("toggled", element.getAttribute("toggled") != "true");
@@ -211,13 +205,13 @@ var current_weather = {
         el = document.getElementById('curr_temp');
         if (el) {
             parent = el.parentNode;
-            set_style(parent, "background: url("+current_weather.current.temp_chart+") no-repeat top");
+            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.temp_chart+") no-repeat top");
         }
         
         el = document.getElementById('curr_baro');
         if (el) {
             parent = el.parentNode;
-            set_style(parent, "background: url("+current_weather.current.baro_chart+") no-repeat top");
+            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.baro_chart+") no-repeat top");
         }
     },
     
@@ -238,10 +232,10 @@ var current_weather = {
         el = document.getElementById('curr_wind');
         if (el) {
             if (current_weather.current.wind_dir != null) {
-                set_style(el, "background: url(/static/img/"+current_weather.current.wind_dir+") no-repeat top");
+                YAHOO.util.Dom.setStyle(el, 'background', "url(/static/img/"+current_weather.current.wind_dir+") no-repeat top");
             }
             else {
-                set_style(el, "background: none");
+                YAHOO.util.Dom.setStyle(el, 'background', "none");
             }
         }
         
@@ -263,16 +257,6 @@ var current_weather = {
     
         failure: function(o) {
             ;
-        }
-    }
-};
-
-function set_style(el, style) {
-    var arr = el.attributes;
-    for (i=0; i<arr.length; i++) {
-        if (arr[i].name == "style") {
-            arr[i].value = style;
-            break;
         }
     }
 };
