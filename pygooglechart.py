@@ -164,6 +164,24 @@ class TextData(Data):
         clipped = cls.clip_value(scaled)
         return clipped
 
+class TextDataWithScaling(Data):
+
+    def __repr__(self):
+        encoded_data = []
+        for data in self.data:
+            sub_data = []
+            for value in data:
+                sub_data.append(str(value))
+            encoded_data.append(','.join(sub_data))
+        return 'chd=t:' + '|'.join(encoded_data)
+
+    @classmethod
+    def scale_value(cls, value, range):
+        if value == None:
+            return range[0] - 1     # less than lower bound; out of range signifies no value
+        else:
+            return value
+
 class ExtendedData(Data):
     enc_map = \
         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.'
@@ -269,8 +287,9 @@ class RangeAxis(Axis):
 class Chart(object):
     """Abstract class for all chart types.
 
-    width are height specify the dimensions of the image. title sets the title
-    of the chart. legend requires a list that corresponds to datasets.
+    width and height specify the dimensions of the image.
+    title sets the title of the chart.
+    legend requires a list that corresponds to datasets.
     """
 
     BASE_URL = 'http://chart.apis.google.com/chart?'
@@ -330,6 +349,8 @@ class Chart(object):
         url_bits.append(self.type_to_url())
         url_bits.append('chs=%ix%i' % (self.width, self.height))
         url_bits.append(self.data_to_url(data_class=data_class))
+        if data_class == TextDataWithScaling:
+            url_bits.append(self.scaling_string())
         # optional arguments
         if self.title:
             url_bits.append('chtt=%s' % self.title)
@@ -523,6 +544,33 @@ class Chart(object):
                                 for v in dataset])
         return scaled_data
 
+    def scaling_string(self):
+        """Create a scaling string as appropriate for the given datasets.
+        """
+        scaling_str = "chds="
+        # We can minimize the scaling parameters necessary if either X or Y ranges are None
+        # This indicates there are no datasets of that type and the only scaling parameters
+        # needed are of the other type.
+        if self.scaled_y_range == None:
+            scaling_str += str(self.scaled_x_range[0]) + ',' + str(self.scaled_x_range[1])
+        elif self.scaled_x_range == None:
+            scaling_str += str(self.scaled_y_range[0]) + ',' + str(self.scaled_y_range[1])
+        else:
+            xmin = str(self.scaled_x_range[0])
+            xmax = str(self.scaled_x_range[1])
+            ymin = str(self.scaled_y_range[0])
+            ymax = str(self.scaled_y_range[1])
+            scaling_list = []
+            for type, dataset in self.annotated_data():
+                if type == 'x':
+                    scaling_list.append(xmin)
+                    scaling_list.append(xmax)
+                elif type == 'y':
+                    scaling_list.append(ymin)
+                    scaling_list.append(ymax)
+            scaling_str += ','.join(scaling_list)
+        return scaling_str
+
     def add_data(self, data):
         self.data.append(data)
         return len(self.data) - 1  # return the "index" of the data set
@@ -532,7 +580,7 @@ class Chart(object):
             data_class = self.data_class_detection(self.data)
         if not issubclass(data_class, Data):
             raise UnknownDataTypeException()
-        if self.auto_scale:
+        if self.auto_scale or data_class == TextDataWithScaling: # protect the user from himself, force scaling for TextDataWithScaling
             data = self.scaled_data(data_class, self.x_range, self.y_range)
         else:
             data = self.data
