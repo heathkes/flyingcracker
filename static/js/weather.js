@@ -120,17 +120,19 @@ var current_weather = {
         // cycle through the list to the next unit
         current_weather.current.temp_unit = current_weather.current.temp_units.next(current_weather.current.temp_unit);
         current_weather.update_temps();
+        current_weather.update_temp_chart();
         unit = current_weather.current.temp_unit;
         Set_Cookie("temp_unit", unit, 7, '/', '', '');
-        update_server_units('T', unit);
+        current_weather.update_server_units('T', unit);
     },
     
     baro_change_units: function(e, el) {
         current_weather.current.baro_unit = current_weather.current.baro_units.next(current_weather.current.baro_unit);
         current_weather.update_baros();
+        current_weather.update_baro_chart();
         unit = current_weather.current.baro_unit;
         Set_Cookie("baro_unit", unit, 7, '/', '', '');
-        update_server_units('B', unit);
+        current_weather.update_server_units('B', unit);
     },
     
     speed_change_units: function(e, el) {
@@ -139,7 +141,7 @@ var current_weather = {
             current_weather.update_speeds();
             unit = current_weather.current.speed_unit;
             Set_Cookie("speed_unit", unit, 7, '/', '', '');
-            update_server_units('S', unit);
+            current_weather.update_server_units('S', unit);
         }
     },
         
@@ -200,17 +202,45 @@ var current_weather = {
         }
     },
 
-    update_charts: function() {
+    update_temp_chart: function() {
         var parent = null;
+        var index = current_weather.current.temp_units.has(current_weather.current.temp_unit)
         el = document.getElementById('curr_temp');
         if (el) {
             parent = el.parentNode;
-            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.temp_chart+") no-repeat top");
+            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.temp_chart[index]+") no-repeat top");
         }
-        
+    },
+    
+    update_baro_chart: function() {
+        var index = current_weather.current.baro_units.has(current_weather.current.baro_unit)
         el = document.getElementById('curr_barometer_block');
         if (el) {
-            YAHOO.util.Dom.setStyle(el, 'background', "url("+current_weather.current.baro_chart+") no-repeat top");
+            YAHOO.util.Dom.setStyle(el, 'background', "url("+current_weather.current.baro_chart[index]+") no-repeat top");
+        }
+    },
+    
+    update_charts: function() {
+        current_weather.update_temp_chart();
+        current_weather.update_baro_chart();
+    },
+    
+    update_data_position: function() {
+        el = document.getElementById('curr_temp');
+        if (el) {
+            if ((current_weather.current.morning == 'false') && YAHOO.util.Dom.hasClass(el, 'chart_am'))
+                YAHOO.util.Dom.replaceClass(el, 'chart_am', 'chart_pm');
+            else if ((current_weather.current.morning == 'true') && YAHOO.util.Dom.hasClass(el, 'chart_pm'))
+                YAHOO.util.Dom.replaceClass(el, 'chart_pm', 'chart_am');
+        }
+        
+        el = document.getElementById('curr_baro');
+        if (el) {
+            el = el.parentNode;
+            if ((current_weather.current.morning == 'false') && YAHOO.util.Dom.hasClass(el, 'chart_am'))
+                YAHOO.util.Dom.replaceClass(el, 'chart_am', 'chart_pm');
+            else if ((current_weather.current.morning == 'true') && YAHOO.util.Dom.hasClass(el, 'chart_pm'))
+                YAHOO.util.Dom.replaceClass(el, 'chart_pm', 'chart_am');
         }
     },
     
@@ -237,7 +267,7 @@ var current_weather = {
                 YAHOO.util.Dom.setStyle(el, 'background', "none");
             }
         }
-        
+        current_weather.update_data_position();
         current_weather.update_charts();
     },
     
@@ -246,7 +276,7 @@ var current_weather = {
         var post_data = "xhr";
         post_data += "&type="+type;
         post_data += "&unit="+unit;
-        var cObj = YAHOO.util.Connect.asyncRequest('POST', '/weather/unitchange', current_weather.update_server_callback, post_data);
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', '/weather/unitchange/', current_weather.update_server_callback, post_data);
     },
     
     update_server_callback: {
