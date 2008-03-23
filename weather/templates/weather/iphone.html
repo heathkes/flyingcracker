@@ -34,8 +34,6 @@
 }
 #curr_temp {
     font-size: 2.5em;
-    text-align: center;
-    margin: 5px;
     height: 110px;
 }
 #curr_barometer_block {
@@ -43,12 +41,10 @@
 }
 #curr_trend {
     font-size: 2em;
-    text-align: center;
     line-height: 90%;
 }
 #curr_baro {
     font-size: 2em;
-    text-align: center;
     line-height: 90%;
     padding-top: 0.1em;
 }
@@ -123,6 +119,14 @@
     text-align: left;
     color: #003333;
 }
+.chart_am {
+    text-align: right;
+    margin-right: 40px;
+}
+.chart_pm {
+    text-align: left;
+    margin-left: 40px;
+}
 </style>
 
 <script type="application/x-javascript">
@@ -151,34 +155,28 @@
                 <a href="#noaa" class="button">NOAA Forecast</a>
             </div>
             <div id="curr_weather">
-                <div class="yui-g" style="background: url({{ temp_chart }}) no-repeat top">
-                    <div id="curr_temp" class="yui-u {% if morning %}temp-right{% else %}first temp-left{% endif %}">
+                <div class="yui-b" style="background: url({{ temp_chart }}) no-repeat top">
+                    <div id="curr_temp" class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
                         <span class="temp_value"></span>
                         <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
                     </div>
-                    <div class="yui-u {% if morning %}first{% else %}{% endif %}">
-                    </div>
                 </div>
-                <div class="yui-g" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
-                    <div class="yui-u {% if morning %}baro-right{% else %}first baro-left{% endif %}">
-                        <div class="yui-b">
-                            <div id="curr_baro" class="yui-b">
-                                <span class="baro_value"></span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
-                            </div>
-                            <div class="yui-b weather_title">
-                                    <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
-                            </div>
-                            <div id="curr_trend" class="yui-b">
-                                <span class="baro_value"></span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
-                            </div>
-                            <div class="yui-b weather_title">
-                                    <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
-                            </div>
+                <div class="yui-b" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
+                    <div class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                        <div id="curr_baro" class="yui-b">
+                            <span class="baro_value"></span>
+                            <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
                         </div>
-                    </div>
-                    <div class="yui-u {% if morning %}first{% else %}{% endif %}">
+                        <div class="yui-b weather_title">
+                                <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+                        </div>
+                        <div id="curr_trend" class="yui-b">
+                            <span class="baro_value"></span>
+                            <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                        </div>
+                        <div class="yui-b weather_title">
+                                <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                        </div>
                     </div>
                 </div>
                 <div class="yui-gb">

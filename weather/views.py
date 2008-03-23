@@ -10,11 +10,9 @@ from datetime import datetime
 import math
 from fc3.json import JsonResponse
 
-from fc3.pygooglechart import XYLineChart, Axis, ExtendedData
+from fc3.pygooglechart import XYLineChart, Axis, ExtendedData, TextDataWithScaling
 
 
-USI_WAN = socket.gethostbyname("usi.dyndns.org")
-    
 def temp_chart(date_qs, width, height):
     '''
     Given a queryset of weather data for a day, produces a Google Chart URL
@@ -52,7 +50,7 @@ def weather_chart(data_list, max, min, width, height, colors):
     chart.set_axis_style(axis_bottom_index, 'B0B0B0')
     chart.set_colours(colors)
     chart.set_line_style(0, 3)
-    return chart.get_url(ExtendedData)
+    return chart.get_url(TextDataWithScaling)
 
 def today_weather(request):
     today = get_today(request)

@@ -208,10 +208,9 @@ var current_weather = {
             YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.temp_chart+") no-repeat top");
         }
         
-        el = document.getElementById('curr_baro');
+        el = document.getElementById('curr_barometer_block');
         if (el) {
-            parent = el.parentNode;
-            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.baro_chart+") no-repeat top");
+            YAHOO.util.Dom.setStyle(el, 'background', "url("+current_weather.current.baro_chart+") no-repeat top");
         }
     },
     
