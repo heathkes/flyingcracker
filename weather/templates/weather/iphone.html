@@ -83,17 +83,17 @@
     color: red;
     font-weight: bold;
 }
-#cbac_forecast {
+.forecast {
     text-align: left;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
 }
-.cbac_section {
+.forecast .section {
     margin-top: 8px;
     margin-bottom: 8px;
 }
-.cbac_section strong {
+.forecast .section strong {
     font-weight: bold;
 }
 #cbac_reporter {
@@ -235,33 +235,17 @@
             <span class="button">CBAC Forecast</span>
             <a href="#noaa" class="button">NOAA Forecast</a>
         </div>
-        <div id="cbac_forecast">
+        <div id="cbac_forecast" class="forecast">
             <div class="yui-b">
             {% if cbac %}
-                <div class="cbac_section">
-                    <strong>Synopsis</strong>
+                {% for sec in cbac.sections %}
+                <div class="section">
+                    <strong>{{ sec.title }}</strong>
                     <div>
-                        {{ cbac.synopsis }}
+                        {{ sec.body }}
                     </div>
                 </div>
-                <div class="cbac_section">
-                    <strong>Today</strong>
-                    <div>
-                        {{ cbac.today }}
-                    </div>
-                </div>
-                <div class="cbac_section">
-                    <strong>Tonight</strong>
-                    <div>
-                        {{ cbac.tonight }}
-                    </div>
-                </div>
-                <div class="cbac_section">
-                    <strong>Tomorrow</strong>
-                    <div>
-                        {{ cbac.tomorrow }}
-                    </div>
-                </div>
+                {% endfor %}
                 <div id="cbac_reporter">
                     reported by:&nbsp;{{ cbac.reportedby|slugify|capfirst }}
                 </div>
@@ -271,15 +255,30 @@
         </fieldset>
         
         <a name="noaa"></a>
-        <h2>NOAA Forecast</h2>
+        <span class="fieldset_timestamp">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span><h2>NOAA Forecast</h2>
         <fieldset>
         <div class="barMenu">
             <a href="#current" class="button">Current</a>
             <a href="#cbac" class="button">CBAC Forecast</a>
             <span class="button">NOAA Forecast</span>
         </div>
-        <div id="noaa_forecast">
+        <div id="noaa_forecast" class="forecast">
             <div class="yui-b">
+            {% if noaa %}
+                {% if noaa.warning %}
+                <div class="warning">
+                    {{ noaa.warning }}
+                </div>
+                {% endif %}
+                {% for sec in noaa.sections %}
+                <div class="section">
+                    <strong>{{ sec.title }}</strong>
+                    <div>
+                        {{ sec.body }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
             </div>
         </div>
         </fieldset>

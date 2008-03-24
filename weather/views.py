@@ -9,8 +9,9 @@ import socket
 from datetime import datetime
 import math
 from fc3.json import JsonResponse
-
 from fc3.pygooglechart import XYLineChart, Axis, ExtendedData, TextDataWithScaling
+from noaa import get_NOAA_forecast
+from cbac import get_CBAC_forecast
 
 
 def today_weather(request):
@@ -166,7 +167,14 @@ def weather(request):
         date_qs = today_weather(request)
         t_chart, b_chart = get_day_charts(date_qs)
         
-        cbac_forecast = CBACForecast()
+        cbac_forecast = get_CBAC_forecast()
+        noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
+        
+        #if self.timestamp.day != datetime.today().day:
+        #    self.stale = True
+        #else:
+        #    self.stale = False
+        
         c = RequestContext(request, {
                 'wind_dir': wind_dir,
                 'morning': morning,
@@ -175,6 +183,7 @@ def weather(request):
                 'temp_chart': t_chart,
                 'baro_chart': b_chart,
                 'cbac': cbac_forecast,
+                'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
                 })
@@ -387,161 +396,3 @@ def wind_dir_to_english(dir):
         if dir >= (val-11.25) and dir < (val+11.25):
             return key
     return 'North'
-
-from xml.etree.ElementTree import XML
-from xml.parsers.expat import ExpatError
-import urllib
-from dateutil import parser
-from fc3.weatherstation.tz import USTimeZone
-
-class CBAC:
-    pubdate = ''
-    synopsis = ''
-    today = ''
-    tonight = ''
-    tomorrow = ''
-    timestamp = None
-    
-    def __init__(self, pubdate='', synopsis='', today='', tonight='', tomorrow='', reportedby=''):
-        self.synopsis = synopsis
-        self.today = today
-        self.tonight = tonight
-        self.tomorrow = tomorrow
-        self.pubdate = pubdate
-        self.reportedby = reportedby
-        self.timestamp = parser.parse(self.pubdate)
-        mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
-        self.timestamp = self.timestamp.astimezone(mountain_tz)
-        if self.timestamp.day != datetime.today().day:
-            self.stale = True
-        else:
-            self.stale = False
-        
-def CBACForecast():
-    '''
-    Obtain latest CBAC RSS feed
-    Parse into the pieces we want (synopsis, today, tonight, tomorrow)
-    Format nicely into parts
-    '''
-    fname = 'http://cbavalanchecenter.org/rss/'
-    try:
-        f = urllib.urlopen(fname)
-    except IOError:
-        return None
-    
-    try:
-        xml_text = f.read()
-    except IOError:
-        return None
-    else:
-        f.close()
-    
-    try:
-        xml = XML(xml_text)
-    except ExpatError, info:
-        return None;    # fail silently
-    
-    rss = xml
-    channel = rss.find('channel')
-    item = channel.find('item')
-    
-    # Get the data we want
-    pubdate = item.findtext('pubdate')
-    
-    report = item.find('report')
-    forecast = report.find('forecast')
-    
-    today = forecast.findtext('today')
-    tonight = forecast.findtext('tonight')
-    tomorrow = forecast.findtext('tomorrow')
-    
-    synopsis = report.findtext("weathersynopsis")
-    
-    reportedby = report.findtext("reportedby")
-    
-    return CBAC(pubdate, synopsis, today, tonight, tomorrow, reportedby)
-
-
-from urllib import urlopen
-
-class NOAAForecastPreamble(object):
-    def __init__(self, zname):
-        self.zname = zname
-        
-    def parseLine(self, line, nf):
-        if line.startswith(self.zname):
-            return NOAAForecastArea, False
-        else:
-            return False, False
-
-class NOAAForecastArea(object):
-    def __init__(self):
-        self.area = []
-        
-    def parseLine(self, line, nf):
-        if line.startswith('.'):
-            self.area = ' '.join(self.area)
-            nf.area = self.area.capitalize()
-            return NOAAForecastBody, True   # recycle this line, it is the start of a different section
-        else:
-            line = line.strip()
-            if len(line) > 0:
-                self.area.append(line)
-            return False, False
-
-class NOAAForecastBody(object):
-    def parseLine(self, line, nf):
-            return False, False     # ignore line for now
-
-class NOAAForecastWarning(object):
-    def parseLine(self, line, nf):
-            return False, False     # ignore line for now
-
-class NOAAForecast(object):
-    def __init__(self, zname):
-        self.area = ''
-        self.warning = ''
-        self.sections = []
-        self.state = NOAAForecastPreamble(zname)
-        
-    def setState(self, state):
-        self.state = state
-        
-    def parseLine(self, line):
-        '''
-        Calls the state class' parseLine method.
-        Expects to see either a new state class with "recycle this line" boolean
-        or False.
-        If recycle_line is True that means we want to pass the line on to the next state.
-        If newState is False, we should remain in the same state.
-        '''
-        newState, recycle_line = self.state.parseLine(line, self)
-        if newState != False:
-            self.setState(newState())
-            if recycle_line:
-                self.parseLine(line)
-    
-def GetNOAAForecast(state, zone):
-    '''
-    Obtain NOAA textual forecast.
-    Parse into parts: area, [warning], section array.
-    '''
-    zname = state.upper() + "Z%03d" % zone
-    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + state.lower() + '/' + zname.lower() + '.txt'
-    lines = urlopen(url).readlines()
-    inWarning = False
-
-    f = NOAAForecast(zname)
-    for line in lines:
-        f.parseLine(line)
-
-    # when we're finished with all lines our attributes should be set
-    forecast = f.area   # this should be a repr of the NOAAForecast
-    return forecast
-
-def test():
-    print GetNOAAForecast('CO', 12)
-    
-if __name__ == '__main__':
-    test()
-    
