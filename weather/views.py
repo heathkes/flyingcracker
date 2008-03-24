@@ -189,7 +189,7 @@ baro_units = ['in', 'mb']
 speed_units = ['mph', 'kts', 'km/h', 'm/s', 'ft/s']
 
 def calc_temp_values(value):
-    if value:
+    if value is not None:
         value = float(value)
     vlist = []
     for unit in temp_units:
@@ -204,7 +204,7 @@ def calc_temp_values(value):
     return vlist
 
 def calc_baro_values(value):
-    if value:
+    if value is not None:
         value = float(value)
     vlist = []
     for unit in baro_units:
@@ -461,3 +461,87 @@ def CBACForecast():
     
     return CBAC(pubdate, synopsis, today, tonight, tomorrow, reportedby)
 
+
+from urllib import urlopen
+
+class NOAAForecastPreamble(object):
+    def __init__(self, zname):
+        self.zname = zname
+        
+    def parseLine(self, line, nf):
+        if line.startswith(self.zname):
+            return NOAAForecastArea, False
+        else:
+            return False, False
+
+class NOAAForecastArea(object):
+    def __init__(self):
+        self.area = []
+        
+    def parseLine(self, line, nf):
+        if line.startswith('.'):
+            self.area = ' '.join(self.area)
+            nf.area = self.area.capitalize()
+            return NOAAForecastBody, True   # recycle this line, it is the start of a different section
+        else:
+            line = line.strip()
+            if len(line) > 0:
+                self.area.append(line)
+            return False, False
+
+class NOAAForecastBody(object):
+    def parseLine(self, line, nf):
+            return False, False     # ignore line for now
+
+class NOAAForecastWarning(object):
+    def parseLine(self, line, nf):
+            return False, False     # ignore line for now
+
+class NOAAForecast(object):
+    def __init__(self, zname):
+        self.area = ''
+        self.warning = ''
+        self.sections = []
+        self.state = NOAAForecastPreamble(zname)
+        
+    def setState(self, state):
+        self.state = state
+        
+    def parseLine(self, line):
+        '''
+        Calls the state class' parseLine method.
+        Expects to see either a new state class with "recycle this line" boolean
+        or False.
+        If recycle_line is True that means we want to pass the line on to the next state.
+        If newState is False, we should remain in the same state.
+        '''
+        newState, recycle_line = self.state.parseLine(line, self)
+        if newState != False:
+            self.setState(newState())
+            if recycle_line:
+                self.parseLine(line)
+    
+def GetNOAAForecast(state, zone):
+    '''
+    Obtain NOAA textual forecast.
+    Parse into parts: area, [warning], section array.
+    '''
+    zname = state.upper() + "Z%03d" % zone
+    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + state.lower() + '/' + zname.lower() + '.txt'
+    lines = urlopen(url).readlines()
+    inWarning = False
+
+    f = NOAAForecast(zname)
+    for line in lines:
+        f.parseLine(line)
+
+    # when we're finished with all lines our attributes should be set
+    forecast = f.area   # this should be a repr of the NOAAForecast
+    return forecast
+
+def test():
+    print GetNOAAForecast('CO', 12)
+    
+if __name__ == '__main__':
+    test()
+    
