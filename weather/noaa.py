@@ -76,7 +76,6 @@ class NOAAForecastBody(object):
         self.body = []
     
     def parse_line(self, line, forecast):
-        line = line.strip()
         if len(line) == 0:     # ignore this line
             return False, False
         
@@ -175,7 +174,7 @@ def get_NOAA_forecast(state, zone):
 
     forecast = NOAAForecast(zname)
     for line in lines:
-        forecast.parse_line(line)
+        forecast.parse_line(line.strip())
 
     # when we're finished with all lines the forecast attributes should be set
     return forecast
