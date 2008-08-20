@@ -22,4 +22,28 @@ function Set_Cookie( name, value, expires, path, domain, secure )
     ( ( path ) ? ";path=" + path : "" ) + 
     ( ( domain ) ? ";domain=" + domain : "" ) +
     ( ( secure ) ? ";secure" : "" );
-};
+}
+
+function load_lib(libname, libpath, initfunc) {
+    onerror=null;
+    alert("starting load_lib");
+    var loader = new YAHOO.util.YUILoader();
+    loader.addModule(
+        {
+            name: libname,
+            type: "js",
+            fullpath: libpath,
+            //requires: ['yahoo', 'dom', 'event', 'connection', 'json'],
+            varName: "boogie"
+        }
+    );
+    loader.onSuccess = function() {
+                setTimeout(initfunc, 1000);
+            };
+            
+    loader.onFailure = function() {
+                alert("YUILoader failure");
+            };
+    
+    loader.insert();
+}

@@ -4,10 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = BASE_DIR
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+ALLOWED_INCLUDE_ROOTS = BASE_DIR
 
 ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
@@ -30,6 +27,15 @@ SITE_ID = 1
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+# URL that handles the media served from MEDIA_ROOT.
+# Example: "http://media.lawrence.com"
+MEDIA_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -89,7 +95,7 @@ INSTALLED_APPS = (
     'fc3.blog',
 #    'fc3.registration',
     'fc3.cam',
-    'fc3.playhard',
+#    'fc3.test',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -99,7 +105,7 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-YUI_VERSION = "2.5.1"
+YUI_VERSION = "2.5.2"
 
 # import local settings overriding the defaults
 try:

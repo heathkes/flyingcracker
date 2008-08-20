@@ -1,91 +1,101 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-   <meta name="description" content="Weather and Cocktails from Crested Butte, Colorado" />
-   <meta name="resource-type" content="document" />
-   <meta http-equiv="pragma" content="no-cache" />
-   <meta name="revisit-after" content="5 days" />
-   <meta name="classification" content="Recreational" />
-   <meta name="MSSmartTagsPreventParsing" content="TRUE" />
-   <meta name="keywords" content="crested butte,weather,cocktails,blog,colorado,forecast,humidity,barometric pressure,temperature,food,grill,gin,vodka,rum,tequila,scotch,whiskey,brandy,champagne,bitters" />
-   <meta name="robots" content="ALL" />
-   <meta name="distribution" content="Global" />
-   <meta name="rating" content="Safe For Kids" />
-   <meta name="copyright" content="2000-2007 - FlyingCracker.com" />
-   <meta name="author" content="Graham Ullrich" />
-   <meta http-equiv="reply-to" content="" />
-   <meta name="language" content="English" />
+    <meta name="keywords" content="cracklyfinger, weather, forecast, current conditions, cocktail, webcam" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="description" content="Weather and Cocktails from Crested Butte, Colorado" />
+    <meta name="resource-type" content="document" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="revisit-after" content="5 days" />
+    <meta name="classification" content="Recreational" />
+    <meta name="MSSmartTagsPreventParsing" content="TRUE" />
+    <meta name="robots" content="ALL" />
+    <meta name="distribution" content="Global" />
+    <meta name="rating" content="Safe For Kids" />
+    <meta name="copyright" content="2000-2007 - CracklyFinger.com" />
+    <meta name="author" content="Graham Ullrich" />
+    <meta http-equiv="reply-to" content="" />
+    <meta name="language" content="English" />
 
-   <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico" />
+	<title>CracklyFinger {% block extra_title %}{% endblock %}</title>
+ 
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico" />
+ 
+    <title>flyingcracker{% block section_title %}{% endblock %}</title>
 
-   <title>flyingcracker{% block section_title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/reset-fonts-grids/reset-fonts-grids.css"> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/assets/skins/sam/skin.css">
+    {% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="/static/css/f3.css" title="stylesheet" />
+    {% endblock extrastyle %}
+    
+    {% block javascript %}
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yuiloader/yuiloader-beta-min.js"></script> 
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/element/element-beta-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/container/container_core-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/menu/menu-min.js"></script>
+    {% endblock %}
+    
+    <!-- My source - always after standard javascript block -->
+    {% block my_source %}
+    <script type="text/javascript" src="/static/js/doc_utils.js"></script>
+    {% endblock my_source %}
+    
+    {% block extrahead %}
+    {% endblock %}
 
-   <link rel="stylesheet" type="text/css" href="/static/css/f3.css" title="stylesheet" />
-
-   {% block analytics %}{% endblock %}
-
-   {% block javascript %}{% endblock %}
-   
+    <script type="text/javascript"> 
+    (function() {
+        var Dom = YAHOO.util.Dom,
+            Event = YAHOO.util.Event;
+    
+        Event.onDOMReady(function() {
+            var layout = new YAHOO.widget.Layout({
+                units: [
+                    { position: 'top', body: 'top1', height: 100 },
+                    { position: 'bottom', body: 'bottom1', height: 100 },
+                    { position: 'left', body: 'left1', width: 180 },
+                    { position: 'center', body: 'center1' }
+                ]
+            });
+            layout.render();
+        });
+    })();
+    </script>
+    
+    {% block analytics %}
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        var pageTracker = _gat._getTracker("UA-2284477-2");
+        pageTracker._initData();
+        pageTracker._trackPageview();
+    </script>
+    {% endblock analytics %}
 </head>
 
-<body onload="if (self != top) top.location = self.location">
-
-   <div id="container">
-      <div id="banner">
-         <div>
-            <h1>flyingcracker</h1>
-         </div>
-      </div> <!-- banner -->
-
-      <div id="nav">
-         {% block login %}<div>login</div>{% endblock %}
-         {% block context_links %}<div>context links</div>{% endblock %}
-      </div> <!-- nav -->
-
-      <div id="siteNav">
-         <ul>
-            <!-- HOME link -->			
-            <li><a href="/" title="Home">Home</a></li>
-            <li><a href="{% url weather-current %}" title="Weather">Weather</a></li>
-            <li><a href="{% url food-recipe-list recipe_type="cocktail" %}" title="Cocktail">Cocktails</a></li>
-            <li><a href="{% url food-recipe-list recipe_type="food" %}" title="Food">Food</a></li>
-         </ul>
-      </div> <!-- siteNav -->
-
-      <div id="content">
-      {% block body %}
-      body
-      {% endblock %}
-      </div> <!-- content -->
-
-      <div id="footer">
-         <div class="right">
-            <a href="/user/about.php">ABOUT US</a><br />
-            <a href="mailto:graham at flyingcracker dot com">CONTACT US</a><br />
-            <br />
-            <a href="http://validator.w3.org/check/referer">
-               <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" />
-            </a>
-         </div>
-         <div class="banner">
-            <div class="catchphrase">
-               Dangerously Informative  -  flyingcracker.com
-            </div>
-            <div class="mission">
-               <div class="title">
-                  Our Mission
-               </div>
-               <div class="body">
-
-                  {% block footer_mission %}
-                     mission
-                  {% endblock %}
-               </div>
-            </div>
-         </div>
-      </div> <!-- footer -->
-   </div> <!-- container -->
+<body onload="if (self != top) top.location = self.location" class=" yui-skin-sam">
+    <div id="top1">
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo nibh, pharetra at, adipiscing ullamcorper.</p>
+    </div>
+    <div id="bottom1">
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo nibh, pharetra at, adipiscing ullamcorper.</p>
+    </div>
+    <div id="center1">
+        <div id="content">
+            {% block body %}
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo nibh, pharetra at, .</p>
+            {% endblock %}
+        </div> <!-- content -->
+    </div>
+    <div id="left1">
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo nibh, pharetra at, adipiscing ullamcorper.</p>
+        <!-- SNIPPED -->
+    </div>
 </body>
 
 </html>

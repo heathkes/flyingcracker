@@ -170,8 +170,6 @@ def get_NOAA_forecast(state, zone):
     except IOError:
         return None
     
-    inWarning = False
-
     forecast = NOAAForecast(zname)
     for line in lines:
         forecast.parse_line(line.strip())

@@ -20,7 +20,7 @@ def json_encode2(data):
 
     def _any(data):
         ret = None
-        # Opps, we used to check if it is of type list, but that fails 
+        # Oops, we used to check if it is of type list, but that fails 
         # i.e. in the case of django.newforms.utils.ErrorList, which extends
         # the type "list". Oh man, that was a dumb mistake!
         if isinstance(data, list):
