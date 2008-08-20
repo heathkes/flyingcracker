@@ -1,8 +1,9 @@
 {% extends "blog.html" %}
 
 {% block body %}
+{% if object_list %}
 Posts from {{ year }}
-{% for post in object_list %}
+    {% for post in object_list %}
 	<div class="list">
 		<div class="Box">
 			<div class="Title">
@@ -17,5 +18,8 @@ Posts from {{ year }}
 			</div>
 		</div>
     </div>
-{% endfor %}
+    {% endfor %}
+{% else %}
+No stories from {{ year }}
+{% endif %}
 {% endblock %}

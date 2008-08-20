@@ -1,7 +1,9 @@
 {% extends "blog.html" %}
 
 {% block body %}
-{% for post in latest %}
+{% if object_list %}
+Posts from {{ month|date:"F Y" }}
+    {% for post in object_list %}
 	<div class="list">
 		<div class="Box">
 			<div class="Title">
@@ -16,5 +18,8 @@
 			</div>
 		</div>
     </div>
-{% endfor %}
+    {% endfor %}
+{% else %}
+No stories from {{ month|date:"F Y" }}
+{% endif %}
 {% endblock %}
