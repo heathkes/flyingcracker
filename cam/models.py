@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib import admin
+
 
 class Category(models.Model):
     title = models.CharField(max_length=30)
@@ -8,11 +10,10 @@ class Category(models.Model):
     
     class Meta:
         ordering = ['title']
-    
-    class Admin:
-        pass
-    
+
+
 class CamManager(models.Manager):
+    
     def belongs_to_category(self, cat=None):
         '''
         Returns a queryset of all Cams associated with specified Category.
@@ -23,7 +24,8 @@ class CamManager(models.Manager):
             return qs
         else:
             return qs
-    
+
+
 class Cam(models.Model):
     title = models.CharField(max_length=100)
     url = models.URLField()
@@ -37,10 +39,11 @@ class Cam(models.Model):
 
     class Meta:
         ordering = ['title','url',]
-        
+
+
+class CamAdmin(admin.ModelAdmin):
+    
     class Admin:
-        fields = (
-            (None, {
-                'fields': ('title', 'url', 'category', 'description', 'state')
-            }),
+        fieldset = (
+            (None, {'fields': ('title', 'url', 'category', 'description', 'state')}),
         )

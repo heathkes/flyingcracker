@@ -1,9 +1,8 @@
 from django.conf.urls.defaults import *
-from fc3.cam.models import Cam
 
 urlpatterns = patterns('fc3.cam.views',
-    (r'^cam_list/$',        'cam_list'),
+    (r'^list/$',            'cam_list'),
+    (r'^image/$',           'cam_image'),
     (r'^suggest/$',         'cam_suggestion'),
-    (r'^(?P<id>\d+)/$',     'cam_view'),
     (r'^$',                 'cam_view'),
 )

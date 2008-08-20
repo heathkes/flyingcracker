@@ -1,0 +1,92 @@
+<script type="text/javascript">
+var webcam = {
+    
+    init: function() {
+        var el = document.getElementById('id-category');
+        YAHOO.util.Event.addListener(el, 'change', webcam.request_list_func);
+        el = document.getElementById('id-image');
+        YAHOO.util.Event.addListener(el, 'change', webcam.request_image_func);
+    },
+    
+    request_list_func: function(e) {
+        // determine the id of the selected category
+        var select = document.getElementById('id-category');
+        // POST a request for new data
+        post_url = '/cam/list/?xhr';
+        var post_data = 'cat=' + select.value;
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_list_callback, post_data);
+        Set_Cookie("cam_category", ''+select.value, 7, '/', '', '');
+    },
+    
+    request_list_callback: {
+        success: function(o) {
+            // This turns the JSON string into a JavaScript object.
+            var response_obj = eval('(' + o.responseText + ')');
+            
+			var image_select = document.getElementById('id-image');
+            // remove existing options
+            image_select.options.length = 0;
+            // Add the image ids
+            webcam.add_option(image_select.options, 0, '--Select webcam--')
+            objs = response_obj.images;
+            for (var i=0; i<objs.length; i++) {
+                webcam.add_option(image_select.options, objs[i].id, objs[i].title)
+            }
+        },
+    
+        failure: function(o) {
+            var a = 1; // alert('An error has occurred');
+        }
+    
+    },
+
+    request_image_func: function(e) {
+        // determine the id of the selected image
+        var select = document.getElementById('id-image');
+        // POST a request for new data
+        post_url = '/cam/image/?xhr';
+        var post_data = 'id=' + select.value;
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_image_callback, post_data);
+        Set_Cookie("cam_id", ''+select.value, 7, '/', '', '');
+    },
+    
+    request_image_callback: {
+        success: function(o) {
+            // This turns the JSON string into a JavaScript object.
+            try {
+                var response_obj = YAHOO.lang.JSON.parse(o.responseText);
+            }
+            catch (e) {
+                alert("Invalid server response in cam.js: "+o.responseText+" Please inform CracklyFinger"+e)
+                return;
+            }
+            
+            if (response_obj.valid) {
+                var valid = response_obj.valid;
+                if (valid)
+                var image = response_obj.image;
+            }
+            
+            if (image) {
+                var el = document.getElementById('cam-image');
+                el.alt = image.title;
+                el.src = image.url;
+                el = document.getElementById('cam-description');
+                el.innerHTML = image.title;
+            }
+        },
+    
+        failure: function(o) {
+            var a = 1; // alert('An error has occurred');
+        }
+    
+    },
+    
+    add_option: function(sel,id,title) {
+        var newElem = document.createElement("option");
+        newElem.text = title;
+        newElem.value = id;
+        sel.add(newElem)
+    }
+};
+</script>
