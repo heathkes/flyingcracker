@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import admin
 from datetime import datetime
 
 
@@ -8,7 +7,7 @@ class Foodstuff(models.Model):
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField()
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     def permalink(self):
@@ -16,16 +15,12 @@ class Foodstuff(models.Model):
     
     class Meta:
         ordering = ['title']
-
-
-class FoodstuffAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
     
 
 class Attribute(models.Model):
     title = models.CharField(max_length=20)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     class Meta:
@@ -35,12 +30,12 @@ class Attribute(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=20)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     class Meta:
         ordering = ['title']
-
+    
     
 class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
@@ -58,36 +53,27 @@ class Recipe(models.Model):
     )
     rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default='D', blank=False)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     class Meta:
         ordering = ['title']
 
 
-class RecipeAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
-    fieldsets = (
-        (None, {'fields': ('title', 'slug', 'teaser', 'attributes', 'categories', 'rclass', 'pub_date')}),
-        ('directions & description', {'fields' : ('directions', 'description'),'classes': ('collapse',)}),
-    )
-    list_filter = ['rclass']
-    
-        
 class Ingredient(models.Model):
-    foodstuff = models.ForeignKey(Foodstuff, core=True, related_name="ingredients")
-    recipe = models.ForeignKey(Recipe, edit_inline=models.TABULAR, num_in_admin=5, related_name="ingredients")
+    foodstuff = models.ForeignKey(Foodstuff, related_name="ingredients")
+    recipe = models.ForeignKey(Recipe, related_name="ingredients")
     quantity = models.CharField(max_length=20, blank=True, null=True)
     modifier = models.CharField(max_length=50, blank=True, null=True)
     rank = models.IntegerField()
     
-    def __str__(self):
+    def __unicode__(self):
         return self.foodstuff.title
     
     class Meta:
         ordering = ['rank']
         verbose_name = "recipe ingredient"
-        verbose_name_plural = "recipe_ingredients"
+        verbose_name_plural = "recipe ingredients"
 
 
 class Link(models.Model):
@@ -95,7 +81,7 @@ class Link(models.Model):
     url = models.CharField(max_length=250)
     rank = models.IntegerField()
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     class Meta:

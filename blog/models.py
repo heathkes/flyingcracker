@@ -12,7 +12,7 @@ class Post(models.Model):
     body = models.TextField()
     enable_comments = models.BooleanField(default=True)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
    
     def get_absolute_url(self):

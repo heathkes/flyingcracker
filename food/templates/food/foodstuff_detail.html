@@ -17,7 +17,8 @@
         </div>
      
         {% if ingredients %}
-        <h4>Recipes using {{ foodstuff }}</h4>
+        <br />
+        <h2>Recipes using {{ foodstuff }}</h2>
         <ul>
         {% for i in ingredients %}
             <li><a href="{% url food-recipe-detail recipe_type=recipe_type,slug=i.recipe.slug %}">{{ i.recipe }}</a></li>

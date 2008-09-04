@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib import admin
+from django.contrib.localflavor.us.models import USStateField, PhoneNumberField
 
 
 class Category(models.Model):
     title = models.CharField(max_length=30)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     
     class Meta:
@@ -31,10 +32,10 @@ class Cam(models.Model):
     url = models.URLField()
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category)
-    state = models.USStateField(default="CO")
+    state = USStateField(default="CO")
     objects = CamManager()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.title
 
     class Meta:
