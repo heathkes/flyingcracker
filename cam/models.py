@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import admin
 from django.contrib.localflavor.us.models import USStateField, PhoneNumberField
 
 
@@ -40,11 +39,3 @@ class Cam(models.Model):
 
     class Meta:
         ordering = ['title','url',]
-
-
-class CamAdmin(admin.ModelAdmin):
-    
-    class Admin:
-        fieldset = (
-            (None, {'fields': ('title', 'url', 'category', 'description', 'state')}),
-        )
