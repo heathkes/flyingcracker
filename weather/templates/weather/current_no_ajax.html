@@ -15,6 +15,8 @@
 			</div> <!-- header -->
 
 			<div class="body">
+                <div class="yui-g">
+                    <div class="yui-u first">
 				<table class="currweatherTable">
    
       <!-- TEMPERATURE -->
@@ -47,9 +49,26 @@
         <td class="currweatherMajorItem">{{ current.dewpoint|stringformat:"d" }}&#186;</td>
         </tr>
       </table>
+                </div>
+
+                <div class="yui-u">
+                    Today's Temperature<br /><br />
+                <img src="{{ temp_chart.0|safe }}" alt="Temps" />
+                </div>
+            </div>
+                
+            <div class="yui-g">
+                <div class="yui-u first">
+                </div>
+                <div class="yui-u">
+                    Today's Barometer<br /><br />
+                <img src="{{ baro_chart.0|safe }}" alt="Barometer" />
+                </div>
+            </div>
 
       </div> <!-- body -->
     </div>  <!-- weatherItem -->
+    
   </div>  <!-- box -->
 
   {% if noaa %}
