@@ -20,7 +20,7 @@
       <!-- TEMPERATURE -->
         <tr>
 		    <td class="currweatherHead">Temp:</td>
-	   	  <td class="currweatherMajorItem">{{ current.temp }}&#186;</td>
+	   	  <td class="currweatherMajorItem">{{ current.temp|stringformat:"d" }}&#186;</td>
 		    <td class="currweatherHead">Rel. Humidity:</td>
 	   	  <td class="currweatherMajorItem">{{ current.humidity }}%</td>
         </tr>
@@ -36,15 +36,15 @@
       <!-- WIND -->
         <tr>   
         <td class="currweatherHead">Wind:</td>
-        <td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed }}</td>
+        <td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed|stringformat:"d" }}</td>
         <td class="currweatherHead">Wind Chill:</td>
-        <td class="currweatherMajorItem">{{ current.windchill }}&#186;</td>
+        <td class="currweatherMajorItem">{{ current.windchill|stringformat:"d" }}&#186;</td>
         </tr>
 
       <!-- DEWPOINT -->
         <tr>
         <td class="currweatherHead">Dewpoint:</td>
-        <td class="currweatherMajorItem">{{ current.dewpoint }}&#186;</td>
+        <td class="currweatherMajorItem">{{ current.dewpoint|stringformat:"d" }}&#186;</td>
         </tr>
       </table>
 
