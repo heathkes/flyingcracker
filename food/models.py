@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import permalink
 from datetime import datetime
 
 
@@ -10,8 +11,9 @@ class Foodstuff(models.Model):
     def __unicode__(self):
         return self.title
     
-    def permalink(self):
-        return "/food/%s/" % self.slug
+    def get_absolute_url(self):
+        return ('food-ingredient-detail', [self.slug])
+    get_absolute_url = permalink(get_absolute_url)
     
     class Meta:
         ordering = ['title']
@@ -56,6 +58,10 @@ class Recipe(models.Model):
     def __unicode__(self):
         return self.title
     
+    def get_absolute_url(self):
+        return ('food-recipe-detail', [self.slug])
+    get_absolute_url = permalink(get_absolute_url)
+    
     class Meta:
         ordering = ['title']
 
@@ -69,7 +75,15 @@ class Ingredient(models.Model):
     
     def __unicode__(self):
         return self.foodstuff.title
-    
+
+    def _get_title(self):
+        return self.foodstuff.title
+    title = property(_get_title)
+
+    def _get_slug(self):
+        return self.foodstuff.slug
+    slug = property(_get_slug)
+
     class Meta:
         ordering = ['rank']
         verbose_name = "recipe ingredient"

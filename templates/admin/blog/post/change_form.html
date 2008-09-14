@@ -2,9 +2,9 @@
 {% block extrahead %}
      {{ block.super }}
 <!-- Skin CSS file --> 
-	<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.3.1/build/assets/skins/sam/skin.css">
+	<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/{{ yui_version }}/build/assets/skins/sam/skin.css">
 <!-- Required for YUI Logger -->
-    <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.3.1/build/logger/assets/logger.css"> 
+    <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/{{ yui_version }}/build/logger/assets/logger.css"> 
 
 {% endblock %}
 {% block bodyclass %}{{ block.super }} yui-skin-sam{% endblock %}

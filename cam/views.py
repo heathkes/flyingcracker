@@ -25,16 +25,14 @@ def cam_view(request):
                 'image': image,
             })
     
-    
-    #
-    # This should determine if we are coming from iPhone HOME (inserting an HTML snippet)
-    # or coming from a direct request with no preloaded "stuff".
-    #
-    #response = render_to_response('cam/iphone/cam-iui.html', c)
-    response = render_to_response('cam/iphone/cam-iui.html', c)
-    
-    
-    return response
+    agent = request.META.get('HTTP_USER_AGENT')
+    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        if request.GET.has_key('iui'):
+            return render_to_response('cam/iphone/cam.html', c)
+        else:
+            return render_to_response('cam/iphone/cam_initial.html', c)
+    else:
+        return render_to_response('cam/cam.html')
 
 def cam_list(request):
     # get a list of webcam images associated with a Category
@@ -66,18 +64,23 @@ def cam_list(request):
         obj_dict['category'] = cat_id
         response_dict['images'] = obj_dict
         return JsonResponse(response_dict)
+    else:
+        return cam_list(request)
 
 def cam_image(request):
-    try:
-        id = request.POST.get('id')
-        image = Cam.objects.get(id=id)
-    except Cam.DoesNotExist:
-        image = None
-        valid = False
+    xhr = request.GET.has_key('xhr')
+    if xhr:
+        try:
+            id = request.POST.get('id')
+            image = Cam.objects.get(id=id)
+        except Cam.DoesNotExist:
+            image = None
+            valid = False
+        else:
+            valid = True
+        return JsonResponse({'image': image, 'valid': valid})    
     else:
-        # set cookie for default image?
-        valid = True
-    return JsonResponse({'image': image, 'valid': valid})    
+        return cam_list(request)
     
 def cam_suggestion(request):
     url = request.POST.get('url')

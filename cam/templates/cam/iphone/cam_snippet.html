@@ -1,0 +1,7 @@
+<div id="webcam">
+    <img id="cam-image" alt="{{ image.title }}" src="{{ image.url }}" />
+
+    <div id="cam-description">
+        {% firstof image.description image.title "webcam" %}
+    </div>
+</div>

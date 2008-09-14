@@ -11,13 +11,12 @@ urlpatterns = patterns('',
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
 #   (r'^accounts/',                          include('fc3.registration.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),
-#    (r'^test/',                             include('fc3.test.urls')),
     (r'^cam/',                              include('fc3.cam.urls')),
     (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),
     (r'^weatherstation/',                   include('fc3.weatherstation.urls')),
     (r'^weather/',                          include('fc3.weather.urls')),
     
-    (r'^$',                                 include('fc3.home.urls')),
+    (r'^',                                  include('fc3.home.urls')),
 )
 
 if settings.STATIC_URL[ :5] != 'http:':

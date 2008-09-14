@@ -1,8 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('fc3.cam.views',
-    (r'^list/$',            'cam_list'),
-    (r'^image/$',           'cam_image'),
-    (r'^suggest/$',         'cam_suggestion'),
-    (r'^$',                 'cam_view'),
+    url(r'^list/$',            'cam_list', name='fc-cam-list'),
+    url(r'^image/$',           'cam_image', name='fc-cam-image'),
+    url(r'^$',                 'cam_view', name='fc-cam'),
 )

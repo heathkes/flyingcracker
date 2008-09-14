@@ -1,34 +1,21 @@
-
-
 {% extends "weather.html" %}
-
 {% load markup %}
 
 {% block body %}
-	<div class="weatherItem">
-		<div class="Box">
-			<div class="Header">
-				<div class="Title">
+	<div class="box">
+    	<div class="weatherItem">
+			<div class="header">
+				<div class="title">
 					Crested Butte South Current Conditions
-				</div> <!-- Title -->
+				</div> <!-- title -->
 
-				<div class="Date">
+				<div class="date">
 					{{ current.timestamp }}
-				</div> <!-- Date -->
-			</div> <!-- Header -->
+				</div> <!-- date -->
+			</div> <!-- header -->
 
-			<div class="Body">
-				<table border="0" cellpadding="3" cellspacing="2">
-   
-			<!-- HIGH/LOW HEADINGS -->
-        <tr>
-        <td>&nbsp;</td>
-		    <td>&nbsp;</td>
-		    <td>&nbsp;</td>
-		    <td>&nbsp;</td>
-		    <td class="currweatherMinorItem">Todays Highs</td>
-		    <td class="currweatherMinorItem">Todays Lows</td>
-	      </tr>
+			<div class="body">
+				<table class="currweatherTable">
    
       <!-- TEMPERATURE -->
         <tr>
@@ -61,10 +48,41 @@
         </tr>
       </table>
 
-      </div> <!-- Body -->
-    </div>  <!-- Box -->
-  </div>  <!-- weatherItem -->
+      </div> <!-- body -->
+    </div>  <!-- weatherItem -->
+  </div>  <!-- box -->
 
+  {% if noaa %}
+    <div class="box">
+  	<div class="weatherItem">
+        <div class="header">
+            <div class="title">
+                NOAA Forecast
+            </div> <!-- title -->
+    
+            <div class="date">
+                {{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}
+            </div> <!-- date -->
+        </div> <!-- header -->
+        
+        <div class="forecast">
+            {% if noaa.warning %}
+            <div class="warning">
+                {{ noaa.warning }}
+            </div>
+            {% endif %}
+            {% for sec in noaa.sections %}
+            <div class="section">
+                <div class="title">{{ sec.title }}</div>
+                <div class="body">
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>  <!-- forecast -->
+    </div>  <!-- weatherItem -->
+    </div>  <!-- box -->
+    {% endif %}
 
 
 {% endblock %}

@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('fc3.home.views',
-    (r'^$', 'home'),
+    url(r'^$',          'home', name='fc-home'),
+    url(r'^about/$',    'about', name='fc-about'),
 )

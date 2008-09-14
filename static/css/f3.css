@@ -391,63 +391,69 @@ th.flowHead{
 	height : 20px;
 }
 
-
-.weatherItem {
-	font-family: Arial, sans-serif;
-	}
-.weatherItem .Box {
+.box {
 	border-bottom: #666666 solid 1px;
 	margin-bottom: 20px;
 	margin-left: 20px;
 	padding-bottom: 20px;
 }
-.weatherItem .Header {
+
+.weatherItem {
+	font-family: Arial, sans-serif;
+	}
+.weatherItem > .header {
 	margin: 0px 0px 0px 0px;
 }
-.weatherItem .Title {
+.weatherItem .link {
+	float: right;
+}
+.weatherItem > .header > .title {
 	font-size: 1.1em;
 	font-weight: bold;
 	color: #1F3543;
 }
-.weatherItem .Link {
-	float: right;
-}
-.weatherItem .Date {
+.weatherItem > .header > .date {
 	font-weight: normal;
 	font-size: 0.7em;
 	color: #666666;
 }
-.weatherItem .Body {
+.weatherItem .body {
 	font-size: 1em;
 	margin: 10px 5px 5px 0px;
 }
-.weatherItem .Body p {
+.weatherItem .body p {
 	font-size: 1em;
 }
-.weatherItem .CurrentWeather {
-	
-}
-.weatherItem .ForecastWarning {
+
+.forecast .warning {
 	font-size: 1.0em;
 	font-weight: bold;
 	margin: 5px 0px 5px 0px;
 	color: red;
 }
-.weatherItem .ForecastTitle {
+.forecast .title {
 	font-size: 0.9em;
 	margin: 2px 0px 0px 0px;
 	font-weight: bold;
 }
-.weatherItem .ForecastBody {
-	font-size: 0.8em;
-	margin-left: 20px;
+.forecast .section {
+    margin-top: 15px;
 }
-.weatherItem .ForecastArea {
+.forecast .body {
+	margin-left: 10px;
+}
+.forecast .area {
 	font-size: 0.8em;
 	margin-left: 20px;
 	font-style: italic;
 }
 
+.currweatherTable {
+    border: none;
+}
+.currweatherTable td {
+    padding: 5px;
+}
 .currweatherHead {
 	font-size: 1em;
 	font-weight: normal;

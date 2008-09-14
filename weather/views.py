@@ -135,62 +135,65 @@ def weather(request):
     current = Weather.objects.latest('timestamp')
     
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        show_titles = request.COOKIES.get("curr_weather_show_titles")
-        if show_titles == None:
-            show_titles = "hidden"
-        if show_titles == "hidden":
-            title_state = "false"
-        else:
-            title_state = "true"
-        show_units = request.COOKIES.get("curr_weather_show_units")
-        if show_units == None:
-            show_units = "none"
-        if show_units == "none":
-            unit_state = "false"
-        else:
-            unit_state = "true"
-            
-        # set wind background compass
-        if int(float(current.wind_speed)) < 1:
-            wind_dir = None
-        else:
-            wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
-            wind_dir = wind_dir.lower()
-            
-        today = datetime.today()
-        if today.hour < 12:
-            morning = True
-        else:
-            morning = False
-        
-        date_qs = today_weather(request)
-        t_chart, b_chart = get_day_charts(date_qs)
-        
-        cbac_forecast = get_CBAC_forecast()
-        noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
-        
-        #if self.timestamp.day != datetime.today().day:
-        #    self.stale = True
-        #else:
-        #    self.stale = False
-        
-        c = RequestContext(request, {
-                'wind_dir': wind_dir,
-                'morning': morning,
-                'show_titles': show_titles,
-                'show_units': show_units,
-                'temp_chart': t_chart,
-                'baro_chart': b_chart,
-                'cbac': cbac_forecast,
-                'noaa': noaa_forecast,
-                'unit_state': unit_state,
-                'title_state': title_state,
-                })
-        
-        return render_to_response('weather/iphone.html', c)
+    show_titles = request.COOKIES.get("curr_weather_show_titles")
+    if show_titles == None:
+        show_titles = "hidden"
+    if show_titles == "hidden":
+        title_state = "false"
     else:
-        return render_to_response('weather/current_no_ajax.html', {'current' : current})
+        title_state = "true"
+    show_units = request.COOKIES.get("curr_weather_show_units")
+    if show_units == None:
+        show_units = "none"
+    if show_units == "none":
+        unit_state = "false"
+    else:
+        unit_state = "true"
+        
+    # set wind background compass
+    if int(float(current.wind_speed)) < 1:
+        wind_dir = None
+    else:
+        wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
+        wind_dir = wind_dir.lower()
+        
+    today = datetime.today()
+    if today.hour < 12:
+        morning = True
+    else:
+        morning = False
+    
+    date_qs = today_weather(request)
+    t_chart, b_chart = get_day_charts(date_qs)
+    
+    cbac_forecast = get_CBAC_forecast()
+    noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
+    
+    #if self.timestamp.day != datetime.today().day:
+    #    self.stale = True
+    #else:
+    #    self.stale = False
+    
+    c = RequestContext(request, {
+            'current': current,
+            'wind_dir': wind_dir,
+            'morning': morning,
+            'show_titles': show_titles,
+            'show_units': show_units,
+            'temp_chart': t_chart,
+            'baro_chart': b_chart,
+            'cbac': cbac_forecast,
+            'noaa': noaa_forecast,
+            'unit_state': unit_state,
+            'title_state': title_state,
+            })
+    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        if request.GET.has_key('iui'):
+            return render_to_response('weather/iphone/weather-iui.html', c)
+        else:
+            return render_to_response('weather/iphone/weather.html', c)
+    else:
+        return render_to_response('weather/current_no_ajax.html', c)
 
 
 temp_units = ['F', 'C']

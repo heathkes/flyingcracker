@@ -2,7 +2,7 @@ from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from urllib import urlopen
 from dateutil import parser as dateutilparser
-from fc3.weatherstation.tz import USTimeZone
+#from fc3.weatherstation.tz import USTimeZone
 from forecast import Forecast
 
 

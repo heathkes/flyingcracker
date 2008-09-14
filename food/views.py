@@ -11,7 +11,12 @@ def recipe_list(request, recipe_type=""):
                                      'foodstuff_list': all_foodstuff,
                                      'recipe_type': recipe_type,
                                     })
-        return render_to_response('food/recipe_detail_small.html', c)
+        if request.GET.has_key('snippet'):
+            return render_to_response('food/iphone/recipe_snippet.html', c)
+        elif request.GET.has_key('iui'):
+            return render_to_response('food/iphone/recipe.html', c)
+        else:
+            return render_to_response('food/iphone/recipe_initial.html', c)
     else:
         all_links = Link.objects.all()
         c = RequestContext(request, {'all_recipes' : all_recipes,
@@ -27,24 +32,23 @@ def recipe_detail(request, slug, recipe_type=""):
         
     # get ingredients for this recipe
     ingredient_list = []
-    for i in r.ingredients.all().order_by('rank'):
-        ingredient_dict = {}
-        ingredient_dict['title'] = i.foodstuff.title
-        ingredient_dict['slug'] = i.foodstuff.slug
-        ingredient_dict['permalink'] = i.foodstuff.permalink()
-        ingredient_dict['quantity'] = i.quantity
-        ingredient_dict['modifier'] = i.modifier
-        ingredient_list.append(ingredient_dict)
+    for ingredient in r.ingredients.all().order_by('rank'):
+        ingredient_list.append(ingredient)
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         c = RequestContext(request, {'recipe_list' : all_recipes,
                                      'foodstuff_list': all_foodstuff,
+                                     'recipe_type': recipe_type,
                                      'recipe' : r,
                                      'ingredients' : ingredient_list,
-                                     'recipe_type': recipe_type,
                                     })
-        return render_to_response('food/recipe_detail_small.html', c)
+        if request.GET.has_key('snippet'):
+            return render_to_response('food/iphone/recipe_snippet.html', c)
+        elif request.GET.has_key('iui'):
+            return render_to_response('food/iphone/recipe.html', c)
+        else:
+            return render_to_response('food/iphone/recipe_initial.html', c)
     else:
         all_links = Link.objects.all()
         c = RequestContext(request, {'recipe_type': recipe_type,
@@ -62,7 +66,12 @@ def foodstuff_list(request, recipe_type=""):
                                      'foodstuff_list': all_foodstuff,
                                      'recipe_type': recipe_type,
                                     })
-        return render_to_response('food/foodstuff_detail_small.html', c)
+        if request.GET.has_key('snippet'):
+            return render_to_response('food/iphone/foodstuff_snippet.html', c)
+        elif request.GET.has_key('iui'):
+            return render_to_response('food/iphone/foodstuff.html', c)
+        else:
+            return render_to_response('food/iphone/foodstuff_initial.html', c)
     else:
         all_links = Link.objects.all()
         c = RequestContext(request, {'all_foodstuff' : all_foodstuff,
@@ -74,17 +83,22 @@ def foodstuff_list(request, recipe_type=""):
 def foodstuff_detail(request, slug, recipe_type=""):
     f = get_object_or_404(Foodstuff, slug=slug)
     
-    all_recipes, all_foodstuff = get_all_lists(recipe_type)
     ingredient_list = f.ingredients.all().order_by('recipe')
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        all_recipes, all_foodstuff = get_all_lists(recipe_type)
         c = RequestContext(request, {'recipe_list': all_recipes,
                                      'foodstuff_list' : all_foodstuff,
                                      'foodstuff' : f,
                                      'ingredients' : ingredient_list,
                                      'recipe_type': recipe_type,
                                     })
-        return render_to_response('food/foodstuff_detail_small.html', c)
+        if request.GET.has_key('snippet'):
+            return render_to_response('food/iphone/foodstuff_snippet.html', c)
+        elif request.GET.has_key('iui'):
+            return render_to_response('food/iphone/foodstuff.html', c)
+        else:
+            return render_to_response('food/iphone/foodstuff_initial.html', c)
     else:
         all_links = Link.objects.all()
         c = RequestContext(request, {'foodstuff' : f,

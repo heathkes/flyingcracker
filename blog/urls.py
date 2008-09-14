@@ -11,7 +11,7 @@ urlpatterns = patterns('django.views.generic',
     (r'^(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\w{1,2})/$', 'date_based.archive_day',   dict(blog_dict, month_format='%m', allow_empty=True)),
     (r'^(?P<year>\d{4})/(?P<month>\d{1,2})/$',                  'date_based.archive_month', dict(blog_dict, month_format='%m', allow_empty=True)),
     (r'^(?P<year>\d{4})/$',                                     'date_based.archive_year',  dict(blog_dict, make_object_list=True, allow_empty=True)),
-    (r'^$',                                                     'date_based.archive_index', blog_dict),
+    url(r'^$',                                                  'date_based.archive_index', blog_dict, name='fc-blog'),
  )
 
 urlpatterns += patterns('fc3.blog.views',
