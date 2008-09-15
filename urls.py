@@ -2,8 +2,10 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.conf import settings
 
-# Uncomment to load INSTALLED_APPS admin.py module for default AdminSite instance.
 admin.autodiscover()
+
+import mobileadmin
+mobileadmin.autoregister()
 
 urlpatterns = patterns('',
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
@@ -19,7 +21,18 @@ urlpatterns = patterns('',
     (r'^',                                  include('fc3.home.urls')),
 )
 
+urlpatterns += patterns('',
+    (r'^ma/(.*)', mobileadmin.sites.site.root),
+)
+
 if settings.STATIC_URL[ :5] != 'http:':
-    urlpatterns += patterns('',
-        (r'^' + settings.STATIC_URL + '/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT }),
+    urlpatterns += patterns('django.views.static',
+        (r'^' + settings.STATIC_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.STATIC_ROOT }),
+    )
+
+from mobileadmin.conf import settings as ma_settings
+
+if settings.STATIC_URL[ :5] != 'http:':
+    urlpatterns += patterns('django.views.static',
+        (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
     )
