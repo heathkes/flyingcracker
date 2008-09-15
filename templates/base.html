@@ -75,6 +75,16 @@
         pageTracker._trackPageview();
     </script>
     {% endblock analytics %}
+    
+<script type="text/javascript">
+    // Initialize and render the menu bar when it is available in the DOM
+    YAHOO.util.Event.onContentReady("main-menu", function () {
+        // Instantiate and render the menu bar
+        var oMenuBar = new YAHOO.widget.MenuBar("main-menu", { autosubmenudisplay: true, hidedelay: 750, lazyload: true });
+        oMenuBar.render();
+    });
+</script>
+    
 </head>
 
 <body onload="if (self != top) top.location = self.location" class=" yui-skin-sam">
@@ -82,7 +92,18 @@
         CracklyFinger.com<span class="subtitle"> - test site for <a href="http://www.flyingcracker.com">flyingcracker.com</a></span>
     </div>
     <div id="center1">
-        &nbsp;&nbsp;&nbsp;<a href="{% url fc-weather %}">Weather</a>&nbsp;&nbsp;&nbsp;<a href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a>
+        <div id="main-menu" class="yuimenubar yuimenubarnav">
+            <div class="bd">
+                <ul class="first-of-type">
+                    {% block navmenu %}
+                    <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="/">Home</a></li>
+                    <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url fc-weather %}">Weather</a></li>
+                    <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a></li>
+                    {% endblock %}
+                </ul>            
+            </div>
+        </div>
+        
         <div id="content">
             {% block body %}
             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo nibh, pharetra at, .</p>
@@ -90,8 +111,10 @@
         </div> <!-- content -->
     </div>
     <div id="left1">
+        {% block leftbar %}
         <p>2008-09-14 7:30pm MT: The <a href="http://www.flyingcracker.com">cracker</a> is back up!</p>
         <p>Feel free to watch our sporadic site development and experimentation here on cracklyfinger.com.</p>
+        {% endblock leftbar %}
     </div>
 </body>
 
