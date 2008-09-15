@@ -32,11 +32,11 @@
 	}
 
 #content {
-	margin: 10px;
-	padding: 1em 1em 1em 1em;
+	/* margin: 10px; */
+	padding: 2em;
 	background-color: #fff;
-	border: 2px double;
-	-moz-border-radius: 20px;
+	/* border: 2px double; */
+	/* -moz-border-radius: 20px; */
 }
 #content p {
 	font-size: 1em;
@@ -133,6 +133,9 @@
 }
 
 
+.select-bar {
+    margin-bottom: 1em;
+}
 
 #menulock {
 	display: block;
@@ -451,7 +454,7 @@ th.flowHead{
 #top1 {
     background-color: lightBlue;
     padding-bottom: 4px;
-    padding-left: 5px;
+    padding-left: 20px;
     font-size: 150%;
 }
 #top1 .subtitle {

@@ -1,29 +1,31 @@
 <div id="hd">
-    <div class="yui-g">
-        <div class="yui-u first" id="image-select">
-            <form action="." method="post">
-                <select id="id-image" class="selectLink">
-                    <option value="">--Select webcam--</option>
-                    {% for cam in camlist %}
-                    <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
-                        {{ cam.title }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
-    
-        <div class="yui-u" id="category-select">
-            <form action="." method="post">
-                <select id="id-category" class="selectLink">
-                    <option value="">--Select category--</option>
-                    {% for cat in catlist %}
-                    <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
-                        {{ cat.title }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </form>
+    <div class="select-bar">
+        <div class="yui-g">
+            <div class="yui-u first" id="image-select">
+                <form action="." method="post">
+                    <select id="id-image" class="selectLink">
+                        <option value="">--Select webcam--</option>
+                        {% for cam in camlist %}
+                        <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
+                            {{ cam.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        
+            <div class="yui-u" id="category-select">
+                <form action="." method="post">
+                    <select id="id-category" class="selectLink">
+                        <option value="">--Select category--</option>
+                        {% for cat in catlist %}
+                        <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
+                            {{ cat.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
         </div>
     </div>
 </div>

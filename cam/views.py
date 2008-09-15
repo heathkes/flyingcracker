@@ -14,7 +14,7 @@ def cam_view(request):
     
     # check browser for category cookie
     category_id = request.COOKIES.get(CAM_CATEGORY, None)
-    cam_id = request.COOKIES.get(CAM_ID, None)
+    cam_id = request.COOKIES.get(CAM_ID)
     
     cam_list, image, category = get_cam_list(category_id, cam_id)
 
