@@ -32,7 +32,7 @@ def cam_view(request):
         else:
             return render_to_response('cam/iphone/cam_initial.html', c)
     else:
-        return render_to_response('cam/cam.html')
+        return render_to_response('cam/cam.html', c)
 
 def cam_list(request):
     # get a list of webcam images associated with a Category

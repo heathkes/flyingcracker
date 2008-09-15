@@ -1,0 +1,9 @@
+<div id="webcam">
+    <img id="cam-image" alt="{{ image.title }}" src="{{ image.url }}" />
+
+    <div id="cam-description">
+        <p>{% firstof image.description image.title "webcam" %}</p>
+        <br />
+        <p>[Note: Your webcam selection is "sticky", in that the next time you visit this site you will see the same webcam.]</p>
+    </div>
+</div>

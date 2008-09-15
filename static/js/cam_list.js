@@ -18,18 +18,25 @@ var cam_list = {
     request_list_callback: {
         success: function(o) {
             // This turns the JSON string into a JavaScript object.
-            var response_obj = eval('(' + o.responseText + ')');
-            
-			var image_select = document.getElementById('id-image');
-            // remove existing options
-            image_select.options.length = 0;
-            // Add the image ids
-            cam_list.add_option(image_select.options, 0, '--Select webcam--')
-            objs = response_obj.images;
-            for (var i=0; i<objs.length; i++) {
-                cam_list.add_option(image_select.options, objs[i].id, objs[i].title)
+            try {
+                var response_obj = YAHOO.lang.JSON.parse(o.responseText);
             }
-            Set_Cookie("cam_category", objs.category, 7, '/', '', '')
+            catch (e) {
+                alert("Invalid server response in cam_list.js, request_list_callback ["+o.responseText+"], please inform CracklyFinger")
+            }
+
+            if (response_obj) {
+                var image_select = document.getElementById('id-image');
+                // remove existing options
+                image_select.options.length = 0;
+                // Add the image ids
+                cam_list.add_option(image_select.options, 0, '--Select webcam--')
+                objs = response_obj.images;
+                for (var i=0; i<objs.length; i++) {
+                    cam_list.add_option(image_select.options, objs[i].id, objs[i].title)
+                }
+                Set_Cookie("cam_category", objs.category, 7, '/', '', '')
+            }
         },
     
         failure: function(o) {
@@ -56,12 +63,13 @@ var cam_list = {
                 var image = response_obj.image;
             }
             catch (e) {
-                alert("Invalid server response in cam_list.js ["+o.responseText+"], please inform CracklyFinger")
+                alert("Invalid server response in cam_list.js, request_image_callback ["+o.responseText+"], please inform CracklyFinger")
             }
             if (image) {
                 var el = document.getElementById('cam-image');
                 el.alt = image.title;
                 el.src = image.url;
+                Set_Cookie("cam_id", image.id, 7, '/', '', '')
             }
         },
     
@@ -79,4 +87,4 @@ var cam_list = {
     }
 };
 
-// YAHOO.util.Event.addListener(window, 'load', cam_list.init);
+YAHOO.util.Event.addListener(window, 'load', cam_list.init);

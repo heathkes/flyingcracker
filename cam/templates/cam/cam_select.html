@@ -93,7 +93,6 @@ var webcam = {
             for (var i=0; i<objs.length; i++) {
                 webcam.add_option(image_select.options, objs[i].id, objs[i].title)
             }
-            Set_Cookie("cam_category", objs.category, 7, '/', '', '')
         },
     
         failure: function(o) {

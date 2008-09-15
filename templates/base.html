@@ -34,12 +34,15 @@
     <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
     <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/element/element-beta-min.js"></script>
     <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/layout/layout-beta-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/container/container_core-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/container/container-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/connection/connection-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/json/json-min.js"></script>
     <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/menu/menu-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/button/button-min.js"></script>
     {% endblock %}
     
-    <!-- My source - always after standard javascript block -->
     {% block my_source %}
+    <!-- My source - always after standard javascript block -->
     <script type="text/javascript" src="/static/js/doc_utils.js"></script>
     {% endblock my_source %}
     
@@ -97,6 +100,7 @@
                 <ul class="first-of-type">
                     {% block navmenu %}
                     <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url fc-weather %}">Weather</a></li>
+                    <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url fc-cam %}">WebCams</a></li>
                     <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a></li>
                     {% endblock %}
                 </ul>            
