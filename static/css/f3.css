@@ -463,8 +463,11 @@ th.flowHead{
     font-size: 93%;
 }
 #center1 {
-    padding-top: 10px;
     padding-bottom: 1px;
+    margin-top: -1px;
+}
+#main-menu {
+    margin-left: -1px;
 }
 .currweatherTable {
     border: none;
