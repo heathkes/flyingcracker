@@ -394,7 +394,7 @@ th.flowHead{
 .box {
 	border-bottom: #666666 solid 1px;
 	margin-bottom: 20px;
-	margin-left: 20px;
+	/* margin-left: 20px; */
 	padding-bottom: 20px;
 }
 
