@@ -54,10 +54,9 @@
         Event.onDOMReady(function() {
             var layout = new YAHOO.widget.Layout({
                 units: [
-                    { position: 'top', body: 'top1', height: 100 },
-                    { position: 'left', body: 'left1', width: 180 },
-                    { position: 'center', body: 'center1', scroll: true },
-                    { position: 'bottom', body: 'bottom1', height: 100 }
+                    { position: 'top', body: 'top1', height: 30 },
+                    { position: 'left', body: 'left1', width: 200 },
+                    { position: 'center', body: 'center1', scroll: true }
                 ]
             });
             layout.render();
@@ -80,12 +79,7 @@
 
 <body onload="if (self != top) top.location = self.location" class=" yui-skin-sam">
     <div id="top1">
-        <p>As of 7:30pm MT 2008-09-14 <a href="http://www.flyingcracker.com">the cracker</a> is back up!</p>
-        <p>Feel free to watch our sporadic site development here on cracklyfinger.com</p>
-    </div>
-    <div id="bottom1">
-        <p>As of 7:30pm MT 2008-09-14 <a href="http://www.flyingcracker.com">the cracker</a> is back up!</p>
-        <p>Feel free to watch our sporadic site development here on cracklyfinger.com</p>
+        CracklyFinger.com<span class="subtitle"> - test site for <a href="http://www.flyingcracker.com">flyingcracker.com</a></span>
     </div>
     <div id="center1">
         &nbsp;&nbsp;&nbsp;<a href="{% url fc-weather %}">Weather</a>&nbsp;&nbsp;&nbsp;<a href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a>
@@ -96,9 +90,8 @@
         </div> <!-- content -->
     </div>
     <div id="left1">
-        <p>As of 7:30pm MT 2008-09-14 <a href="http://www.flyingcracker.com">the cracker</a> is back up!</p>
-        <p>Feel free to watch our sporadic site development here on cracklyfinger.com</p>
-        <!-- SNIPPED -->
+        <p>2008-09-14 7:30pm MT: The <a href="http://www.flyingcracker.com">cracker</a> is back up!</p>
+        <p>Feel free to watch our sporadic site development and experimentation here on cracklyfinger.com.</p>
     </div>
 </body>
 

@@ -448,6 +448,24 @@ th.flowHead{
 	font-style: italic;
 }
 
+#top1 {
+    background-color: lightBlue;
+    padding-bottom: 4px;
+    padding-left: 5px;
+    font-size: 150%;
+}
+#top1 .subtitle {
+    font-size: 75%;
+}
+#left1 {
+    padding-left: 10px;
+    padding-top: 4px;
+    font-size: 93%;
+}
+#center1 {
+    padding-top: 10px;
+    padding-bottom: 1px;
+}
 .currweatherTable {
     border: none;
 }
