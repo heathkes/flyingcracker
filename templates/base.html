@@ -96,9 +96,8 @@
             <div class="bd">
                 <ul class="first-of-type">
                     {% block navmenu %}
-                    <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="/">Home</a></li>
                     <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url fc-weather %}">Weather</a></li>
-                    <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a></li>
+                    <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a></li>
                     {% endblock %}
                 </ul>            
             </div>
