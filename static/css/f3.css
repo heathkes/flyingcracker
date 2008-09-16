@@ -136,6 +136,22 @@
     margin-bottom: 1em;
 }
 
+#newsblog {
+    padding-top: 5px;
+}
+#newsblog .title {
+    font-size: 116%;
+    font-weight: bold;
+}
+#newsblog .post {
+    margin-top: 15px;
+}
+#newsblog .post .date {
+    color: #1F3543;
+}
+#newsblog .post .body {
+    font-size: 100%;
+}
 #menulock {
 	display: block;
 	text-align: center;
@@ -460,9 +476,7 @@ th.flowHead{
     font-size: 75%;
 }
 #left1 {
-    padding-left: 10px;
-    padding-top: 4px;
-    font-size: 93%;
+    padding: 4px 5px 5px 8px;
 }
 #center1 {
     padding-bottom: 1px;

@@ -115,8 +115,15 @@
     </div>
     <div id="left1">
         {% block leftbar %}
-        <p>2008-09-14 7:30pm MT: The <a href="http://www.flyingcracker.com">cracker</a> is back up!</p>
-        <p>Feel free to watch our sporadic site development and experimentation here on cracklyfinger.com.</p>
+        <div id="newsblog">
+            <div class="title">Site News</div>
+            {% for post in newsblog %}
+            <div class="post">
+                <div class="date">{{ post.pub_date|date:"n/j/y - g:i A" }}</div>
+                <div class="body">{{ post.body }}</div>
+            </div>
+            {% endfor %}
+        </div>
         {% endblock leftbar %}
     </div>
 </body>
