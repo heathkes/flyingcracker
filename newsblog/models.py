@@ -8,7 +8,7 @@ class Post(models.Model):
     body = models.TextField()
 
     def __unicode__(self):
-        return str(pub_date) + ' -  "' + truncatewords(body, 10) + '"'
+        return str(self.pub_date) + ' -  "' + truncatewords(self.body, 10) + '"'
     
     class Meta:
         get_latest_by = 'pub_date'
