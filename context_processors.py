@@ -1,13 +1,19 @@
+from django.conf import settings
 
 def media_url(request):
-    from django.conf import settings
     return {'media_url': settings.MEDIA_URL}
 
 def yui_version(request):
-    from django.conf import settings
-    return {'yui_version': settings.YUI_VERSION}
+    yui = {}
+    yui['yui_root'] = 'http://yui.yahooapis.com/'
+    yui['yui_version'] = settings.YUI_VERSION
+    try:
+        yui['yui_path'] = settings.YUI_PATH
+    except AttributeError:
+        yui['yui_path'] = 'graham' + yui['yui_root'] + settings.YUI_VERSION
+    return yui
 
-def newsblog(request):
-    from fc3.newsblog.models import Post
+def miniblog(request):
+    from fc3.miniblog.models import Post
     posts = Post.objects.all().order_by('-pub_date')
-    return {'newsblog': posts}
+    return {'miniblog': posts}

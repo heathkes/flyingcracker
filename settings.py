@@ -50,7 +50,7 @@ TEMPLATE_LOADERS = (
 
 # List of context processors, with some custom ones at the top.
 TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
-                               'fc3.context_processors.newsblog',
+                               'fc3.context_processors.miniblog',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',)
@@ -91,7 +91,7 @@ INSTALLED_APPS = (
     'fc3.blog',
 #    'fc3.registration',
     'fc3.cam',
-    'fc3.newsblog',
+    'fc3.miniblog',
 )
 
 AUTHENTICATION_BACKENDS = (

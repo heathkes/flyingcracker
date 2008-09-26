@@ -605,6 +605,10 @@ th.flowHead{
 .cocktail td a:visited {
 	text-decoration: none;
 }
+.cocktail .select-title {
+	font-size: 120%;
+	margin-left: 0.25em;
+}
 	
 .cooktime {
 	font-family: arial, sans-serif;
