@@ -23,22 +23,22 @@
  
     <title>flyingcracker{% block section_title %}{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/reset-fonts-grids/reset-fonts-grids.css"> 
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/assets/skins/sam/skin.css">
+    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css"> 
+    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
     {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="/static/css/f3.css" title="stylesheet" />
     {% endblock extrastyle %}
     
     {% block javascript %}
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yuiloader/yuiloader-beta-min.js"></script> 
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/element/element-beta-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/layout/layout-beta-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/container/container-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/connection/connection-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/json/json-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/menu/menu-min.js"></script>
-    <script type="text/javascript" src="http://yui.yahooapis.com/{{ yui_version }}/build/button/button-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-beta-min.js"></script> 
+    <script type="text/javascript" src="{{ yui_path }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/element/element-beta-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/container/container-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/connection/connection-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/json/json-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/menu/menu-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/button/button-min.js"></script>
     {% endblock %}
     
     {% block my_source %}
@@ -117,10 +117,10 @@
         {% block leftbar %}
         <div id="newsblog">
             <div class="title">Site News</div>
-            {% for post in newsblog %}
+            {% for post in miniblog %}
             <div class="post">
                 <div class="date">{{ post.pub_date|date:"n/j/y - g:i A" }}</div>
-                <div class="body">{{ post.body }}</div>
+                <div class="body">{{ post.body|safe }}</div>
             </div>
             {% endfor %}
         </div>
