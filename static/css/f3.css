@@ -420,6 +420,7 @@ th.flowHead{
 
 .weatherItem {
 	font-family: Arial, sans-serif;
+	font-size: 116%;
 	}
 .weatherItem > .header {
 	margin: 0px 0px 0px 0px;
