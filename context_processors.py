@@ -10,7 +10,7 @@ def yui_version(request):
     try:
         yui['yui_path'] = settings.YUI_PATH
     except AttributeError:
-        yui['yui_path'] = 'graham' + yui['yui_root'] + settings.YUI_VERSION
+        yui['yui_path'] = yui['yui_root'] + settings.YUI_VERSION
     return yui
 
 def miniblog(request):
