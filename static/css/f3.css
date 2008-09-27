@@ -565,6 +565,12 @@ th.flowHead{
 .cocktail .directions p {
 	margin:0;
 }
+.cocktail .credit {
+	padding-top: 15px;
+}
+.cocktail .credit p {
+		color: #8F3543;
+}
 .cocktail .pubdate {
 	padding-top: 10px;
 	font-size: 0.8em;
