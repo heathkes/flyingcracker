@@ -10,11 +10,6 @@
         <a name="current"></a>
         <span id="curr_timestamp" class="fieldset_timestamp"></span><h2>Crested Butte, CO</h2>
         <fieldset>
-            <div class="barMenu">
-                <span class="button">Current</span>
-                {% if cbac %}<a href="#cbac" class="button">CBAC Forecast</a>{% endif %}
-                <a href="#noaa" class="button">NOAA Forecast</a>
-            </div>
             <div id="curr_weather">
                 <div class="yui-b" style="background: url({{ temp_chart }}) no-repeat top">
                     <div id="curr_temp" class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
@@ -92,11 +87,6 @@
         <a name="cbac"></a>
         <span class="fieldset_timestamp">{{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}</span><h2>CBAC Forecast</h2>
         <fieldset>
-        <div class="barMenu">
-            <a href="#current" class="button">Current</a>
-            <span class="button">CBAC Forecast</span>
-            <a href="#noaa" class="button">NOAA Forecast</a>
-        </div>
         <div id="cbac_forecast" class="forecast">
             <div class="yui-b">
             {% if cbac %}
@@ -120,11 +110,6 @@
         <a name="noaa"></a>
         <span class="fieldset_timestamp">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span><h2>NOAA Forecast</h2>
         <fieldset>
-        <div class="barMenu">
-            <a href="#current" class="button">Current</a>
-            {% if cbac %}<a href="#cbac" class="button">CBAC Forecast</a>{% endif %}
-            <span class="button">NOAA Forecast</span>
-        </div>
         <div id="noaa_forecast" class="forecast">
             <div class="yui-b">
             {% if noaa %}
