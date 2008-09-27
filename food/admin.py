@@ -5,13 +5,17 @@ import fc3.food.models as food
 
 
 class FoodstuffAdmin(admin.ModelAdmin):
-    model = food.Foodstuff
     prepopulated_fields = {'slug': ('title',)}
     
 admin.site.register(food.Foodstuff, FoodstuffAdmin)
 
 admin.site.register(food.Attribute)
-admin.site.register(food.Category)
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
+admin.site.register(food.Category, CategoryAdmin)
 
 
 class IngredientInline(admin.TabularInline):
@@ -23,7 +27,7 @@ class RecipeAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     fieldsets = (
         (None, {'fields': ('title', 'slug', 'teaser', 'attributes', 'categories', 'rclass', 'pub_date')}),
-        ('directions & description', {'fields' : ('directions', 'description'),'classes': ('collapse',)}),
+        ('directions, description, credit', {'fields' : ('directions', 'description', 'credit')}),
     )
     list_filter = ['rclass']
     inlines = [

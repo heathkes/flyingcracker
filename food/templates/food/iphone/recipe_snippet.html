@@ -21,9 +21,15 @@
     <div class="yui-b" id="recipe-directions">
         {{ recipe.directions|textile }}
     </div>
-    
+    {% if recipe.description %}
     <div class="yui-b" id="recipe-description">
         {{ recipe.description|textile }}
     </div>
+    {% endif %}
+    {% if recipe.credit %}
+    <div class="yui-b" id="recipe-credit">
+        {{ recipe.credit|textile }}
+    </div>
+    {% endif %}
 </div>
 {% endif %}

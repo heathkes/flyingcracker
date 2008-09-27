@@ -31,12 +31,15 @@ class Attribute(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=20)
+    slug = models.SlugField()
+    description = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
         return self.title
     
     class Meta:
         ordering = ['title']
+        verbose_name_plural = "categories"
     
     
 class Recipe(models.Model):
@@ -46,14 +49,18 @@ class Recipe(models.Model):
     directions = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     teaser = models.CharField(max_length=100, blank=True, null=True)
+    credit = models.TextField(blank=True, null=True)
     attributes = models.ManyToManyField(Attribute)
     categories = models.ManyToManyField(Category)
+    DRINK_CLASS = 'D'
+    EAT_CLASS = 'E'
+    INGREDIENT_CLASS = 'I'
     CLASS_CHOICES = (
-        ('D', 'Drink'),
-        ('E', 'Eat'),
-        ('I', 'Ingredient'),
+        (DRINK_CLASS, 'Drink'),
+        (EAT_CLASS, 'Eat'),
+        (INGREDIENT_CLASS, 'Ingredient'),
     )
-    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default='D', blank=False)
+    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default=DRINK_CLASS, blank=False)
     
     def __unicode__(self):
         return self.title

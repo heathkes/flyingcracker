@@ -1,7 +1,10 @@
 from django.template import RequestContext
-from fc3.food.models import Recipe, Foodstuff, Link
+from fc3.food.models import Recipe, Foodstuff, Category
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.defaultfilters import random
+
+def category_list(request, slug):
+    pass
 
 def recipe_list(request, recipe_type=""):
     all_recipes, all_foodstuff = get_all_lists(recipe_type)
@@ -18,9 +21,7 @@ def recipe_list(request, recipe_type=""):
         else:
             return render_to_response('food/iphone/recipe_initial.html', c)
     else:
-        all_links = Link.objects.all()
         c = RequestContext(request, {'all_recipes' : all_recipes,
-                                     'all_links' : all_links,
                                      'recipe_type': recipe_type,
                                     })
         return render_to_response('food/recipe_list.html', c)
@@ -29,20 +30,23 @@ def recipe_detail(request, slug, recipe_type=""):
     r = get_object_or_404(Recipe, slug=slug)
     
     all_recipes, all_foodstuff = get_all_lists(recipe_type)
-        
+    all_categories = Category.objects.all().order_by('title')
+    
     # get ingredients for this recipe
     ingredient_list = []
     for ingredient in r.ingredients.all().order_by('rank'):
         ingredient_list.append(ingredient)
 
+    c = RequestContext(request, {'recipe_list' : all_recipes,
+                                 'foodstuff_list': all_foodstuff,
+                                 'category_list': all_categories,
+                                 'recipe_type': recipe_type,
+                                 'recipe' : r,
+                                 'ingredients' : ingredient_list,
+                                })
+
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        c = RequestContext(request, {'recipe_list' : all_recipes,
-                                     'foodstuff_list': all_foodstuff,
-                                     'recipe_type': recipe_type,
-                                     'recipe' : r,
-                                     'ingredients' : ingredient_list,
-                                    })
         if request.GET.has_key('snippet'):
             return render_to_response('food/iphone/recipe_snippet.html', c)
         elif request.GET.has_key('iui'):
@@ -50,13 +54,7 @@ def recipe_detail(request, slug, recipe_type=""):
         else:
             return render_to_response('food/iphone/recipe_initial.html', c)
     else:
-        all_links = Link.objects.all()
-        c = RequestContext(request, {'recipe_type': recipe_type,
-                                     'recipe' : r,
-                                     'ingredients' : ingredient_list,
-                                     'all_links' : all_links,
-                                    })
-        return render_to_response('food/recipe_detail.html', c)
+       return render_to_response('food/recipe_detail.html', c)
     
 def foodstuff_list(request, recipe_type=""):
     all_recipes, all_foodstuff = get_all_lists(recipe_type)
@@ -73,9 +71,7 @@ def foodstuff_list(request, recipe_type=""):
         else:
             return render_to_response('food/iphone/foodstuff_initial.html', c)
     else:
-        all_links = Link.objects.all()
         c = RequestContext(request, {'all_foodstuff' : all_foodstuff,
-                                     'all_links' : all_links,
                                      'recipe_type': recipe_type,
                                     })
         return render_to_response('food/foodstuff_list.html', c)
@@ -100,10 +96,8 @@ def foodstuff_detail(request, slug, recipe_type=""):
         else:
             return render_to_response('food/iphone/foodstuff_initial.html', c)
     else:
-        all_links = Link.objects.all()
         c = RequestContext(request, {'foodstuff' : f,
                                      'ingredients' : ingredient_list,
-                                     'all_links' : all_links,
                                      'recipe_type': recipe_type,
                                     })
         return render_to_response('food/foodstuff_detail.html', c)
