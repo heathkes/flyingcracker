@@ -22,7 +22,7 @@
     </div>
     
     <div class="box">
-        <a href="{% url food-recipe-list recipe_type="cocktail" %}">All Recipes</a>
+        <a href="{% url food-recipe-list recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Recipes</a>
     </div>
 </div>
 
