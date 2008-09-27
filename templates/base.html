@@ -104,10 +104,10 @@
 		</div>
 
 		<!-- the unwrapped div.yui-b takes a fixed width and alignment based on the class of the top-level containing node -->
-		<div class="yui-b">
+		<div class="yui-b left1">
             {% block leftbar %}
+            <img src="/static/img/duke.jpg" height="170" alt="nav photo" />
             <div id="newsblog">
-                <div class="title">Site News</div>
                 {% for post in miniblog %}
                 <div class="post">
                     <div class="date">{{ post.pub_date|date:"n/j/y - g:i A" }}</div>
