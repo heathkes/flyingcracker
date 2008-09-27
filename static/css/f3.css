@@ -138,22 +138,6 @@
     margin-bottom: 1em;
 }
 
-#newsblog {
-    padding-top: 5px;
-}
-#newsblog .title {
-    font-size: 116%;
-    font-weight: bold;
-}
-#newsblog .post {
-    margin-top: 15px;
-}
-#newsblog .post .date {
-    color: #1F3543;
-}
-#newsblog .post .body {
-    font-size: 100%;
-}
 #menulock {
 	display: block;
 	text-align: center;
@@ -179,39 +163,6 @@ html>body .fcContext a.highlighted {
 }
 */
 	
-#guarddog {
-	color: #bdbdbd;
-	margin: 10px 0 20px 0;
-	text-align: center;
-	font-size: 0.8em;
-	}
-#guarddog strong {
-	font-weight: bold;
-	}
-#guarddog a:link {
-	color: #60B0E5;
-	font-weight: normal;
-	text-decoration: none;
-	}
-#guarddog a:visited {
-	color: #60B0E5;
-	font-weight: normal;
-	text-decoration: none;
-	}
-#guarddog a:hover {
-	background-color: #ffffff;
-	color: #000000;
-	font-weight: normal;
-	}
-#guarddog .myfc a {
-	font-weight: bold;
-}
-#guarddog .myfc a:hover {
-	color: red;
-	font-weight: bold;
-	padding: 1px 3px 1px 3px;
-}
-
 #rss {
 	text-align: right;
 	clear: both;
@@ -485,10 +436,26 @@ th.flowHead{
     font-size: 75%;
 }
 .left1 {
-    padding: 4px 5px 5px 4px;
 }
 #main-menu {
 }
+#newsblog {
+    padding-left: 5px;
+}
+#newsblog .title {
+    font-size: 116%;
+    font-weight: bold;
+}
+#newsblog .post {
+    margin-top: 15px;
+}
+#newsblog .post .date {
+    color: #1F3543;
+}
+#newsblog .post .body {
+    font-size: 100%;
+}
+
 .currweatherTable {
     border: none;
 }
