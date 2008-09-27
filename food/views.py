@@ -109,6 +109,6 @@ def get_all_lists(recipe_type):
 
 def db_recipe_type(recipe_type):
     if recipe_type == "food":
-        return "F"
+        return Recipe.EAT_CLASS
     else:
-        return "D"
+        return Recipe.DRINK_CLASS

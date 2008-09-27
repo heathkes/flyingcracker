@@ -18,12 +18,12 @@
         {% endfor %}
         </table>
     {% else %}
-        <p>No recipes in the database.</p>
+        <p>No {{ recipe_type }} recipes in the database.</p>
     {% endif %}
     </div>
     
     <div class="box">
-            <a href="{% url food-ingredient-list recipe_type="cocktail" %}">All Ingredients</a>
+            <a href="{% url food-ingredient-list recipe_type="{{ recipe_type }}" %}">All Ingredients</a>
     </div>
 </div>
 {% endblock %}
