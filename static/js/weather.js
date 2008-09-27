@@ -7,6 +7,7 @@ Array.prototype.has = function(v) {
     }
     return false;
 }
+
 Array.prototype.next = function(v) {
     // return the next array item after 'v'
     // return the first item if 'v' is last item in the array
@@ -66,6 +67,8 @@ var current_weather = {
         current_weather.assign_listener('temp_value', 'curr_weather', current_weather.temp_change_units);
         current_weather.assign_listener('baro_value', 'curr_weather', current_weather.baro_change_units);
         current_weather.assign_listener('speed_value', 'curr_weather', current_weather.speed_change_units);
+        
+        YAHOO.util.Event.addListener("refresh-button", 'click', current_weather.retrieve_current);
     },
     
     retrieve_current: function() {
@@ -291,5 +294,4 @@ var current_weather = {
 };
 
 YAHOO.util.Event.addListener(window, 'load', current_weather.init);
-YAHOO.util.Event.addListener("refresh-button", 'click', current_weather.retrieve_current);
 

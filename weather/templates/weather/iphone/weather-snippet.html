@@ -1,0 +1,123 @@
+<div class="panel" selected="true">
+    <a name="current"></a>
+    <span id="curr_timestamp" class="fieldset_timestamp"></span><h2>Crested Butte, CO</h2>
+    <fieldset>
+        <div id="curr_weather">
+            <div class="yui-b" style="background: url({{ temp_chart }}) no-repeat top">
+                <div id="curr_temp" class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                    <span class="temp_value"></span>
+                    <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                </div>
+            </div>
+            <div class="yui-b" id="curr_barometer_block" style="background: url({{ baro_chart }}) no-repeat top">
+                <div class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                    <div id="curr_baro" class="yui-b">
+                        <span class="baro_value"></span>
+                        <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                    </div>
+                    <div class="yui-b weather_title">
+                            <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+                    </div>
+                    <div id="curr_trend" class="yui-b">
+                        <span class="baro_value"></span>
+                        <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                    </div>
+                    <div class="yui-b weather_title">
+                            <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                    </div>
+                </div>
+            </div>
+            <div class="yui-gb">
+                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
+                    <span class="speed_value"></span>
+                    <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}"></span></div>
+                </div>
+                <div id="curr_windchill" class="yui-u">
+                    <span class="temp_value"></span>
+                    <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                </div>
+                <div id="curr_humidity" class="yui-u">
+                    <span class="humidity_value"></span>
+                    <span class="curr_units">%</span>
+                </div>
+            </div>
+            <div class="yui-gb weather_title">
+                <div class="yui-u first">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+                </div>
+                <div class="yui-u">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
+                </div>
+                <div class="yui-u">
+                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                </div>
+            </div>
+            <div class="yui-b">
+                <button id="refresh-button">Refresh Weather</button>
+            </div>
+        </div>
+    
+        <div class="row">
+            <label>Show Units:</label>
+            <div class="toggle" onclick="toggleUnits(this)" toggled="{{ unit_state }}">
+            <span class="thumb"></span>
+            <span class="toggleOn">Yes</span>
+            <span class="toggleOff">No</span>
+            </div>
+        </div>            
+        <div class="row">
+            <label>Show Labels:</label>
+            <div class="toggle" onclick="toggleLabels(this)" toggled="{{ title_state }}">
+            <span class="thumb"></span>
+            <span class="toggleOn">Yes</span>
+            <span class="toggleOff">No</span>
+            </div>
+        </div>            
+    </fieldset>
+    
+    {% if cbac %}
+    <a name="cbac"></a>
+    <span class="fieldset_timestamp">{{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}</span><h2>CBAC Forecast</h2>
+    <fieldset>
+    <div id="cbac_forecast" class="forecast">
+        <div class="yui-b">
+            {% for sec in cbac.sections %}
+            <div class="section">
+                <strong>{{ sec.title }}</strong>
+                <div>
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+            <div id="cbac_reporter">
+                reported by:&nbsp;{{ cbac.reported_by|slugify|capfirst }}
+            </div>
+        </div>
+    </div>
+    </fieldset>
+    {% endif %}
+    
+    {% if noaa %}
+    <a name="noaa"></a>
+    <span class="fieldset_timestamp">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span><h2>NOAA Forecast</h2>
+    <fieldset>
+    <div id="noaa_forecast" class="forecast">
+        <div class="yui-b">
+            {% if noaa.warning %}
+            <div class="warning">
+                {{ noaa.warning }}
+            </div>
+            {% endif %}
+            {% for sec in noaa.sections %}
+            <div class="section">
+                <strong>{{ sec.title }}</strong>
+                <div>
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </fieldset>
+    {% endif %}
+</div>
