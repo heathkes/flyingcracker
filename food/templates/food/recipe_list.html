@@ -9,14 +9,14 @@
             </div>
         </div>
     {% if all_recipes %}
-        <table>
+        <div class="bd">
         {% for recipe in all_recipes %}
-            <tr>
-                <td><a href="{% url food-recipe-detail recipe_type=recipe_type,slug=recipe.slug %}">{{ recipe.title }}</a></td>
-                <td>{{ recipe.teaser }}</td>	
-            </tr>
+            <div class="yui-gd">
+                <div class="yui-u first"><a href="{% url food-recipe-detail recipe_type=recipe_type,slug=recipe.slug %}">{{ recipe.title }}</a></div>
+                <div class="yui-u">{{ recipe.teaser }}</div>
+            </div>
         {% endfor %}
-        </table>
+        </div>
     {% else %}
         <p>No {{ recipe_type }} recipes in the database.</p>
     {% endif %}

@@ -31,9 +31,12 @@ if settings.STATIC_URL[ :5] != 'http:':
         (r'^' + settings.STATIC_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.STATIC_ROOT }),
     )
 
-from mobileadmin.conf import settings as ma_settings
-
-if settings.STATIC_URL[ :5] != 'http:':
+if hasattr(settings, 'LOCAL_URL') and hasattr(settings, 'LOCAL_ROOT'):
     urlpatterns += patterns('django.views.static',
-        (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
+        (r'^' + settings.LOCAL_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.LOCAL_ROOT }),
     )
+
+from mobileadmin.conf import settings as ma_settings
+urlpatterns += patterns('django.views.static',
+    (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
+)

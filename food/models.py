@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import permalink
-from datetime import datetime
+from datetime import date
 
 
 class Foodstuff(models.Model):
@@ -45,7 +45,7 @@ class Category(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField()
-    pub_date = models.DateField('date published', null=True, default=datetime.now)
+    pub_date = models.DateField('date published', null=True, default=date.today)
     directions = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     teaser = models.CharField(max_length=100, blank=True, null=True)
