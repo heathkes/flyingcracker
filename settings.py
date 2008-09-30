@@ -53,7 +53,9 @@ TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.miniblog',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
-                               'django.core.context_processors.i18n',)
+                               'django.core.context_processors.i18n',
+                               'mobileadmin.context_processors.user_agent',
+                               )
 
 APPEND_SLASH = True
 
@@ -84,6 +86,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'django.contrib.humanize',
     'django.contrib.flatpages',
+    'mobileadmin',
     'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',

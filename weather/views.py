@@ -26,7 +26,7 @@ def get_day_charts(date_qs):
     t_list = temp_list(date_qs)
     for l in t_list:
         floor = min((i for i in l if i is not None))   # ignore Nones in the list
-        t_chart.append(temp_chart(l, floor, max(l), 280, 100))
+        t_chart.append(temp_chart(l, floor, max(l), 258, 100))
         
     b_list = baro_list(date_qs)
     for l in b_list:

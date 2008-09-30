@@ -22,10 +22,6 @@ urlpatterns = patterns('',
     (r'^',                                  include('fc3.home.urls')),
 )
 
-urlpatterns += patterns('',
-    (r'^ma/(.*)', mobileadmin.sites.site.root),
-)
-
 if settings.STATIC_URL[ :5] != 'http:':
     urlpatterns += patterns('django.views.static',
         (r'^' + settings.STATIC_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.STATIC_ROOT }),
@@ -35,6 +31,12 @@ if hasattr(settings, 'LOCAL_URL') and hasattr(settings, 'LOCAL_ROOT'):
     urlpatterns += patterns('django.views.static',
         (r'^' + settings.LOCAL_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.LOCAL_ROOT }),
     )
+
+# Support for mobileadmin app
+
+urlpatterns += patterns('',
+    (r'^ma/(.*)', mobileadmin.sites.site.root),
+)
 
 from mobileadmin.conf import settings as ma_settings
 urlpatterns += patterns('django.views.static',
