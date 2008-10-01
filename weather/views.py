@@ -33,12 +33,14 @@ def today_weather(request):
     
 def yesterday_weather(request):
     today = get_today(request)
-    yesterday = today - 1
+    one_day = datetime.timedelta(days=1)
+    yesterday = today - one_day
     return get_weather_for_date(yesterday)
 
 def year_ago_weather(request):
     today = get_today(request)
-    year_ago = today - 365
+    one_year = datetime.timedelta(days=365) # don't worry about leap years
+    year_ago = today - one_year
     return get_weather_for_date(year_ago)
 
 def day_temp_charts(qs_list, colors):
