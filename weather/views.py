@@ -29,19 +29,19 @@ def today_yesterday_year_ago_weather(request):
 
 def today_weather(request):
     today = get_today(request)
-    return get_weather_for_date(today)
+    return hourly_data(get_weather_for_date(today))
     
 def yesterday_weather(request):
     today = get_today(request)
     one_day = datetime.timedelta(days=1)
     yesterday = today - one_day
-    return get_weather_for_date(yesterday)
+    return hourly_data(get_weather_for_date(yesterday))
 
 def year_ago_weather(request):
     today = get_today(request)
     one_year = datetime.timedelta(days=365) # don't worry about leap years
     year_ago = today - one_year
-    return get_weather_for_date(year_ago)
+    return hourly_data(get_weather_for_date(year_ago))
 
 def day_temp_charts(qs_list, colors):
     '''
@@ -210,34 +210,54 @@ def weather(request):
     else:
         morning = False
     
-    qs_list = today_yesterday_year_weather(request)
-    t_chart = day_temp_charts(qs_list, ['0000FF', '87CEEB', 'BEBEBE'])
-    
-    date_qs = today_weather(request)
-    b_chart = day_baro_charts(date_qs)
-    
     cbac_forecast = get_CBAC_forecast()
     noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
     
-    c = RequestContext(request, {
-            'current': current,
-            'wind_dir': wind_dir,
-            'morning': morning,
-            'show_titles': show_titles,
-            'show_units': show_units,
-            'temp_chart': t_chart,
-            'baro_chart': b_chart,
-            'cbac': cbac_forecast,
-            'noaa': noaa_forecast,
-            'unit_state': unit_state,
-            'title_state': title_state,
-            })
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        qs_list = today_yesterday_year_ago_weather(request)
+        t_chart = day_temp_charts(qs_list, ['0000FF', '87CEEB', 'BEBEBE'])
+        
+        date_qs = today_weather(request)
+        b_chart = day_baro_charts(date_qs)
+    
+        c = RequestContext(request, {
+                'current': current,
+                'wind_dir': wind_dir,
+                'morning': morning,
+                'show_titles': show_titles,
+                'show_units': show_units,
+                'temp_chart': t_chart,
+                'baro_chart': b_chart,
+                'cbac': cbac_forecast,
+                'noaa': noaa_forecast,
+                'unit_state': unit_state,
+                'title_state': title_state,
+                })
+
         if request.GET.has_key('iui'):
             return render_to_response('weather/iphone/weather-iui.html', c)
         else:
             return render_to_response('weather/iphone/weather.html', c)
     else:
+        qs_list = today_yesterday_year_ago_weather(request)
+        t_chart = day_temp_charts(qs_list, ['0000FF', '87CEEB', 'BEBEBE'])
+        
+        date_qs = today_weather(request)
+        b_chart = day_baro_charts(date_qs)
+    
+        c = RequestContext(request, {
+                'current': current,
+                'wind_dir': wind_dir,
+                'morning': morning,
+                'show_titles': show_titles,
+                'show_units': show_units,
+                'temp_chart': t_chart,
+                'baro_chart': b_chart,
+                'cbac': cbac_forecast,
+                'noaa': noaa_forecast,
+                'unit_state': unit_state,
+                'title_state': title_state,
+                })
         return render_to_response('weather/current_no_ajax.html', c)
 
 
@@ -398,9 +418,11 @@ def current(request):
         else:
             morning = False
 
-        date_qs = hourly_data(today_weather(request))
-        t_chart = day_temp_chart(date_qs)
-        b_chart = day_baro_chart(date_qs)
+        qs_list = today_yesterday_year_ago_weather(request)
+        t_chart = day_temp_charts(qs_list, ['0000FF', '87CEEB', 'BEBEBE'])
+        
+        date_qs = today_weather(request)
+        b_chart = day_baro_charts(date_qs)
         
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
