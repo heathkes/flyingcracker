@@ -204,7 +204,7 @@ def weather(request):
         wind_dir = "wind-%s.png" % wind_dir_to_english(current.wind_dir)
         wind_dir = wind_dir.lower()
         
-    today = datetime.date.today()
+    today = datetime.datetime.today()
     if today.hour < 12:
         morning = True
     else:
@@ -392,7 +392,7 @@ def current(request):
         
         windchill_list = calc_temp_strings(current.windchill)
         
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         if today.hour < 12:
             morning = True
         else:
