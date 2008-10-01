@@ -1,3 +1,5 @@
+{% load markup %}
+
 <div class="panel" selected="true">
 {% for post in posts %}
     <fieldset>
@@ -6,7 +8,7 @@
             {{ post.pub_date|date:"n/j/y - g:i A" }}
         </div>
         <div class="post">
-            {{ post.body|safe }}
+            {{ post.body|textile }}
         </div>
         </div>
     </fieldset>
