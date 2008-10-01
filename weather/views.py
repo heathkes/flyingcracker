@@ -22,9 +22,9 @@ def get_weather_for_date(wdate):
 
 def today_yesterday_year_ago_weather(request):
     qs_list = []
-    qs_list.append(today_weather)
-    qs_list.append(yesterday_weather)
-    qs_list.append(year_ago_weather)
+    qs_list.append(today_weather(request))
+    qs_list.append(yesterday_weather(request))
+    qs_list.append(year_ago_weather(request))
     return qs_list
 
 def today_weather(request):
