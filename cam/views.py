@@ -16,12 +16,12 @@ def cam_view(request):
     category_id = request.COOKIES.get(CAM_CATEGORY, None)
     cam_id = request.COOKIES.get(CAM_ID)
     
-    cam_list, image, category = get_cam_list(category_id, cam_id)
+    c_list, image, category = get_cam_list(category_id, cam_id)
 
     c = RequestContext(request, {
                 'catlist': cat_list,
                 'category': category,
-                'camlist': cam_list,
+                'camlist': c_list,
                 'image': image,
             })
     
@@ -44,19 +44,19 @@ def cam_list(request):
             try:
                 category = Category.objects.get(id=cat_id)
             except Category.DoesNotExist:
-                cam_list = Cam.objects.all()
+                c_list = Cam.objects.all()
             else:
                 if category.title == "All Categories":
-                    cam_list = Cam.objects.all()
+                    c_list = Cam.objects.all()
                 else:
-                    cam_list = Cam.objects.belongs_to_category(cat_id)
+                    c_list = Cam.objects.belongs_to_category(cat_id)
         else:
-            cam_list = Cam.objects.all()
+            c_list = Cam.objects.all()
             
         response_dict = {}
         index = 0
         obj_dict = {}
-        for obj in cam_list:
+        for obj in c_list:
             obj_dict[index] = dict({'id': obj.id, 'title': obj.title})
             index = index + 1
             
@@ -65,7 +65,7 @@ def cam_list(request):
         response_dict['images'] = obj_dict
         return JsonResponse(response_dict)
     else:
-        return cam_list(request)
+        return cam_view(request)
 
 def cam_image(request):
     xhr = request.GET.has_key('xhr')
@@ -80,7 +80,7 @@ def cam_image(request):
             valid = True
         return JsonResponse({'image': image, 'valid': valid})    
     else:
-        return cam_list(request)
+        return cam_view(request)
     
 def cam_suggestion(request):
     url = request.POST.get('url')
@@ -113,26 +113,26 @@ def get_cam_list(cat_id, cam_id=None):
         try:
             category = Category.objects.get(id=cat_id)
         except Category.DoesNotExist:
-            cam_list = Cam.objects.all()
+            c_list = Cam.objects.all()
             category = get_default_category()
         else:
             if category.title == "All Categories":
-                cam_list = Cam.objects.all()
+                c_list = Cam.objects.all()
             else:
-                cam_list = Cam.objects.filter(category=category)
+                c_list = Cam.objects.filter(category=category)
                 # if we don't already have an image,
                 # or the image doesn't appear in the specified category
                 # set the image to the first one in the category
-                if not image or image not in cam_list:
-                    image = cam_list[0]
+                if not image or image not in c_list:
+                    image = c_list[0]
     else:
-        cam_list = Cam.objects.all()
+        c_list = Cam.objects.all()
         category = get_default_category()
         
     if not image:
         image = get_default_image()
         
-    return cam_list, image, category
+    return c_list, image, category
 
 def get_default_image():
     try:
