@@ -122,9 +122,11 @@ def current(request):
         temp_unit = request.COOKIES.get("temp_unit")
         if temp_unit is None:
             temp_unit = utils.temp_units[utils.TEMP_F]
+            
         baro_unit = request.COOKIES.get("baro_unit")
         if baro_unit is None:
             baro_unit = utils.baro_units[utils.PRESS_IN]
+            
         if wind == 0:
             speed_unit = ""
             wind_units = [""]
@@ -132,7 +134,7 @@ def current(request):
             speed_unit = request.COOKIES.get("speed_unit")
             wind_units = utils.speed_units
             if speed_unit is None:
-                speed_unit = utils.wind_units[utils.SPEED_MPH]
+                speed_unit = utils.speed_units[utils.SPEED_MPH]
         
         windchill_list = utils.calc_temp_strings(current.windchill)
         
@@ -153,7 +155,7 @@ def current(request):
         response_dict.update({'timestamp': timestamp})
         response_dict.update({'temp_units': utils.temp_units})
         response_dict.update({'baro_units': utils.baro_units})
-        response_dict.update({'speed_units': utils.wind_units})
+        response_dict.update({'speed_units': wind_units})
         response_dict.update({'temp_unit': temp_unit})
         response_dict.update({'baro_unit': baro_unit})
         response_dict.update({'speed_unit': speed_unit})
