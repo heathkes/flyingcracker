@@ -32,6 +32,11 @@ if hasattr(settings, 'LOCAL_URL') and hasattr(settings, 'LOCAL_ROOT'):
         (r'^' + settings.LOCAL_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.LOCAL_ROOT }),
     )
 
+if settings.CHART_URL[ :5] != 'http:':
+    urlpatterns += patterns('django.views.static',
+        (r'^' + settings.CHART_URL[1:] + '/(?P<path>.*)$', 'serve', {'document_root': settings.CHART_ROOT }),
+    )
+
 # Support for mobileadmin app
 
 urlpatterns += patterns('',
