@@ -128,7 +128,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
         b_chart[unit].download(CHART_ROOT+'weather/'+filename)
     
 def main():
-    date = utils.get_today()
+    date = datetime.datetime.today()
     date.replace(hour=0,minute=0,second=0,microsecond=0)
     date_wx = utils.weather_on_date(date)
     
