@@ -121,11 +121,11 @@ def current(request):
         
         temp_unit = request.COOKIES.get("temp_unit")
         if temp_unit is None:
-            temp_unit = utils.temp_units[utils.TEMP_F]
+            temp_unit = utils.TEMP_F
             
         baro_unit = request.COOKIES.get("baro_unit")
         if baro_unit is None:
-            baro_unit = utils.baro_units[utils.PRESS_IN]
+            baro_unit = utils.PRESS_IN
             
         if wind == 0:
             speed_unit = ""
@@ -134,7 +134,7 @@ def current(request):
             speed_unit = request.COOKIES.get("speed_unit")
             wind_units = utils.speed_units
             if speed_unit is None:
-                speed_unit = utils.speed_units[utils.SPEED_MPH]
+                speed_unit = utils.SPEED_MPH
         
         windchill_list = utils.calc_temp_strings(current.windchill)
         
