@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import datetime
+from decimal import Decimal
 from fc3.weatherstation.models import Weather
 import fc3.gchart as gchart
 from fc3.settings import CHART_ROOT
