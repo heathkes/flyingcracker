@@ -98,17 +98,17 @@ def periodic_records(qs, start, fudge, interval, periods):
 def hourly_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24)
+    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24+1)
 
 def halfhour_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(minutes=30), 24*2)
+    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(minutes=30), (24*2)+1)
     
 def ten_minute_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=2, seconds=30), datetime.timedelta(minutes=10), 24*6)
+    return periodic_records(qs, start, datetime.timedelta(minutes=2, seconds=30), datetime.timedelta(minutes=10), (24*6)+1)
 
 def flex_floor(vals, prev):
     '''
