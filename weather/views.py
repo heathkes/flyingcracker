@@ -53,7 +53,7 @@ def weather(request):
         for unit in utils.temp_units:
             t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
         for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
+            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, 'small'))
             
         c = RequestContext(request, {
                 'current': current,
@@ -77,7 +77,7 @@ def weather(request):
         for unit in utils.temp_units:
             t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, ''))
         for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_TDY, ''))
+            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, ''))
     
         c = RequestContext(request, {
                 'current': current,
@@ -149,7 +149,7 @@ def current(request):
         for unit in utils.temp_units:
             t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
         for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
+            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, 'small'))
         
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
