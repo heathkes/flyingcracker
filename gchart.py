@@ -41,7 +41,7 @@ def day_chart_iphone(data_lists, floor, ceil, width, height, colors, line_widths
     X-axis labels are the hour of day every three hours.
     
     '''
-    return xchart(DAY_EVERY_HALFHOUR_DATA,
+    return xchart(DAY_EVERY_HOUR_DATA,
                   DAY_EVERY_3HOURS_LABELS,
                   data_lists, floor, ceil, width, height, colors, line_widths
                  )

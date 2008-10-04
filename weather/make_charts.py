@@ -5,17 +5,17 @@ import fc3.gchart as gchart
 from fc3.settings import CHART_ROOT
 
 def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_ago_wx):
-    date_halfhour_wx = gchart.halfhour_data(date_wx, date)
-    yesterday_halfhour_wx = gchart.halfhour_data(yesterday_wx, yesterday)
-    year_ago_halfhour_wx = gchart.halfhour_data(year_ago_wx, year_ago)
+    date_hourly_wx = gchart.hourly_data(date_wx, date)
+    yesterday_hourly_wx = gchart.hourly_data(yesterday_wx, yesterday)
+    year_ago_hourly_wx = gchart.hourly_data(year_ago_wx, year_ago)
 
     # Temperature Charts
     
     # Today, yesterday, year ago
     qs_list = []
-    qs_list.append(date_halfhour_wx)
-    qs_list.append(yesterday_halfhour_wx)
-    qs_list.append(year_ago_halfhour_wx)
+    qs_list.append(date_hourly_wx)
+    qs_list.append(yesterday_hourly_wx)
+    qs_list.append(year_ago_hourly_wx)
     t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_iphone, 260, 100, ['0000FF', '87CEEB', 'BEBEBE'])
     # retrieve and save these charts
     for unit in utils.temp_units:
@@ -24,8 +24,8 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
 
     # Today, year ago
     qs_list = []
-    qs_list.append(date_halfhour_wx)
-    qs_list.append(year_ago_halfhour_wx)
+    qs_list.append(date_hourly_wx)
+    qs_list.append(year_ago_hourly_wx)
     t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_iphone, 260, 100, ['0000FF', 'BEBEBE'])
     # retrieve and save these charts
     for unit in utils.temp_units:
@@ -35,8 +35,8 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
 
     # Today, yesterday
     qs_list = []
-    qs_list.append(date_halfhour_wx)
-    qs_list.append(yesterday_halfhour_wx)
+    qs_list.append(date_hourly_wx)
+    qs_list.append(yesterday_hourly_wx)
     t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_iphone, 260, 100, ['0000FF', '87CEEB'])
     # retrieve and save these charts
     for unit in utils.temp_units:
@@ -46,7 +46,7 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
 
     # Today
     qs_list = []
-    qs_list.append(date_halfhour_wx)
+    qs_list.append(date_hourly_wx)
     t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_iphone, 260, 100, ['0000FF'])
     # retrieve and save these charts
     for unit in utils.temp_units:
@@ -57,7 +57,7 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     
     # Today
     qs_list = []
-    qs_list.append(date_halfhour_wx)
+    qs_list.append(date_hourly_wx)
     b_chart = utils.day_baro_charts(qs_list, gchart.day_chart_iphone, 292, 120, ['FFCC99'])
     # retrieve and save these charts
     for unit in utils.baro_units:
