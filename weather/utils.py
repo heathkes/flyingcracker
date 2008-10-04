@@ -280,3 +280,10 @@ def baro_chart_filename(unit, date, type, extra):
 
 def weather_chart_filename(unit, date, title, type, extra):
     return '%d-%02d-%02d_%s_%s_%s%s.png' % (date.year, date.month, date.day, title, unit, type, extra)
+
+if __name__=='__main__':
+    today = get_today(None)
+    today_wx = weather_on_date(today)
+    print gchart.hourly_data(today_wx, today)
+    print gchart.halfhour_data(today_wx, today)
+    

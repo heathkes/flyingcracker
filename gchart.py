@@ -57,56 +57,65 @@ def day_chart_normal(data_lists, floor, ceil, width, height, colors, line_widths
                   data_lists, floor, ceil, width, height, colors, line_widths
                  )
 
-def periodic_records(qs, start, interval, periods):
+def periodic_records(qs, start, fudge, interval, periods):
     '''
     Returns a list of arbitrary type records (containing attribute 'timestamp')
     with one record for each 'interval' (i.e. 1 day) for a total of 'periods' intervals
     beginning at 'start'. If a record is not found in an interval, None is placed in the list
-    instead of a record.
+    instead of a record. In order to be included, a record timestamp must fall between
+    a range of the target (`start` plus a multiple of `interval`) +/- `fudge`.
+    For instance if `start`=12:00, `fudge`=5 minutes and `interval`=30 minutes
+    the record timestamp must fall in the ranges 11:55 - 12:05, 12:25 - 12:35, etc.
+    Only the first record seen in the range is used.
     
     '''
     data = []
-    end = start + (interval * periods)
-    curr = (start + interval) - datetime.timedelta(seconds=1)
-    if len(qs):
-        rec = qs[0]
-        rec_class = rec.__class__
-    else:
-        rec = None
-    while periods:
-        if rec and rec.timestamp < curr:
-            data.append(rec)
-            while rec:
-                # skip next records less than curr
-                try:
-                    rec = rec.get_next_by_timestamp()
-                except rec_class.DoesNotExist:
-                    rec = None
-                else:
-                    if rec.timestamp > curr:
-                        break
-        else:
+    if len(qs) == 0:
+        return data
+    
+    end = start + (periods * interval)
+    target = start - fudge
+    range = fudge * 2
+    for rec in qs:
+        if (target + fudge) >= end:
+            break
+        ts = rec.timestamp
+        while ts > (target + range):
             data.append(None)
-        curr += interval
-        periods -= 1
+            target += interval
+        if ts < target:
+            pass
+        else:
+            data.append(rec)
+            target += interval
+    
+    while (target + fudge) < end:
+        data.append(None)
+        target += interval
+        
     return data
 
 def hourly_data(qs, start):
     # normalize the starting date to midnight
     start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(hours=1), 24)
+    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24)
 
 def halfhour_data(qs, start):
     # normalize the starting date to midnight
     start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=30), 24*2)
+    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(minutes=30), 24*2)
     
 def ten_minute_data(qs, start):
     # normalize the starting date to midnight
     start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=10), 24*6)
+    return periodic_records(qs, start, datetime.timedelta(minutes=2, seconds=30), datetime.timedelta(minutes=10), 24*6)
 
 def flex_floor(vals, prev):
+    '''
+    Returns the smallest value of the values in the vals list and prev.
+    Formats the result according to the type of the first element in vals.
+    
+    '''
     vlist = [i for i in vals if i is not None]
     if not vlist:
         return prev

@@ -4,9 +4,6 @@ from fc3.weather import utils
 import fc3.gchart as gchart
 from fc3.settings import CHART_ROOT
 
-# from my_pygooglechart import TextDataWithScaling
-
-
 def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_ago_wx):
     date_hourly_wx = gchart.hourly_data(date_wx, date)
     yesterday_hourly_wx = gchart.hourly_data(yesterday_wx, yesterday)
