@@ -5,9 +5,13 @@ import fc3.gchart as gchart
 from fc3.settings import CHART_ROOT
 
 def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_ago_wx):
+    print 'calculating halfhour weather...'
     date_halfhour_wx = gchart.halfhour_data(date_wx, date)
+    print str(date) + ' done'
     yesterday_halfhour_wx = gchart.halfhour_data(yesterday_wx, yesterday)
+    print str(yesterday) + ' done'
     year_ago_halfhour_wx = gchart.halfhour_data(year_ago_wx, year_ago)
+    print str(year_ago) + ' done'
 
     # Temperature Charts
     
@@ -20,7 +24,9 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TDY, 'small')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
     # Today, year ago
     qs_list = []
@@ -30,7 +36,9 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TY, 'small')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
 
     # Today, yesterday
@@ -41,7 +49,9 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TD, 'small')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
 
     # Today
@@ -51,7 +61,9 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_T, 'small')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
     # Barometric Pressure Charts
     
@@ -62,7 +74,9 @@ def create_iphone_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.baro_units:
         filename = utils.baro_chart_filename(unit, date, utils.CHART_TYPE_T, 'small')
+        print 'downloading ' + filename + '...'
         b_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
     
 def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_ago_wx):
     date_halfhour_wx = gchart.halfhour_data(date_wx, date)
@@ -80,7 +94,9 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TDY, '')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
     # Today, year ago
     qs_list = []
@@ -90,7 +106,9 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TY, '')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
 
     # Today, yesterday
@@ -101,7 +119,9 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TD, '')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
 
     # Today
@@ -111,7 +131,9 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_T, '')
+        print 'downloading ' + filename + '...'
         t_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
 
     # Barometric Pressure Charts
     
@@ -122,7 +144,9 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # retrieve and save these charts
     for unit in utils.baro_units:
         filename = utils.baro_chart_filename(unit, date, utils.CHART_TYPE_T, '')
+        print 'downloading ' + filename + '...'
         b_chart[unit].download(CHART_ROOT+'weather/'+filename)
+        print 'done.'
     
 def main():
     date = datetime.datetime.today()
