@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 import datetime
 from fc3.weather import utils
 import fc3.gchart as gchart
