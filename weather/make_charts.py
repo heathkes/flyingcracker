@@ -90,7 +90,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     qs_list.append(date_halfhour_wx)
     qs_list.append(yesterday_halfhour_wx)
     qs_list.append(year_ago_halfhour_wx)
-    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 120, ['0000FF', '87CEEB', 'BEBEBE'])
+    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 180, ['0000FF', '87CEEB', 'BEBEBE'])
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TDY, '')
@@ -102,7 +102,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     qs_list = []
     qs_list.append(date_halfhour_wx)
     qs_list.append(year_ago_halfhour_wx)
-    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 120, ['0000FF', 'BEBEBE'])
+    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 180, ['0000FF', 'BEBEBE'])
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TY, '')
@@ -115,7 +115,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     qs_list = []
     qs_list.append(date_halfhour_wx)
     qs_list.append(yesterday_halfhour_wx)
-    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 120, ['0000FF', '87CEEB'])
+    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 180, ['0000FF', '87CEEB'])
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_TD, '')
@@ -127,7 +127,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # Today
     qs_list = []
     qs_list.append(date_halfhour_wx)
-    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 120, ['0000FF'])
+    t_chart = utils.day_temp_charts(qs_list, gchart.day_chart_normal, 360, 180, ['0000FF'])
     # retrieve and save these charts
     for unit in utils.temp_units:
         filename = utils.temp_chart_filename(unit, date, utils.CHART_TYPE_T, '')
@@ -140,7 +140,7 @@ def create_normal_charts(date, date_wx, yesterday, yesterday_wx, year_ago, year_
     # Today
     qs_list = []
     qs_list.append(date_halfhour_wx)
-    b_chart = utils.day_baro_charts(qs_list, gchart.day_chart_normal, 360, 150, ['FFCC99'])
+    b_chart = utils.day_baro_charts(qs_list, gchart.day_chart_normal, 360, 180, ['FFCC99'])
     # retrieve and save these charts
     for unit in utils.baro_units:
         filename = utils.baro_chart_filename(unit, date, utils.CHART_TYPE_T, '')
