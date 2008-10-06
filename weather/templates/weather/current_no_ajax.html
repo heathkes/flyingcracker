@@ -15,61 +15,43 @@
 			</div> <!-- header -->
 
 			<div class="body">
-                <div class="yui-g">
-                    <div class="yui-u first">
-				<table class="currweatherTable">
-   
-      <!-- TEMPERATURE -->
-        <tr>
-		    <td class="currweatherHead">Temp:</td>
-	   	  <td class="currweatherMajorItem">{{ current.temp|stringformat:"d" }}&#186;</td>
-		    <td class="currweatherHead">Rel. Humidity:</td>
-	   	  <td class="currweatherMajorItem">{{ current.humidity }}%</td>
-        </tr>
+                <div class="yui-b" style="background: url({{ temp_chart.0|safe }}) no-repeat top">
+					<table class="currweatherTable">
 
-      <!-- BAROMETRIC PRESSURE -->
-        <tr>   
-        <td class="currweatherHead">Baro:</td>
-        <td class="currweatherMajorItem">{{ current.barometer }}</td>
-        <td class="currweatherHead">3 Hr. Trend:</td>
-        <td class="currweatherMajorItem">{{ current.baro_trend }}</td>
-        </tr>
-
-      <!-- WIND -->
-        <tr>   
-        <td class="currweatherHead">Wind:</td>
-        <td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed|stringformat:"d" }}</td>
-        <td class="currweatherHead">Wind Chill:</td>
-        <td class="currweatherMajorItem">{{ current.windchill|stringformat:"d" }}&#186;</td>
-        </tr>
-
-      <!-- DEWPOINT -->
-        <tr>
-        <td class="currweatherHead">Dewpoint:</td>
-        <td class="currweatherMajorItem">{{ current.dewpoint|stringformat:"d" }}&#186;</td>
-        </tr>
-      </table>
-                </div>
-
-                <div class="yui-u">
-                    Today's Temperature<br /><br />
-                <img src="{{ temp_chart.0|safe }}" alt="Temps" />
-                </div>
-            </div>
-                
-            <div class="yui-g">
-                <div class="yui-u first">
-                </div>
-                <div class="yui-u">
-                    Today's Barometer<br /><br />
-                <img src="{{ baro_chart.0|safe }}" alt="Barometer" />
-                </div>
-            </div>
-
-      </div> <!-- body -->
-    </div>  <!-- weatherItem -->
-    
-  </div>  <!-- box -->
+						<!-- TEMPERATURE -->
+						<tr>
+							<td class="currweatherHead">Temp:</td>
+							<td class="currweatherMajorItem">{{ current.temp|stringformat:"d" }}&#186;</td>
+							<td class="currweatherHead">Rel. Humidity:</td>
+							<td class="currweatherMajorItem">{{ current.humidity }}%</td>
+						</tr>
+				  
+						<!-- BAROMETRIC PRESSURE -->
+						<tr>   
+							<td class="currweatherHead">Baro:</td>
+							<td class="currweatherMajorItem">{{ current.barometer }}</td>
+							<td class="currweatherHead">3 Hr. Trend:</td>
+							<td class="currweatherMajorItem">{{ current.baro_trend }}</td>
+						</tr>
+				  
+						<!-- WIND -->
+						<tr>   
+							<td class="currweatherHead">Wind:</td>
+							<td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed|stringformat:"d" }}</td>
+							<td class="currweatherHead">Wind Chill:</td>
+							<td class="currweatherMajorItem">{{ current.windchill|stringformat:"d" }}&#186;</td>
+						</tr>
+				  
+						<!-- DEWPOINT -->
+						<tr>
+							<td class="currweatherHead">Dewpoint:</td>
+							<td class="currweatherMajorItem">{{ current.dewpoint|stringformat:"d" }}&#186;</td>
+						</tr>
+					</table>
+				</div>
+			</div> <!-- body -->
+		</div>  <!-- weatherItem -->
+	</div>  <!-- box -->
 
   {% if noaa %}
     <div class="box">
