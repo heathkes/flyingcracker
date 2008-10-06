@@ -70,7 +70,7 @@ def temp_dict(l):
     '''
     data = []
     for rec in l:
-        if rec is None:
+        if rec is None or rec.temp is None:
             v = None
         else:
             v = int(rec.temp)
@@ -92,7 +92,7 @@ def baro_dict(l):
     '''
     data = []
     for rec in l:
-        if rec is None:
+        if rec is None or rec.barometer is None:
             v = None
         else:
             v = float(rec.barometer)
