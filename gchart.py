@@ -6,6 +6,7 @@ DAY_EVERY_HOUR_DATA = [i for i in range(0, 24+1)]
 DAY_EVERY_HALFHOUR_DATA = [i for i in range(0, (24*2)+1)]
 DAY_EVERY_10_MINUTES_DATA = [i for i in range(0, (24*6)+1)]
 DAY_EVERY_3HOURS_LABELS = ['', '3a', '6a', '9a', '12', '3p', '6p', '9p', '']
+DAY_EVERY_2HOURS_LABELS = ['', '2a', '4a', '6a', '8a', '10a', '12', '2p', '4p', '6p', '8p', '10p', '']
 DAY_EVERY_HOUR_LABELS = ['', '1a', '2a', '3a', '4a', '5a', '6a', '7a', '8a', '9a', '10a', '11a', '12',
                          '1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p', '10p', '11p', '']
 
@@ -53,7 +54,7 @@ def day_chart_normal(data_lists, floor, ceil, width, height, colors, line_widths
     
     '''
     return xchart(DAY_EVERY_HALFHOUR_DATA,
-                  DAY_EVERY_HOUR_LABELS,
+                  DAY_EVERY_2HOURS_LABELS,
                   data_lists, floor, ceil, width, height, colors, line_widths
                  )
 
