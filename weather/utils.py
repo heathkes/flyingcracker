@@ -2,109 +2,8 @@
 import datetime
 from decimal import Decimal
 from fc3.weatherstation.models import Weather
+from fc3.weather.models import ChartUrl
 import fc3.gchart as gchart
-from fc3.settings import CHART_ROOT
-
-# chart type strings - T=today, D=yesterday, Y=year ago
-CHART_TYPE_TDY = 'TDY'
-CHART_TYPE_TY = 'TY'
-CHART_TYPE_TD = 'TD'
-CHART_TYPE_T = 'T'
-
-def day_temp_charts(qs_list, plot_func, width, height, colors):
-    '''
-    Accepts a list of querysets. Each queryset corresponds to a line on the chart.
-    Returns a dictionary of chart URLs, keyed by temperature unit type.
-    
-    '''
-    data_list = []  # list of temperature unit dictionaries
-    for date_qs in qs_list:
-        if date_qs: # only work on this if the queryset is not empty
-            data_list.append(temp_dict(date_qs))
-
-    chart = {}    # dictionary of chart URLs, keyed by unit type
-    for unit in temp_units:
-        floor = 200
-        ceil = -200
-        plot_list = [] # list of plot lines, each a list of temperature values
-        for val_dict in data_list:
-            vals = val_dict[unit]
-            # add list of temp values to list of plot lines
-            plot_list.append(vals)
-            # determine the lowest and highest values seen for this unit type
-            floor = gchart.int_floor(vals, floor)
-            ceil = gchart.int_ceil(vals, ceil)
-        chart[unit] = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
-    return chart
-
-def day_baro_charts(qs_list, plot_func, width, height, colors):
-    '''
-    Accepts a list of querysets. Each queryset corresponds to a line on the chart.
-    Returns a dictionary of chart URLs, keyed by pressure unit type.
-    
-    '''
-    data_list = []  # list of pressure unit dictionaries
-    for date_qs in qs_list:
-        if date_qs: # only work on this if the queryset is not empty
-            data_list.append(baro_dict(date_qs))
-            
-    chart = {}    # dictionary of chart URLs, keyed by unit type
-    for unit in baro_units:
-        floor = 1500
-        ceil = 0
-        plot_list = [] # list of plot lines, each a list of temperature values
-        for val_dict in data_list:
-            vals = val_dict[unit]
-            # add list of temp values to list of plot lines
-            plot_list.append(vals)
-            # determine the lowest and highest values seen for this unit type
-            floor = gchart.flex_floor(vals, floor)
-            ceil = gchart.flex_ceil(vals, ceil)
-        chart[unit] = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
-    return chart
-
-def temp_dict(l):
-    '''
-    Return a dictionary of temperature lists from a list of Weather records.
-    The dictionary is keyed by temp_units and each value is a list of temperatures in that unit.
-    '''
-    data = []
-    for rec in l:
-        if rec is None or rec.temp is None:
-            v = None
-        else:
-            v = int(rec.temp)
-        data.append(calc_temp_values(v))
-    data = map(list, zip(*data))    # transpose the 2-dimensional array, p.161 Python Cookbook
-    
-    i = 0
-    unit_dict = {}
-    for unit in temp_units:
-        unit_dict[unit] = data[i]
-        i = i+1
-
-    return unit_dict
-
-def baro_dict(l):
-    '''
-    Return a list of pressure lists from a list of Weather records.
-    Each list corresponds to a unit type.
-    '''
-    data = []
-    for rec in l:
-        if rec is None or rec.barometer is None:
-            v = None
-        else:
-            v = float(rec.barometer)
-        data.append(calc_baro_values(v))
-    data = map(list, zip(*data))    # transpose the 2-dimensional array, p.161 Python Cookbook
-    
-    i = 0
-    unit_dict = {}
-    for unit in baro_units:
-        unit_dict[unit] = data[i]
-        i = i+1
-    return unit_dict
 
 TEMP_F = 'F'
 TEMP_C = 'C'
@@ -121,24 +20,174 @@ SPEED_MS = 'm/s'
 SPEED_FTS = 'ft/s'
 speed_units = [SPEED_MPH, SPEED_KTS, SPEED_KMH, SPEED_MS, SPEED_FTS]
 
+def create_chart_url(date, data_type, size, plots, unit):
+    '''
+    Return a chart URL for the given parameters.
+    
+    '''
+    if type(date) == datetime.date:
+        date = datetime.datetime(date.year, date.month, date.day)
+        
+    plot_colors = []
+    qs_list = []
+    
+    if ChartUrl.PLOT_TODAY in plots:
+        date_wx = weather_on_date(date)
+        qs_list.append(gchart.halfhour_data(date_wx, date))
+        if data_type == ChartUrl.DATA_TEMP:
+            plot_colors.append('0000FF')
+        else:
+            plot_colors.append('D96C00')
+    
+    if ChartUrl.PLOT_YESTERDAY in plots:
+        one_day = datetime.timedelta(days=1)
+        yesterday = date - one_day
+        yesterday_wx = weather_on_date(yesterday)
+        qs_list.append(gchart.halfhour_data(yesterday_wx, yesterday))
+        if data_type == ChartUrl.DATA_TEMP:
+            plot_colors.append('87CEEB')
+        else:
+            plot_colors.append('FFCC99')
+
+    if ChartUrl.PLOT_YEAR_AGO in plots:
+        one_year = datetime.timedelta(days=365) # don't worry about leap years
+        year_ago = date - one_year
+        year_ago_wx = weather_on_date(year_ago)
+        qs_list.append(gchart.halfhour_data(year_ago_wx, year_ago))
+        plot_colors.append('BEBEBE')
+            
+    WIDTH_DEFAULT = 300
+    HEIGHT_DEFAULT = 110
+    
+    if data_type == ChartUrl.DATA_TEMP:
+        if size == ChartUrl.SIZE_IPHONE:
+            width = 260
+            height = 100
+            plot_func = gchart.day_chart_iphone
+        elif size == ChartUrl.SIZE_NORMAL:
+            width = 400
+            height = 160
+            plot_func = gchart.day_chart_normal
+        else:
+            width = WIDTH_DEFAULT
+            height = HEIGHT_DEFAULT
+            plot_func = gchart.day_chart_normal
+        chart = day_temp_chart(qs_list, unit, plot_func, width, height, plot_colors)
+    elif data_type == ChartUrl.DATA_PRESS:
+        if size == ChartUrl.SIZE_IPHONE:
+            width = 292
+            height = 100
+            plot_func = gchart.day_chart_iphone
+        elif size == ChartUrl.SIZE_NORMAL:
+            width = 432
+            height = 160
+            plot_func = gchart.day_chart_normal
+        else:
+            width = WIDTH_DEFAULT
+            height = HEIGHT_DEFAULT
+            plot_func = gchart.day_chart_normal
+        chart = day_baro_chart(qs_list, unit, plot_func, width, height, plot_colors)
+    else:
+        return ''
+    return chart.get_url()
+
+def day_temp_chart(qs_list, unit, plot_func, width, height, colors):
+    '''
+    Returns a URL which plots one line for each queryset in `qs_list`.
+    
+    '''
+    data_list = []  # list of value lists
+    for date_qs in qs_list:
+        if date_qs: # only work on this if the queryset is not empty
+            data_list.append(convert_qs_temps(date_qs, unit))
+
+    floor = 200
+    ceil = -200
+    plot_list = [] # list of plot lines, each a list of values
+    for val_list in data_list:
+        # add list of temp values to list of plot lines
+        plot_list.append(val_list)
+        # determine the lowest and highest values seen for this unit type
+        floor = gchart.int_floor(val_list, floor)
+        ceil = gchart.int_ceil(val_list, ceil)
+    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
+    return chart
+
+def convert_qs_temps(qs, unit):
+    '''
+    Returns a list of values converted to `unit` if necessary
+    from a queryset of Weather records.
+    
+    '''
+    if unit == TEMP_F:  # default units
+        return [round_temp(rec.temp) for rec in qs]
+    else:
+        return [f_to_c(rec.temp) for rec in qs]
+
+def f_to_c(val):
+    if val is None:
+        return None
+    else:
+        return round_temp((float(val)-32.0)/1.8)
+
+def round_temp(val):
+    if val is None:
+        return None
+    else:
+        return int(round(float(val)))
+
+def day_baro_chart(qs_list, unit, plot_func, width, height, colors):
+    '''
+    Returns a URL which produces one line for each queryset.
+    
+    '''
+    data_list = []  # list of value lists
+    for date_qs in qs_list:
+        if date_qs: # only work on this if the queryset is not empty
+            data_list.append(convert_qs_pressures(date_qs, unit))
+            
+    floor = 1500
+    ceil = 0
+    plot_list = [] # list of plot lines, each a list of values
+    for val_list in data_list:
+        # add list of temp values to list of plot lines
+        plot_list.append(val_list)
+        # determine the lowest and highest values seen for this unit type
+        floor = gchart.flex_floor(vals, floor)
+        ceil = gchart.flex_ceil(vals, ceil)
+    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
+    return chart
+
+def convert_qs_pressures(qs, unit):
+    '''
+    Returns a list of values converted to `unit` if necessary
+    from a queryset of Weather records.
+    
+    '''
+    if unit == PRESS_IN:    # default units
+        return [float(rec.barometer) for rec in qs]
+    else:
+        return [in_to_mb(rec.barometer) for rec in qs]
+
+def in_to_mb(val):
+    if val is None:
+        return None
+    else:
+        return int(round(float(val)*33.8639))
+
 def calc_temp_values(value):
     '''
     Return a list of temperature values equal to the given value,
     where each value in the list corresponds with a different temperature unit.
     
     '''
-    if value is not None:
-        value = float(value)
     vlist = []
     for unit in temp_units:
-        if value is None:
-            vlist.append(None)
+        if unit == TEMP_C:
+            nv = f_to_c(value)
         else:
-            if unit == TEMP_C:
-                nv = (value-32)/1.8
-            else:
-                nv = value
-            vlist.append(int(round(nv)))
+            nv = round_temp(value)
+        vlist.append(nv)
     return vlist
 
 def calc_baro_values(value):
@@ -147,17 +196,12 @@ def calc_baro_values(value):
     where each value in the list corresponds with a different pressure unit.
     
     '''
-    if value is not None:
-        value = float(value)
     vlist = []
     for unit in baro_units:
-        if value is None:
-            vlist.append(None)
+        if unit == PRESS_MB:
+            vlist.append(in_to_mb(value))
         else:
-            if unit == PRESS_MB:
-                vlist.append(int(round(value*33.8639)))
-            else:
-                vlist.append(value)
+            vlist.append(float(value))
     return vlist
 
 def calc_temp_strings(value):
@@ -280,6 +324,50 @@ def baro_chart_filename(unit, date, type, extra):
 
 def weather_chart_filename(unit, date, title, type, extra):
     return '%d-%02d-%02d_%s_%s_%s%s.png' % (date.year, date.month, date.day, title, unit, type, extra)
+
+
+def temp_dict(l):
+    '''
+    Return a dictionary of temperature lists from a list of Weather records.
+    The dictionary is keyed by temp_units and each value is a list of temperatures in that unit.
+    '''
+    data = []
+    for rec in l:
+        if rec is None or rec.temp is None:
+            v = None
+        else:
+            v = int(rec.temp)
+        data.append(calc_temp_values(v))
+    data = map(list, zip(*data))    # transpose the 2-dimensional array, p.161 Python Cookbook
+    
+    i = 0
+    unit_dict = {}
+    for unit in temp_units:
+        unit_dict[unit] = data[i]
+        i = i+1
+
+    return unit_dict
+
+def baro_dict(l):
+    '''
+    Return a list of pressure lists from a list of Weather records.
+    Each list corresponds to a unit type.
+    '''
+    data = []
+    for rec in l:
+        if rec is None or rec.barometer is None:
+            v = None
+        else:
+            v = float(rec.barometer)
+        data.append(calc_baro_values(v))
+    data = map(list, zip(*data))    # transpose the 2-dimensional array, p.161 Python Cookbook
+    
+    i = 0
+    unit_dict = {}
+    for unit in baro_units:
+        unit_dict[unit] = data[i]
+        i = i+1
+    return unit_dict
 
 if __name__=='__main__':
     today = get_today(None)

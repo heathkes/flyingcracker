@@ -1,4 +1,5 @@
-import datetime
+#!/usr/bin/env python
+from datetime import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
@@ -8,8 +9,8 @@ from fc3.json import JsonResponse
 from fc3.weatherstation.models import Weather
 from noaa import get_NOAA_forecast
 from cbac import get_CBAC_forecast
-import utils
-from fc3.settings import CHART_URL
+import fc3.weather.utils as utils
+from fc3.weather.models import ChartUrl
 
 def weather(request):
     # get latest weather reading
@@ -38,7 +39,7 @@ def weather(request):
         wind_dir = "wind-%s.png" % utils.wind_dir_to_english(current.wind_dir)
         wind_dir = wind_dir.lower()
         
-    today = datetime.datetime.today()
+    today = datetime.now()
     if today.hour < 12:
         morning = True
     else:
@@ -51,10 +52,10 @@ def weather(request):
     b_chart = []
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         for unit in utils.temp_units:
-            t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
+            t_chart.append(get_chart(date.today(), DATA_TEMP, SIZE_IPHONE, PLOT_TODAY+PLOT_YESTERDAY+PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, 'small'))
-            
+            b_chart.append(get_chart(date.today(), DATA_PRESS, SIZE_IPHONE, PLOT_TODAY+PLOT_YESTERDAY+PLOT_YEAR_AGO, unit))
+        
         c = RequestContext(request, {
                 'current': current,
                 'wind_dir': wind_dir,
@@ -74,10 +75,8 @@ def weather(request):
         else:
             return render_to_response('weather/iphone/weather.html', c)
     else:
-        for unit in utils.temp_units:
-            t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, ''))
-        for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, ''))
+        t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
+        b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
     
         c = RequestContext(request, {
                 'current': current,
@@ -94,9 +93,10 @@ def weather(request):
                 })
         return render_to_response('weather/current_no_ajax.html', c)
 
-from django.template.defaultfilters import date
 
 def current(request):
+    from django.template.defaultfilters import date as date_filter
+
     # BUGBUG - Assuming iPhone browser - not checking for iPhone browser,
     # although at the moment only the iPhone page has a "refresh" button.
     xhr = request.GET.has_key('xhr')
@@ -104,7 +104,7 @@ def current(request):
         # get latest weather reading
         current = Weather.objects.latest('timestamp')
         
-        timestamp = date(current.timestamp, "H:i \M\T D M j,Y")
+        timestamp = date_filter(current.timestamp, "H:i \M\T D M j,Y")
 
         temp_list = utils.calc_temp_strings(current.temp)
         baro_list = utils.calc_baro_strings(current.barometer)
@@ -138,18 +138,16 @@ def current(request):
         
         windchill_list = utils.calc_temp_strings(current.windchill)
         
-        today = datetime.datetime.today()
+        today = datetime.today()
         if today.hour < 12:
             morning = True
         else:
             morning = False
 
-        t_chart = []
-        b_chart = []
         for unit in utils.temp_units:
-            t_chart.append(CHART_URL+'/weather/'+utils.temp_chart_filename(unit, today, utils.CHART_TYPE_TDY, 'small'))
+            t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
-            b_chart.append(CHART_URL+'/weather/'+utils.baro_chart_filename(unit, today, utils.CHART_TYPE_T, 'small'))
+            b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
@@ -182,9 +180,30 @@ def unit_change(request):
     # set unit preference in user profile
     # ...
     
-    # return same data for grins
+    # return same data, just for grins
     response_dict = {}
     response_dict.update({'type': type})
     response_dict.update({'unit': unit})
     response = JsonResponse(response_dict)
     return response
+
+
+from fc3.weather.models import ChartUrl
+
+def get_chart(date, data_type, size, plots, unit):
+    now = datetime.now()
+    try:
+        chart = ChartUrl.objects.get(date=date, data_type=data_type, size=size, plots=plots, unit=unit)
+    except ChartUrl.DoesNotExist:
+        # create url
+        chart = ChartUrl(date=date, timestamp=now, data_type=data_type, size=size, plots=plots, unit=unit)
+        chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
+        chart.save()
+    else:
+        # recreate url if timestamp is 30 minutes older than now
+        if (now - chart.timestamp) > timedelta(minutes=30):
+            # re-create url
+            chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
+            chart.timestamp = now
+            chart.save()
+    return chart.url

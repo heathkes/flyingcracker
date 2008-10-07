@@ -58,58 +58,65 @@ def day_chart_normal(data_lists, floor, ceil, width, height, colors, line_widths
                   data_lists, floor, ceil, width, height, colors, line_widths
                  )
 
-def periodic_records(qs, start, fudge, interval, periods):
+def periodic_samples(qs, start, fudge, interval, periods):
     '''
     Returns a list of arbitrary type records (containing attribute 'timestamp')
-    with one record for each 'interval' (i.e. 1 day) for a total of 'periods' intervals
-    beginning at 'start'. If a record is not found in an interval, None is placed in the list
-    instead of a record. In order to be included, a record timestamp must fall between
-    a range of the target (`start` plus a multiple of `interval`) +/- `fudge`.
-    For instance if `start`=12:00, `fudge`=5 minutes and `interval`=30 minutes
-    the record timestamp must fall in the ranges 11:55 - 12:05, 12:25 - 12:35, etc.
-    Only the first record seen in the range is used.
+    from `qs` with one record for each 'interval' during a total of 'periods'
+    intervals beginning at 'start'. If a record is not found in an interval,
+    None is placed in the list instead of a record. A record is included if
+    it is the first record in the a range of `target` (defined as `start` plus
+    a multiple of `interval`) minus `fudge` and `target` plus `fudge`.
+    
+    For instance if `start`=12:00, `fudge`=5 minutes, `interval`=30 minutes,
+    and `periods`=2, record timestamps must fall in the ranges 11:55 - 12:05
+    and 12:25 - 12:35.
+    
+    Only the first record found in each range is used.
+    
+    Parameter types:
+    `qs` = Queryset of records which have a "timestamp" field
+    `start` = datetime.datetime
+    `fudge` = datetime.timedelta
+    `interval` = datetime.timedelta
+    `periods` = integer
     
     '''
-    data = []
-    if len(qs) == 0:
-        return data
-    
-    end = start + (periods * interval)
-    target = start - fudge
-    range = fudge * 2
-    for rec in qs:
-        if (target + fudge) >= end:
-            break
-        ts = rec.timestamp
-        while ts > (target + range):
-            data.append(None)
+    dataset = []
+    if len(qs):
+        target = start
+        end = start + (periods * interval)
+        for rec in qs:
+            if target >= end:
+                break
+            ts = rec.timestamp
+            while ts > (target + fudge):
+                dataset.append(None)
+                target += interval
+            if ts < (target - fudge):
+                pass
+            else:
+                dataset.append(rec)
+                target += interval
+        # no more records, fill out the dataset with None values
+        while target < end:
+            dataset.append(None)
             target += interval
-        if ts < target:
-            pass
-        else:
-            data.append(rec)
-            target += interval
-    
-    while (target + fudge) < end:
-        data.append(None)
-        target += interval
-        
-    return data
+    return dataset
 
 def hourly_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24+1)
+    return periodic_samples(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24+1)
 
 def halfhour_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(minutes=30), (24*2)+1)
+    return periodic_samples(qs, start, datetime.timedelta(minutes=5), datetime.timedelta(minutes=30), (24*2)+1)
     
 def ten_minute_data(qs, start):
     # normalize the starting date to midnight
     start = start.replace(hour=0,minute=0,second=0,microsecond=0)
-    return periodic_records(qs, start, datetime.timedelta(minutes=2, seconds=30), datetime.timedelta(minutes=10), (24*6)+1)
+    return periodic_samples(qs, start, datetime.timedelta(minutes=2, seconds=30), datetime.timedelta(minutes=10), (24*6)+1)
 
 def flex_floor(vals, prev):
     '''
@@ -127,6 +134,11 @@ def flex_floor(vals, prev):
             return float_floor(vals, prev)
 
 def flex_ceil(vals, prev):
+    '''
+    Returns the largest value of the values in the vals list and prev.
+    Formats the result according to the type of the first element in vals.
+    
+    '''
     vlist = [i for i in vals if i is not None]
     if not vlist:
         return prev
@@ -138,7 +150,7 @@ def flex_ceil(vals, prev):
     
 def int_floor(vals, prev):
     '''
-    Returns the floor of vals and prev.
+    Returns the smallest value in vals and prev in integer format.
     
     '''
     vlist = [i for i in vals if i is not None]
@@ -146,12 +158,16 @@ def int_floor(vals, prev):
     return int(math.floor(float(min(vlist))/10.0)*10)   # round down to nearest ten
     
 def int_ceil(vals, prev):
+    '''
+    Returns the largest value in vals and prev in integer format.
+    
+    '''
     top = max(max(vals), prev)
     return int(math.ceil(float(top)/10.0)*10)    # round up to nearest ten
 
 def float_floor(vals, prev):
     '''
-    Returns the floor of vals and prev.
+    Returns the smallest value in vals and prev in float format.
     
     '''
     vlist = [i for i in vals if i is not None]
@@ -159,5 +175,9 @@ def float_floor(vals, prev):
     return math.floor(float(min(vlist))*10.0)/10.0  # round down to nearest tenth
 
 def float_ceil(vals, prev):
+    '''
+    Returns the largest value in vals and prev in float format.
+    
+    '''
     top = max(max(vals), prev)
     return math.ceil(float(top)*10.0)/10.0  # round up to nearest tenth

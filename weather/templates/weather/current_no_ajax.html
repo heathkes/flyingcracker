@@ -15,40 +15,60 @@
 			</div> <!-- header -->
 
 			<div class="body">
-                <div style="height: 160px; background: url({{ temp_chart.0|safe }}) no-repeat top left">
-					<table class="currweatherTable">
-
-						<!-- TEMPERATURE -->
-						<tr>
-							<td class="currweatherHead">Temp:</td>
-							<td class="currweatherMajorItem">{{ current.temp|stringformat:"d" }}&#186;</td>
-							<td class="currweatherHead">Rel. Humidity:</td>
-							<td class="currweatherMajorItem">{{ current.humidity }}%</td>
-						</tr>
-				  
-						<!-- BAROMETRIC PRESSURE -->
-						<tr>   
-							<td class="currweatherHead">Baro:</td>
-							<td class="currweatherMajorItem">{{ current.barometer }}</td>
-							<td class="currweatherHead">3 Hr. Trend:</td>
-							<td class="currweatherMajorItem">{{ current.baro_trend }}</td>
-						</tr>
-				  
-						<!-- WIND -->
-						<tr>   
-							<td class="currweatherHead">Wind:</td>
-							<td class="currweatherMajorItem">{{ current.wind_dir }} at {{ current.wind_speed|stringformat:"d" }}</td>
-							<td class="currweatherHead">Wind Chill:</td>
-							<td class="currweatherMajorItem">{{ current.windchill|stringformat:"d" }}&#186;</td>
-						</tr>
-				  
-						<!-- DEWPOINT -->
-						<tr>
-							<td class="currweatherHead">Dewpoint:</td>
-							<td class="currweatherMajorItem">{{ current.dewpoint|stringformat:"d" }}&#186;</td>
-						</tr>
-					</table>
-				</div>
+                <div id="curr_weather">
+                    <div class="yui-b" style="background: url({{ temp_chart|safe }}) no-repeat top">
+                        <div id="curr_temp" class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                            <span class="temp_value">{{ current.temp|stringformat:"d" }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                        </div>
+                    </div>
+                    <div class="yui-b" id="curr_barometer_block" style="background: url({{ baro_chart|safe }}) no-repeat top">
+                        <div class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                            <div id="curr_baro" class="yui-b">
+                                <span class="baro_value">{{ current.barometer }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                            </div>
+                            <div class="yui-b weather_title">
+                                    <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
+                            </div>
+                            <div id="curr_trend" class="yui-b">
+                                <span class="baro_value">{{ current.baro_trend }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                            </div>
+                            <div class="yui-b weather_title">
+                                    <span class="curr_title" style="visibility: {{ show_titles }}">3-hour trend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="yui-gb">
+                        <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
+                            <span class="speed_value">{{ current.wind_speed|stringformat:"d" }}</span>
+                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}"></span></div>
+                        </div>
+                        <div id="curr_windchill" class="yui-u">
+                            <span class="temp_value">{{ current.windchill|stringformat:"d" }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                        </div>
+                        <div id="curr_humidity" class="yui-u">
+                            <span class="humidity_value">{{ current.humidity }}</span>
+                            <span class="curr_units">%</span>
+                        </div>
+                    </div>
+                    <div class="yui-gb weather_title">
+                        <div class="yui-u first">
+                            <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
+                        </div>
+                        <div class="yui-u">
+                            <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
+                        </div>
+                        <div class="yui-u">
+                            <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                        </div>
+                    </div>
+                    <div class="yui-b">
+                        <button id="refresh-button">Refresh Weather</button>
+                    </div>
+                </div>
 			</div> <!-- body -->
 		</div>  <!-- weatherItem -->
 	</div>  <!-- box -->
