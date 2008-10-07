@@ -52,9 +52,9 @@ def weather(request):
     b_chart = []
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         for unit in utils.temp_units:
-            t_chart.append(get_chart(date.today(), DATA_TEMP, SIZE_IPHONE, PLOT_TODAY+PLOT_YESTERDAY+PLOT_YEAR_AGO, unit))
+            t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
-            b_chart.append(get_chart(date.today(), DATA_PRESS, SIZE_IPHONE, PLOT_TODAY+PLOT_YESTERDAY+PLOT_YEAR_AGO, unit))
+            b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         
         c = RequestContext(request, {
                 'current': current,
@@ -144,6 +144,8 @@ def current(request):
         else:
             morning = False
 
+        t_chart = []
+        b_chart = []
         for unit in utils.temp_units:
             t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
