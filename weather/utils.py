@@ -79,7 +79,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             height = 100
             plot_func = gchart.day_chart_iphone
         elif size == ChartUrl.SIZE_NORMAL:
-            width = 432
+            width = 418
             height = 160
             plot_func = gchart.day_chart_normal
         else:
