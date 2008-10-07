@@ -8,7 +8,7 @@ class ChartUrl(models.Model):
     unit = models.CharField(max_length=5, blank=False)
     size = models.CharField(max_length=2, blank=False)
     plots = models.CharField(max_length=10, blank=False)
-    url = models.URLField(blank=False)
+    url = models.URLField(max_length=2000, verify_exists=False, blank=False)
 
     DATA_TEMP = 'T'
     DATA_PRESS = 'P'
