@@ -119,10 +119,16 @@ def convert_qs_temps(qs, unit):
     from a queryset of Weather records.
     
     '''
-    if unit == TEMP_F:  # default units
-        return [round_temp(rec.temp) for rec in qs]
-    else:
-        return [f_to_c(rec.temp) for rec in qs]
+    temps = []
+    for rec in qs:
+        if rec is None:
+            temps.append(None)
+        else:
+            if unit == TEMP_F:  # default units
+                temps.append(round_temp(rec.temp))
+            else:
+                temps.append(f_to_c(rec.temp))
+    return temps
 
 def f_to_c(val):
     if val is None:
@@ -164,10 +170,16 @@ def convert_qs_pressures(qs, unit):
     from a queryset of Weather records.
     
     '''
-    if unit == PRESS_IN:    # default units
-        return [float(rec.barometer) for rec in qs]
-    else:
-        return [in_to_mb(rec.barometer) for rec in qs]
+    press = []
+    for rec in qs:
+        if rec is None:
+            press.append(None)
+        else:
+            if unit == PRESS_IN:    # default units
+                press.append(float(rec.barometer))
+            else:
+                press.append(in_to_mb(rec.barometer))
+    return press
 
 def in_to_mb(val):
     if val is None:
