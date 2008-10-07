@@ -104,7 +104,7 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-YUI_VERSION = "2.5.2"
+YUI_VERSION = "2.6.0"
 
 # import local settings overriding the defaults
 try:
