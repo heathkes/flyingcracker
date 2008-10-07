@@ -159,8 +159,8 @@ def day_baro_chart(qs_list, unit, plot_func, width, height, colors):
         # add list of temp values to list of plot lines
         plot_list.append(val_list)
         # determine the lowest and highest values seen for this unit type
-        floor = gchart.flex_floor(vals, floor)
-        ceil = gchart.flex_ceil(vals, ceil)
+        floor = gchart.flex_floor(val_list, floor)
+        ceil = gchart.flex_ceil(val_list, ceil)
     chart = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
     return chart
 
