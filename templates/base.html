@@ -117,6 +117,9 @@
                     <div class="body">{{ post.body|textile }}</div>
                 </div>
                 {% endfor %}
+                <div class="post">
+                    <a href="{% url miniblog-items %}">More items...</a><br /><br />
+                </div>
             </div>
             {% endblock leftbar %}
         </div>

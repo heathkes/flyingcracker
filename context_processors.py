@@ -15,5 +15,5 @@ def yui_version(request):
 
 def miniblog(request):
     from fc3.miniblog.models import Post
-    posts = Post.objects.all().order_by('-pub_date')
+    posts = Post.objects.all().order_by('-pub_date')[0:7]
     return {'miniblog': posts}
