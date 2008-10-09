@@ -18,7 +18,6 @@ urlpatterns = patterns('',
     (r'^weatherstation/',                   include('fc3.weatherstation.urls')),
     (r'^weather/',                          include('fc3.weather.urls')),
     (r'^miniblog/',                         include('fc3.miniblog.urls')),
-    
     (r'^',                                  include('fc3.home.urls')),
 )
 
@@ -46,4 +45,14 @@ urlpatterns += patterns('',
 from mobileadmin.conf import settings as ma_settings
 urlpatterns += patterns('django.views.static',
     (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
+)
+
+from fc3.feeds import RssSiteNewsFeed, AtomSiteNewsFeed
+
+feeds = {
+    'rss': RssSiteNewsFeed,
+    'atom': AtomSiteNewsFeed,
+}
+urlpatterns += patterns('',
+    (r'^feeds/(?P<url>.*)/$',               'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
 )

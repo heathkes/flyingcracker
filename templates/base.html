@@ -118,9 +118,12 @@
                 </div>
                 {% endfor %}
                 <div class="post">
-                    <a href="{% url miniblog-items %}">More items...</a><br /><br />
+                    <a href="{% url miniblog-archive %}">More items...</a><br /><br />
                 </div>
             </div>
+            <div id="rss">
+                <a href="/feeds/rss/"><img alt="RSS Feed" src="/static/img/feed-icon-28x28.png" /></a>&nbsp;
+            </div> <!-- rss -->
             {% endblock leftbar %}
         </div>
 		

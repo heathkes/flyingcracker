@@ -2,7 +2,7 @@ from django.template import RequestContext
 from fc3.miniblog.models import Post
 from django.shortcuts import render_to_response, get_object_or_404
 
-def miniblog(request, page=[]):
+def special(request, page=[]):
 
     c = RequestContext(request, {'posts' : Post.objects.all(),
                                 })
@@ -16,4 +16,4 @@ def miniblog(request, page=[]):
         else:
             return render_to_response('miniblog/iphone/miniblog_initial.html', c)
     else:
-       return render_to_response('miniblog/miniblog_detail.html', c)
+        return(404)
