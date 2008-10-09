@@ -21,7 +21,7 @@ class ChartUrl(models.Model):
     PLOT_YEAR_AGO = 'Y'
 
     def __unicode__(self):
-        return '-'.join([self.data_type, self.unit, self.size, self.plots]) + ': ' + str(self.date) + ': ' + self.url
+        return str(self.date) + '-' + '-'.join([self.data_type, self.unit, self.size, self.plots]) + '-' + str(self.timestamp)
 
     class Meta:
         ordering = ['-date']
