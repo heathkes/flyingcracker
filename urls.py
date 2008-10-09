@@ -47,6 +47,9 @@ urlpatterns += patterns('django.views.static',
     (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
 )
 
+#
+# Put the feeds stuff after all other URLs so URL resolution works!
+#
 from fc3.feeds import RssSiteNewsFeed, AtomSiteNewsFeed
 
 feeds = {

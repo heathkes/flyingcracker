@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from fc3.miniblog.models import Post
 
 class RssSiteNewsFeed(Feed):
-    title = "CracklyFinger.com site news"
+    title = "CracklyFinger.com"
     link = reverse('miniblog-archive')
     description = "Updates on changes and additions to cracklyfinger.com, plus occasional random comments"
 
