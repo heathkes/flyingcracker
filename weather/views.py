@@ -200,7 +200,10 @@ def get_chart(date, data_type, size, plots, unit):
         # create url
         chart = ChartUrl(date=date, timestamp=now, data_type=data_type, size=size, plots=plots, unit=unit)
         chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
-        chart.save()
+        try:
+            chart.save()
+        except ChartUrl.IntegrityError: # someone else got it done first
+            pass
     else:
         # recreate url if timestamp is 30 minutes older than now
         if (now - chart.timestamp) > timedelta(minutes=30):

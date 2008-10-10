@@ -4,7 +4,7 @@ import fc3.weather.models as weather
 
 
 class ChartUrlAdmin(admin.ModelAdmin):
-    unique_together = (("date", "data_type", "unit", "size", "plots"),)
+    pass
 
 admin.site.register(weather.ChartUrl, ChartUrlAdmin)
 

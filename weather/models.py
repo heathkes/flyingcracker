@@ -25,3 +25,5 @@ class ChartUrl(models.Model):
 
     class Meta:
         ordering = ['-date']
+        unique_together = ("date", "data_type", "unit", "size", "plots")
+
