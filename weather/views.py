@@ -13,7 +13,6 @@ import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 
 def weather(request):
-    start = datetime.now()
 
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
@@ -49,6 +48,8 @@ def weather(request):
     
     cbac_forecast = get_CBAC_forecast()
     noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
+
+    start = datetime.now()
     
     t_chart = []
     b_chart = []
