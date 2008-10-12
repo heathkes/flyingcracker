@@ -1,6 +1,7 @@
 from urllib import urlopen
 from forecast import Forecast
 from dateutil import parser as dateutilparser
+from fc3.settings import WEATHER_ROOT
 
 
 class NOAAForecastPreamble(object):
@@ -164,10 +165,8 @@ def get_NOAA_forecast(state, zone):
     Returns a Forecast object if successful, otherwise returns None.
     '''
     zname = state.upper() + "Z%03d" % zone
-    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + state.lower() + '/' + zname.lower() + '.txt'
-    try:
-        lines = urlopen(url).readlines()
-    except IOError:
+    lines = get_NOAA_data(state, zname)
+    if not lines:
         return None
     
     forecast = NOAAForecast(zname)
@@ -176,7 +175,35 @@ def get_NOAA_forecast(state, zone):
 
     # when we're finished with all lines the forecast attributes should be set
     return forecast
-        
+
+def get_NOAA_data(state, zname):
+    # get data from disk file first
+    filename = WEATHER_ROOT + 'noaa-' + zname + '.txt'
+    try:
+        f = open(filename, 'r')
+    except:
+        lines = save_NOAA_data(state, zname)
+    else:
+        try:
+            lines = f.read().splitlines()
+        except:
+            lines = save_NOAA_data(state, zname)
+    return lines
+
+def save_NOAA_data(state, zname):
+    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + state.lower() + '/' + zname.lower() + '.txt'
+    try:
+        lines = urlopen(url).readlines()
+    except IOError:
+        return None
+    else:
+        # save the retrieved data
+        filename = WEATHER_ROOT + 'noaa-' + zname + '.txt'
+        f = open(filename, "w")
+        f.writelines(lines)
+        f.close()
+        return lines
+
 def test():
     forecast = get_NOAA_forecast('CO', 12)
     print repr(forecast)
