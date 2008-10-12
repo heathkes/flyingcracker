@@ -70,8 +70,10 @@
                     </div>
                 </div>
                 {% if elapsed %}
-                <div>
-                    {{ elapsed }} sec.
+                <div class="elapsed">
+                    {% for e in elapsed %}
+                    {{ e.label }}: {{ e.elapsed }} sec.<br />
+                    {% endfor %}
                 </div>
                 {% endif %}
 			</div> <!-- body -->

@@ -75,7 +75,9 @@
         </div>
         {% if elapsed %}
         <div>
-            {{ elapsed }} sec.
+            {% for e in elapsed %}
+            {{ e.label }}: {{ e.elapsed }} sec.<br />
+            {% endfor %}
         </div>
         {% endif %}
     </fieldset>

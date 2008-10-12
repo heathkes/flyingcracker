@@ -900,3 +900,6 @@ th.flowHead{
 	line-height: 1em;
 	color : #1F3453;
 }
+.elapsed {
+	font-size: 60%;
+}

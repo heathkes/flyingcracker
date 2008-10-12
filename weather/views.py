@@ -11,9 +11,10 @@ from noaa import get_NOAA_forecast
 from cbac import get_CBAC_forecast
 import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
+from fc3.utils import ElapsedTime
 
 def weather(request):
-    start = datetime.now()
+    et = ElapsedTime()
 
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
@@ -50,13 +51,13 @@ def weather(request):
     else:
         morning = False
 
-    end = datetime.now()
-    td = end - start
-    elapsed = td.__str__().lstrip('0:')
+    et.mark_time('initial')
     
     cbac_forecast = get_CBAC_forecast()
     noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
+    et.mark_time('forecasts')
+    
     t_chart = []
     b_chart = []
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
@@ -64,7 +65,9 @@ def weather(request):
             t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
             b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-                    
+        
+        et.mark_time('charts')
+        
         c = RequestContext(request, {
                 'current': current,
                 'wind_dir': wind_dir,
@@ -77,7 +80,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
-                'elapsed': elapsed,
+                'elapsed': et,
                 })
 
         if request.GET.has_key('iui'):
@@ -87,6 +90,8 @@ def weather(request):
     else:
         t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
         b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
+        
+        et.mark_time('charts')
 
         trend_list = utils.calc_trend_strings(current.baro_trend)
     
@@ -104,7 +109,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
-                'elapsed': elapsed,
+                'elapsed': et,
                 })
         return render_to_response('weather/current_no_ajax.html', c)
 
