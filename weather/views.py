@@ -46,13 +46,13 @@ def weather(request):
         morning = True
     else:
         morning = False
-    
-    cbac_forecast = get_CBAC_forecast()
-    noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
     end = datetime.now()
     td = end - start
     elapsed = td.__str__().lstrip('0:')
+    
+    cbac_forecast = get_CBAC_forecast()
+    noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
     t_chart = []
     b_chart = []
@@ -84,9 +84,12 @@ def weather(request):
     else:
         t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
         b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
+
+        trend_list = utils.calc_trend_strings(current.baro_trend)
     
         c = RequestContext(request, {
                 'current': current,
+                'trend': trend_list[0],
                 'wind_dir': wind_dir,
                 'morning': morning,
                 'show_titles': show_titles,
