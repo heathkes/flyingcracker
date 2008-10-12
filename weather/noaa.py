@@ -176,9 +176,21 @@ def get_NOAA_forecast(state, zone):
     # when we're finished with all lines the forecast attributes should be set
     return forecast
 
+import os
+import datetime
+
 def get_NOAA_data(state, zname):
-    # get data from disk file first
+    # get data from disk file first, but ignore the data if it is more than 4 hours old.
     filename = WEATHER_ROOT + 'noaa-' + zname + '.txt'
+    if not os.path.isfile(filename):
+        return save_NOAA_data(state, zname)
+    
+    filetime_t = os.path.getmtime(filename)
+    filestamp = datetime.datetime.fromtimestamp(filetime_t)
+    now = datetime.datetime.now()
+    if (now - filestamp) > datetime.timedelta(hours=3) or (now < filestamp):
+        return save_NOAA_data(state, zname)
+    
     try:
         f = open(filename, 'r')
     except:
@@ -213,5 +225,22 @@ def test():
     print repr(forecast)
     
 if __name__ == '__main__':
-    test()
+    import optparse
+    p = optparse.OptionParser()
+    p.add_option('--zone', '-z', type="int", default=12)
+    p.add_option('--state', '-s', default='CO')
+    options, arguments = p.parse_args()
+    
+    if not arguments:
+        test()
+    else:
+        for cmd in arguments:
+            if cmd.lower() == 'save':
+                state = options.state.upper()
+                save_NOAA_data(state, state+"Z%03d" % options.zone)
+            elif cmd.lower() == 'get':
+                state = options.state.upper()
+                print get_NOAA_data(state, state+"Z%03d" % options.zone)
+                
+            
     
