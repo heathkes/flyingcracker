@@ -241,31 +241,6 @@ def calc_trend_strings(value):
         vlist = ['<span class="warning">'+v+'</span>' for v in vlist]
     return vlist
 
-def calc_trend_strings_old(value):
-    trend = float(value)
-    vlist = []
-    for unit in baro_units:
-        if unit == 'mb':
-            nv = int(round(trend*33.8639))
-            if value > Decimal(0):
-                nv = "+%d" % nv
-            else:
-                if value < Decimal("-0.09"):
-                    nv = '<span class="warning">%d</span>' % nv
-                else:
-                    nv = "%d" % nv
-        else:
-            nv = trend
-            if value > Decimal(0):
-                nv = "+%3.2f" % nv
-            else:
-                if value < Decimal("-0.09"):
-                    nv = '<span class="warning">%3.2f</span>' % nv
-                else:
-                    nv = "%3.2f" % nv
-        vlist.append(nv)
-    return vlist
-
 def calc_speeds(value):
     value = float(value)
     vlist = []

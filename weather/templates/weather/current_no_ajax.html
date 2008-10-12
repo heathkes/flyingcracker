@@ -16,13 +16,13 @@
 
 			<div class="body">
                 <div id="curr_weather">
-                    <div id="curr_temp_block" style="background: url({{ temp_chart|safe }}) no-repeat top">
+                    <div id="curr-temp-block" style="background: url({{ temp_chart|safe }}) no-repeat top">
                         <div id="curr_temp" class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
                             <span class="temp_value">{{ current.temp|stringformat:"d" }}&#186;</span>
                             <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
                         </div>
                     </div>
-                    <div id="curr_barometer_block" style="background: url({{ baro_chart|safe }}) no-repeat top">
+                    <div id="curr-barometer-block" style="background: url({{ baro_chart|safe }}) no-repeat top">
                         <div class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
                             <div id="curr_baro">
                                 <span class="baro_value">{{ current.barometer }}</span>
