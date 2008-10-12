@@ -1,13 +1,15 @@
 #curr_weather {
     text-align: center;
-    width: 402px;
+    width: 422px;
 }
 #curr_temp {
     font-size: 2.5em;
     height: 160px;
 }
-#curr_barometer_block {
+#curr-barometer-block {
     height: 160px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 #curr_trend {
     font-size: 2em;

@@ -80,7 +80,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
-                'elapsed': et,
+                'elapsed': et.list(),
                 })
 
         if request.GET.has_key('iui'):
@@ -109,7 +109,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
-                'elapsed': et,
+                'elapsed': et.list(),
                 })
         return render_to_response('weather/current_no_ajax.html', c)
 
