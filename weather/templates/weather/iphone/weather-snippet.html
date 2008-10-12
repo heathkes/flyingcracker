@@ -72,7 +72,12 @@
             <span class="toggleOn">Yes</span>
             <span class="toggleOff">No</span>
             </div>
-        </div>            
+        </div>
+        {% if elapsed %}
+        <div>
+            {{ elapsed }} sec.
+        </div>
+        {% endif %}
     </fieldset>
     
     {% if cbac %}

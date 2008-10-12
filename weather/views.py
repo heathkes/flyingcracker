@@ -13,6 +13,8 @@ import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 
 def weather(request):
+    start = datetime.now()
+
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
     
@@ -55,6 +57,10 @@ def weather(request):
             t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
             b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            
+        end = datetime.now()
+        td = end - start
+        elapsed = td.__str__().lstrip('0:')
         
         c = RequestContext(request, {
                 'current': current,
@@ -68,6 +74,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
+                'elapsed': elapsed,
                 })
 
         if request.GET.has_key('iui'):
@@ -77,6 +84,10 @@ def weather(request):
     else:
         t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
         b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
+            
+        end = datetime.now()
+        td = end - start
+        elapsed = td.__str__().lstrip('0:')
     
         c = RequestContext(request, {
                 'current': current,
@@ -90,6 +101,7 @@ def weather(request):
                 'noaa': noaa_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
+                'elapsed': elapsed,
                 })
         return render_to_response('weather/current_no_ajax.html', c)
 

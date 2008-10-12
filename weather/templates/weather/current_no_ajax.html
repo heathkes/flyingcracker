@@ -69,6 +69,11 @@
                         <button id="refresh-button">Refresh Weather</button>
                     </div>
                 </div>
+                {% if elapsed %}
+                <div>
+                    {{ elapsed }} sec.
+                </div>
+                {% endif %}
 			</div> <!-- body -->
 		</div>  <!-- weatherItem -->
 	</div>  <!-- box -->
