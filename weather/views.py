@@ -34,13 +34,16 @@ def weather(request):
     else:
         unit_state = "true"
         
-    # set wind background compass
+    # set wind background compass and wind speed
     if int(float(current.wind_speed)) < 1:
+        wind = 0
         wind_dir = None
     else:
-        wind_dir = "wind-%s.png" % utils.wind_dir_to_english(current.wind_dir)
+        wind = current.wind_speed
+        wind_dir = "wind-%s.png" % utils.wind_dir_to_english(wind)
         wind_dir = wind_dir.lower()
-        
+    wind_list = utils.calc_speeds(wind)
+
     today = datetime.now()
     if today.hour < 12:
         morning = True
@@ -91,6 +94,7 @@ def weather(request):
                 'current': current,
                 'trend': trend_list[0],
                 'wind_dir': wind_dir,
+                'wind_speed': wind_list[0],
                 'morning': morning,
                 'show_titles': show_titles,
                 'show_units': show_units,
