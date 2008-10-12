@@ -13,6 +13,7 @@ import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 
 def weather(request):
+    start = datetime.now()
 
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
@@ -49,8 +50,10 @@ def weather(request):
     cbac_forecast = get_CBAC_forecast()
     noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
-    start = datetime.now()
-    
+    end = datetime.now()
+    td = end - start
+    elapsed = td.__str__().lstrip('0:')
+
     t_chart = []
     b_chart = []
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
@@ -58,11 +61,7 @@ def weather(request):
             t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
             b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-            
-        end = datetime.now()
-        td = end - start
-        elapsed = td.__str__().lstrip('0:')
-        
+                    
         c = RequestContext(request, {
                 'current': current,
                 'wind_dir': wind_dir,
@@ -85,10 +84,6 @@ def weather(request):
     else:
         t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
         b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
-            
-        end = datetime.now()
-        td = end - start
-        elapsed = td.__str__().lstrip('0:')
     
         c = RequestContext(request, {
                 'current': current,
