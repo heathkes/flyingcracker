@@ -319,7 +319,7 @@ def get_today(request=None):
     if request_is_local(request):
         return datetime.date(2008,4,1)
     else:
-        return datetime.date.today()
+        return datetime.datetime.new()
 
 def get_today_timestamp(request=None):
     '''
