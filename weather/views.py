@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from datetime import *
+from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from fc3.json import JsonResponse
@@ -45,7 +47,7 @@ def weather(request):
         wind_dir = wind_dir.lower()
     wind_list = utils.calc_speeds(wind)
 
-    today = datetime.now()
+    today = utils.get_today_timestamp(request)
     if today.hour < 12:
         morning = True
     else:
@@ -62,9 +64,9 @@ def weather(request):
     b_chart = []
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         for unit in utils.temp_units:
-            t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
-            b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         
         et.mark_time('charts')
         
@@ -88,8 +90,8 @@ def weather(request):
         else:
             return render_to_response('weather/iphone/weather.html', c)
     else:
-        t_chart = get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
-        b_chart = get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
+        t_chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
+        b_chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
         
         et.mark_time('charts')
 
@@ -158,7 +160,7 @@ def current(request):
         
         windchill_list = utils.calc_temp_strings(current.windchill)
         
-        today = datetime.today()
+        today = utils.get_today_timestamp(request)
         if today.hour < 12:
             morning = True
         else:
@@ -167,9 +169,9 @@ def current(request):
         t_chart = []
         b_chart = []
         for unit in utils.temp_units:
-            t_chart.append(get_chart(date.today(), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
-            b_chart.append(get_chart(date.today(), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
@@ -232,3 +234,125 @@ def get_chart(date, data_type, size, plots, unit):
             chart.timestamp = now
             chart.save()
     return chart.url
+
+from django import forms
+from django.forms import ModelForm
+
+
+class WeatherForm(ModelForm):
+    class Meta:
+        model = Weather
+
+
+class GenerateWeatherForm(WeatherForm):
+    start_date = forms.DateTimeField()
+    end_date = forms.DateTimeField()
+    
+    def clean(self):
+        start = self.cleaned_data.get('start_date')
+        end = self.cleaned_data.get('end_date')
+        if start and end:
+            if end < start:
+                raise forms.ValidationError('Start date/time (%s) must be prior to end date/time (%s)' % (str(start), str(end)))
+        return self.cleaned_data
+            
+    class Meta(WeatherForm.Meta):
+        exclude = ('station_id', 'timestamp', 'temp_inside', 'rain', 'wind_peak', 'dewpoint', 'windchill')
+
+def generate(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = GenerateWeatherForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            cd = form.cleaned_data
+            interval = timedelta(minutes=5)
+            start = cd['start_date']
+            curr = start
+            end = cd['end_date']
+            inserted = attempts = 0
+            et = ElapsedTime()
+            while curr <= end:
+                obj = Weather(station_id='GENERATED',
+                              timestamp=curr,
+                              wind_dir=cd['wind_dir'],
+                              wind_speed=cd['wind_speed'],
+                              wind_peak=0,
+                              humidity=cd['humidity'],
+                              temp=cd['temp'],
+                              rain=0,
+                              barometer=cd['barometer'],
+                              dewpoint=0,
+                              temp_inside=0,
+                              baro_trend=cd['baro_trend'],
+                              windchill=0)
+                try:
+                    obj.save()
+                except Weather.IntegrityError:
+                    pass    # leave the existing record in place
+                else:
+                    inserted += 1
+                curr += interval
+                attempts += 1
+                
+            et.mark_time('insertions')
+            c = RequestContext(request, {
+                    'elapsed': et.list(),
+                    'message': 'Added %d Weather records in %d attempts, from %s to %s.' % (inserted, attempts, str(start), str(end)),
+                    })
+            return render_to_response('weather/after_action.html', c)
+    else:
+        form = GenerateWeatherForm() # An unbound form
+
+    c = RequestContext(request, {
+            'form': form,
+        })
+    return render_to_response('weather/generate.html', c)
+
+class DeleteWeatherForm(forms.Form):
+    start_date = forms.DateTimeField()
+    end_date = forms.DateTimeField()
+    
+    def clean(self):
+        start = self.cleaned_data.get('start_date')
+        end = self.cleaned_data.get('end_date')
+        if start and end:
+            if end < start:
+                raise forms.ValidationError('Start date/time (%s) must be prior to end date/time (%s)' % (str(start), str(end)))
+        return self.cleaned_data
+
+def delete(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = DeleteWeatherForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            cd = form.cleaned_data
+            start = cd['start_date']
+            end = cd['end_date']
+            records = Weather.objects.filter(timestamp__range=(start, end))
+            deleted = attempts = 0
+            et = ElapsedTime()
+            for obj in records:
+                try:
+                    obj.delete()
+                except:
+                    pass
+                else:
+                    deleted += 1
+                attempts += 1
+                
+            et.mark_time('deletions')
+            c = RequestContext(request, {
+                    'elapsed': et.list(),
+                    'message': 'Deleted %d Weather records in %d attempts, from %s to %s..' % (deleted, attempts, str(start), str(end)),
+                    })
+
+            return render_to_response('weather/after_action.html', c)
+    else:
+        form = DeleteWeatherForm() # An unbound form
+
+    c = RequestContext(request, {
+            'form': form,
+        })
+    return render_to_response('weather/delete.html', c)

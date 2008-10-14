@@ -1,0 +1,28 @@
+{% extends "weather.html" %}
+{% load markup %}
+
+{% block body %}
+<h1>Delete Weather records</h1>
+<form action="{% url delete-weather %}" method="POST">
+{% if form.non_field_errors %}
+<ul>
+{% for error in form.non_field_errors %}
+    <li><span class="field-error">{{ error|escape }}</span></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% for field in form %}
+    <div class="fieldWrapper">
+        {% if field.errors %}
+        <ul>
+        {% for error in field.errors %}
+            <li><span class="field-error">{{ error|escape }}</span></li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        {{ field.label_tag }}: {{ field }}
+    </div>
+{% endfor %}
+<input type="submit" value="Submit" />
+</form>
+{% endblock body %}

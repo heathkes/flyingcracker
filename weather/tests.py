@@ -6,7 +6,7 @@ class PeriodicRecordsTestCase(TestCase):
     fixtures = ['fc3',]
     
     def setUp(self):
-        self.start = get_today(None)
+        self.start = get_today_timestamp(None)
         self.qs = get_weather_for_date(self.start)
         
     def testPeriodicRecords2Hours(self):

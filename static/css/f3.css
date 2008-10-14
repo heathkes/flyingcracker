@@ -904,3 +904,7 @@ th.flowHead{
 .elapsed {
 	font-size: 60%;
 }
+.field-error {
+    color: red;
+    font-weight: bold;
+}

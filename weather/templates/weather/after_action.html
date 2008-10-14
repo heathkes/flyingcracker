@@ -1,0 +1,17 @@
+{% extends "weather.html" %}
+{% load markup %}
+
+{% block body %}
+<h1>Weather records</h1>
+<div>
+{{ message }}
+</div>
+<div>
+    {% for e in elapsed %}
+    {{ e.label }}: {{ e.elapsed }} sec.<br />
+    {% endfor %}
+</div>
+<br />
+<a href="{% url generate-weather %}">Generate Weather</a><br /><br />
+<a href="{% url delete-weather %}">Delete Weather</a>
+{% endblock body %}

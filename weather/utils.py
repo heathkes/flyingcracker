@@ -33,32 +33,36 @@ def create_chart_url(date, data_type, size, plots, unit):
     
     if ChartUrl.PLOT_TODAY in plots:
         date_wx = weather_on_date(date)
-        qs_list.append(gchart.halfhour_data(date_wx, date))
+        qs_list.append(gchart.hourly_data(date_wx, date))
         if data_type == ChartUrl.DATA_TEMP:
             plot_colors.append('0000FF')
-        else:
+        elif data_type == ChartUrl.DATA_PRESS:
             plot_colors.append('D96C00')
+        else:
+            plot_colors.append('000000')
     
     if ChartUrl.PLOT_YESTERDAY in plots:
         one_day = datetime.timedelta(days=1)
         yesterday = date - one_day
         yesterday_wx = weather_on_date(yesterday)
-        qs_list.append(gchart.halfhour_data(yesterday_wx, yesterday))
+        qs_list.append(gchart.hourly_data(yesterday_wx, yesterday))
         if data_type == ChartUrl.DATA_TEMP:
             plot_colors.append('87CEEB')
-        else:
+        elif data_type == ChartUrl.DATA_PRESS:
             plot_colors.append('FFCC99')
+        else:
+            plot_colors.append('888888')
 
     if ChartUrl.PLOT_YEAR_AGO in plots:
         one_year = datetime.timedelta(days=365) # don't worry about leap years
         year_ago = date - one_year
         year_ago_wx = weather_on_date(year_ago)
-        qs_list.append(gchart.halfhour_data(year_ago_wx, year_ago))
+        qs_list.append(gchart.hourly_data(year_ago_wx, year_ago))
         plot_colors.append('BEBEBE')
             
     WIDTH_DEFAULT = 300
     HEIGHT_DEFAULT = 110
-    
+
     if data_type == ChartUrl.DATA_TEMP:
         if size == ChartUrl.SIZE_IPHONE:
             width = 260
@@ -73,6 +77,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
         chart = day_temp_chart(qs_list, unit, plot_func, width, height, plot_colors)
+        
     elif data_type == ChartUrl.DATA_PRESS:
         if size == ChartUrl.SIZE_IPHONE:
             width = 292
@@ -293,6 +298,16 @@ def weather_on_date(date):
     return Weather.objects.filter(timestamp__year=date.year,
                                   timestamp__month=date.month,
                                   timestamp__day=date.day).order_by('timestamp')
+
+def request_is_local(request):
+    if request:
+        remote = request.META.get('REMOTE_ADDR')
+    else:
+        remote = None
+    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
+        return True
+    else:
+        return False
     
 def get_today(request=None):
     '''
@@ -301,14 +316,22 @@ def get_today(request=None):
     we return a date for which our local database has weather records.
     
     '''
-    if request:
-        remote = request.META.get('REMOTE_ADDR')
+    if request_is_local(request):
+        return datetime.date(2008,4,1)
     else:
-        remote = None
-    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
-        today = datetime.datetime(2008,2,18,0,0,0)
+        return datetime.date.today()
+
+def get_today_timestamp(request=None):
+    '''
+    Returns a datetime.datetime object corresponding to today,
+    unless the requesting address is local in which case
+    we return a date for which our local database has weather records.
+    
+    '''
+    if request_is_local(request):
+        today = datetime.datetime(2008,4,1,10,11,12)
     else:
-        today = datetime.date.today()
+        today = datetime.date.now()
     return today
 
 def temp_chart_filename(unit, date, type, extra):
@@ -365,7 +388,7 @@ def baro_dict(l):
     return unit_dict
 
 if __name__=='__main__':
-    today = get_today(None)
+    today = get_today_timestamp(None)
     today_wx = weather_on_date(today)
     print gchart.hourly_data(today_wx, today)
     print gchart.halfhour_data(today_wx, today)
