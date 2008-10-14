@@ -319,7 +319,7 @@ def get_today(request=None):
     if request_is_local(request):
         return datetime.date(2008,4,1)
     else:
-        return datetime.datetime.new()
+        return datetime.date.today()
 
 def get_today_timestamp(request=None):
     '''
@@ -331,7 +331,7 @@ def get_today_timestamp(request=None):
     if request_is_local(request):
         today = datetime.datetime(2008,4,1,10,11,12)
     else:
-        today = datetime.now()
+        today = datetime.datetime.now()
     return today
 
 def temp_chart_filename(unit, date, type, extra):
