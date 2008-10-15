@@ -61,17 +61,18 @@ def day_chart_normal(data_lists, floor, ceil, width, height, colors, line_widths
 def periodic_samples(qs, start, fudge, interval, periods):
     '''
     Returns a list of arbitrary type records (containing attribute 'timestamp')
-    from `qs` with one record for each 'interval' during a total of 'periods'
-    intervals beginning at 'start'. If a record is not found in an interval,
-    None is placed in the list instead of a record. A record is included if
-    it is the first record in the a range of `target` (defined as `start` plus
-    a multiple of `interval`) minus `fudge` and `target` plus `fudge`.
+    from `qs`, one record for each target window during a total of 'periods'
+    windows beginning at 'start'.
+    
+    `target` = `start` plus a (0 to `periods`) multiple of `interval`.
+    A target window is defined as: `target`-`fudge` to `target`+`fudge`.
+    The first record found in a target window is saved in the list and all other
+    records in that window are ignored. If no record is found in the target
+    window then None is placed in the list instead of a record.
     
     For instance if `start`=12:00, `fudge`=5 minutes, `interval`=30 minutes,
     and `periods`=2, record timestamps must fall in the ranges 11:55 - 12:05
     and 12:25 - 12:35.
-    
-    Only the first record found in each range is used.
     
     Parameter types:
     `qs` = Queryset of records which have a "timestamp" field
@@ -181,3 +182,21 @@ def float_ceil(vals, prev):
     '''
     top = max(max(vals), prev)
     return math.ceil(float(top)*10.0)/10.0  # round up to nearest tenth
+
+def test():
+    from fc3.utils import ElapsedTime
+    from fc3.weatherstation.models import Weather
+
+    date = datetime.datetime(2008, 3, 31)
+    et = ElapsedTime()
+    qs = Weather.objects.filter(timestamp__year=date.year,
+                                timestamp__month=date.month,
+                                timestamp__day=date.day).order_by('timestamp')
+    et.mark_time('obtained qs')
+    records = hourly_data(qs, date)
+    et.mark_time('processed records')
+    for e in et.list():
+        print e.label, e.elapsed
+
+if __name__ == '__main__':
+    test()
