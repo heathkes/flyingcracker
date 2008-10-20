@@ -80,7 +80,39 @@
 		</div>  <!-- weatherItem -->
 	</div>  <!-- box -->
 
-  {% if noaa %}
+    {% if cbac %}
+    <div class="box">
+  	<div class="weatherItem">
+        <div class="header">
+            <div class="title">
+                CBAC Forecast
+            </div> <!-- title -->
+    
+            <div class="date">
+                {{ cbac.timestamp|date:"H:i \M\T D M j, Y" }}
+            </div> <!-- date -->
+        </div> <!-- header -->
+        
+        <div class="forecast">
+            {% if cbac.warning %}
+            <div class="warning">
+                {{ cbac.warning }}
+            </div>
+            {% endif %}
+            {% for sec in cbac.sections %}
+            <div class="section">
+                <div class="title">{{ sec.title }}</div>
+                <div class="body">
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>  <!-- forecast -->
+    </div>  <!-- weatherItem -->
+    </div>  <!-- box -->
+    {% endif %}
+
+    {% if noaa %}
     <div class="box">
   	<div class="weatherItem">
         <div class="header">

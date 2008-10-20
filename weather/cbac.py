@@ -4,6 +4,7 @@ from urllib import urlopen
 from dateutil import parser as dateutilparser
 from fc3.weatherstation.tz import USTimeZone
 from forecast import Forecast
+from fc3.settings import WEATHER_ROOT
 
 
 class CBACForecast(Forecast):
@@ -23,10 +24,8 @@ def get_CBAC_forecast():
     Parse into the pieces we want (synopsis, today, tonight, tomorrow)
     Format nicely into parts
     '''
-    url = 'http://cbavalanchecenter.org/rss/'
-    try:
-        xml_text = urlopen(url).read()
-    except IOError:
+    xml_text = get_CBAC_data()
+    if not xml_text:
         return None
     
     try:
@@ -61,10 +60,54 @@ def get_CBAC_forecast():
                          
     return forecast
 
-        
+import os
+import datetime
+
+def get_CBAC_data():
+    # get data from disk file first, but ignore the data if it is more than 3 hours old.
+    filename = WEATHER_ROOT + 'cbac.txt'
+    if not os.path.isfile(filename):
+        return save_CBAC_data()
+    
+    filetime_t = os.path.getmtime(filename)
+    filestamp = datetime.datetime.fromtimestamp(filetime_t)
+    now = datetime.datetime.now()
+    if (now - filestamp) > datetime.timedelta(hours=3) or (now < filestamp):
+        return save_CBAC_data()
+    
+    try:
+        f = open(filename, 'r')
+    except:
+        lines = save_CBAC_data()
+    else:
+        try:
+            lines = f.read().splitlines()
+        except:
+            lines = save_CBAC_data()
+    return lines
+
+def save_CBAC_data():
+    url = 'http://cbavalanchecenter.org/rss/'
+    try:
+        xml_text = urlopen(url).read()
+    except IOError:
+        return None
+    else:
+        # save the retrieved data
+        filename = WEATHER_ROOT + 'cbac.txt'
+        f = open(filename, "w")
+        f.write(xml_text)
+        f.close()
+        return xml_text
+
 def test():
     forecast = get_CBAC_forecast()
     print repr(forecast)
     
 if __name__ == '__main__':
+    import optparse
+    p = optparse.OptionParser()
+    options, arguments = p.parse_args()
+    
     test()
+   
