@@ -240,9 +240,9 @@ def calc_baro_strings(value):
 
 def calc_trend_strings(value):
     vlist = calc_baro_strings(value)
-    if value > 0.0:
+    if value > Decimal(0):
         vlist = ['+'+v for v in vlist]
-    elif value < 0.09:
+    elif value < Decimal("0.09"):
         vlist = ['<span class="warning">'+v+'</span>' for v in vlist]
     return vlist
 
