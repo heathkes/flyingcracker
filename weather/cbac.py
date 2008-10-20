@@ -109,5 +109,12 @@ if __name__ == '__main__':
     p = optparse.OptionParser()
     options, arguments = p.parse_args()
     
-    test()
+    if not arguments:
+        test()
+    else:
+        for cmd in arguments:
+            if cmd.lower() == 'save':
+                save_CBAC_data()
+            elif cmd.lower() == 'get':
+                print get_CBAC_data()
    
