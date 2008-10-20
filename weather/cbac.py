@@ -81,7 +81,7 @@ def get_CBAC_data():
         lines = save_CBAC_data()
     else:
         try:
-            lines = f.read().splitlines()
+            lines = f.read()
         except:
             lines = save_CBAC_data()
     return lines
