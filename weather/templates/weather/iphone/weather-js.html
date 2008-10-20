@@ -206,18 +206,16 @@ var current_weather = {
     },
 
     update_temp_chart: function() {
-        var parent = null;
         var index = current_weather.current.temp_units.has(current_weather.current.temp_unit)
-        el = document.getElementById('curr_temp');
+        el = document.getElementById('curr-temp-block');
         if (el) {
-            parent = el.parentNode;
-            YAHOO.util.Dom.setStyle(parent, 'background', "url("+current_weather.current.temp_chart[index]+") no-repeat top");
+            YAHOO.util.Dom.setStyle(el, 'background', "url("+current_weather.current.temp_chart[index]+") no-repeat top");
         }
     },
     
     update_baro_chart: function() {
         var index = current_weather.current.baro_units.has(current_weather.current.baro_unit)
-        el = document.getElementById('curr_barometer_block');
+        el = document.getElementById('curr-barometer-block');
         if (el) {
             YAHOO.util.Dom.setStyle(el, 'background', "url("+current_weather.current.baro_chart[index]+") no-repeat top");
         }

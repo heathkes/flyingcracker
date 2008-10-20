@@ -21,7 +21,6 @@ def weather(request):
     # get latest weather reading
     current = Weather.objects.latest('timestamp')
     
-    agent = request.META.get('HTTP_USER_AGENT')
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles == None:
         show_titles = "hidden"
@@ -62,6 +61,7 @@ def weather(request):
     
     t_chart = []
     b_chart = []
+    agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         for unit in utils.temp_units:
             t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
@@ -113,14 +113,12 @@ def weather(request):
                 'title_state': title_state,
                 'elapsed': et.list(),
                 })
-        return render_to_response('weather/current_no_ajax.html', c)
+        return render_to_response('weather/current.html', c)
 
 
 def current(request):
     from django.template.defaultfilters import date as date_filter
 
-    # BUGBUG - Assuming iPhone browser - not checking for iPhone browser,
-    # although at the moment only the iPhone page has a "refresh" button.
     xhr = request.GET.has_key('xhr')
     if xhr:
         # get latest weather reading
@@ -168,11 +166,18 @@ def current(request):
 
         t_chart = []
         b_chart = []
-        for unit in utils.temp_units:
-            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        for unit in utils.baro_units:
-            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        
+        agent = request.META.get('HTTP_USER_AGENT')
+        if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+            for unit in utils.temp_units:
+                t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            for unit in utils.baro_units:
+                b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+        else:
+            for unit in utils.temp_units:
+                t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            for unit in utils.baro_units:
+                b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
         response_dict.update({'temp_units': utils.temp_units})
