@@ -33,8 +33,13 @@
                     <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}"></span></div>
                 </div>
                 <div id="curr_windchill" class="yui-u">
+                    {% ifnotequal current.temp current.windchill %}
                     <span class="temp_value"></span>
                     <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                    <div>
+                        <span style="font-size: 50%">windchill</span>
+                    </div>
+                    {% endifnotequal %}
                 </div>
                 <div id="curr_humidity" class="yui-u">
                     <span class="humidity_value"></span>
@@ -46,7 +51,7 @@
                     <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
                 </div>
                 <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">windchill</span>
+                    <span class="curr_title" style="visibility: {{ show_titles }}">&nbsp;</span>
                 </div>
                 <div class="yui-u">
                     <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
