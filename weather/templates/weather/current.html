@@ -107,7 +107,7 @@
             </div> <!-- title -->
     
             <div class="date">
-                {{ cbac.timestamp|date:"H:i \M\T D M j, Y" }}
+                {{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}
             </div> <!-- date -->
         </div> <!-- header -->
         

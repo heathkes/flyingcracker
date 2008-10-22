@@ -8,6 +8,7 @@ class Forecast(object):
         self.sections = []
         self.reported_by = None
         self.timestamp = None
+        self.stale = False
         
     def add_section(self, title, body):
         self.sections.append({'title': title, 'body': body})

@@ -2,6 +2,8 @@ from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from urllib import urlopen
 from dateutil import parser as dateutilparser
+from dateutil.tz import tzlocal
+import datetime
 from fc3.weatherstation.tz import USTimeZone
 from forecast import Forecast
 from fc3.settings import WEATHER_ROOT
@@ -16,6 +18,11 @@ class CBACForecast(Forecast):
             self.timestamp = dateutilparser.parse(pubdate)
             mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
             self.timestamp = self.timestamp.astimezone(mountain_tz)
+            
+            # figure out if the publication time is old
+            now = datetime.datetime.now(tzlocal()).astimezone(mountain_tz)
+            if (now - self.timestamp) > datetime.timedelta(hours=25):
+                self.stale = True
         
         
 def get_CBAC_forecast():
