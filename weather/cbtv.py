@@ -40,16 +40,13 @@ def get_CBTV_forecast():
     item = channel.find('item')
     
     # Get the data we want
-    pubdate = item.findtext('pubdate')
+    pubdate = item.findtext('pubDate')
     synopsis = item.findtext("description")
-    reportedby = item.findtext("dc")
 
     forecast = CBTVForecast()
     forecast.pubdate = pubdate
     forecast.set_timestamp()
     forecast.add_section('Synopsis', synopsis.strip())
-    if reportedby:
-        forecast.reported_by = reportedby.strip()
                          
     return forecast
 
