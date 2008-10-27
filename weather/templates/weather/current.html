@@ -146,14 +146,14 @@
         <div class="forecast">
             {% if cbtv.warning %}
             <div class="warning">
-                {{ cbtv.warning }}
+                {{ cbtv.warning|safe }}
             </div>
             {% endif %}
             {% for sec in cbtv.sections %}
             <div class="section">
                 <div class="title">{{ sec.title }}</div>
                 <div class="body">
-                    {{ sec.body }}|safe
+                    {{ sec.body|safe }}
                 </div>
             </div>
             {% endfor %}
