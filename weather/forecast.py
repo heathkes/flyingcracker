@@ -1,3 +1,4 @@
+from django.utils.encoding import smart_str
 
 class Forecast(object):
     
@@ -20,12 +21,12 @@ class Forecast(object):
         if self.timestamp:
             s += "Forecast timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
         if self.area:
-            s += "Forecast Area: " + self.area + "\n"
+            s += "Forecast Area: " + smart_str(self.area) + "\n"
         if self.warning:
-            s += "Warning: " + self.warning + "\n"
+            s += "Warning: " + smart_str(self.warning) + "\n"
         for sec in self.sections:
-            s += sec['title'] + ": " + sec['body'] + "\n"
+            s += smart_str(sec['title']) + ": " + smart_str(sec['body']) + "\n"
         if self.reported_by:
-            s += "Reported by: " + self.reported_by + "\n"
+            s += "Reported by: " + smart_str(self.reported_by) + "\n"
         return s
 

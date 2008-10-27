@@ -11,6 +11,7 @@ from fc3.json import JsonResponse
 from fc3.weatherstation.models import Weather
 from noaa import get_NOAA_forecast
 from cbac import get_CBAC_forecast
+from cbtv import get_CBTV_forecast
 import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 from fc3.utils import ElapsedTime
@@ -56,6 +57,7 @@ def weather(request):
     
     cbac_forecast = get_CBAC_forecast()
     noaa_forecast = get_NOAA_forecast('CO', 12)     # Crested Butte area
+    cbtv_forecast = get_CBTV_forecast()
 
     et.mark_time('forecasts')
     
@@ -80,6 +82,7 @@ def weather(request):
                 'baro_chart': b_chart,
                 'cbac': cbac_forecast,
                 'noaa': noaa_forecast,
+                'cbtv': cbtv_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
                 'elapsed': et.list(),
@@ -109,6 +112,7 @@ def weather(request):
                 'baro_chart': b_chart,
                 'cbac': cbac_forecast,
                 'noaa': noaa_forecast,
+                'cbtv': cbtv_forecast,
                 'unit_state': unit_state,
                 'title_state': title_state,
                 'elapsed': et.list(),

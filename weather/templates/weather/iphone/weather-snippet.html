@@ -109,6 +109,25 @@
     </fieldset>
     {% endif %}
     
+    {% if cbtv %}
+    <a name="cbtv"></a>
+    <span class="fieldset_timestamp">{{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}{{ cbtv.timestamp|date:", Y" }}</span><h2>CBTV-10 Forecast</h2>
+    <fieldset>
+    <div id="cbtv_forecast" class="forecast">
+        <div class="yui-b">
+            {% for sec in cbtv.sections %}
+            <div class="section">
+                <strong>{{ sec.title }}</strong>
+                <div>
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </fieldset>
+    {% endif %}
+    
     {% if noaa %}
     <a name="noaa"></a>
     <span class="fieldset_timestamp">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span><h2>NOAA Forecast</h2>
