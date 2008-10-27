@@ -130,38 +130,6 @@
     </div>  <!-- box -->
     {% endif %}
 
-    {% if cbtv %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                CBTV-10 Forecast
-            </div> <!-- title -->
-    
-            <div class="date">
-                {{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}{{ cbtv.timestamp|date:", Y" }}
-            </div> <!-- date -->
-        </div> <!-- header -->
-        
-        <div class="forecast">
-            {% if cbtv.warning %}
-            <div class="warning">
-                {{ cbtv.warning|safe }}
-            </div>
-            {% endif %}
-            {% for sec in cbtv.sections %}
-            <div class="section">
-                <div class="title">{{ sec.title }}</div>
-                <div class="body">
-                    {{ sec.body|safe }}
-                </div>
-            </div>
-            {% endfor %}
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-    {% endif %}
-
     {% if noaa %}
     <div class="box">
   	<div class="weatherItem">
@@ -186,6 +154,37 @@
                 <div class="title">{{ sec.title }}</div>
                 <div class="body">
                     {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>  <!-- forecast -->
+    </div>  <!-- weatherItem -->
+    </div>  <!-- box -->
+    {% endif %}
+
+    {% if cbtv %}
+    <div class="box">
+  	<div class="weatherItem">
+        <div class="header">
+            <div class="title">
+                CBTV-10 Forecast
+            </div> <!-- title -->
+    
+            <div class="date">
+                {{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}{{ cbtv.timestamp|date:", Y" }}
+            </div> <!-- date -->
+        </div> <!-- header -->
+        
+        <div class="forecast">
+            {% if cbtv.warning %}
+            <div class="warning">
+                {{ cbtv.warning|safe }}
+            </div>
+            {% endif %}
+            {% for sec in cbtv.sections %}
+            <div class="section">
+                <div class="body">
+                    {{ sec.body|safe }}
                 </div>
             </div>
             {% endfor %}
