@@ -5,9 +5,8 @@
     <div class="yui-b" id="recipe-title">
         {{ recipe.title }}
     </div>
-    
-    <div class="yui-gf">
 {% for i in ingredients %}
+    <div class="yui-gf">
         <div id="ingredient">
             <div class="yui-u first i-qty">{{ i.quantity }}</div>
             <div class="yui-u">
@@ -15,9 +14,8 @@
                 <span class="i-modifier">{{ i.modifier }}</span>
             </div>
         </div>
-{% endfor %}    
     </div>
-    
+{% endfor %}    
     <div class="yui-b" id="recipe-directions">
         {{ recipe.directions|textile }}
     </div>
