@@ -42,8 +42,10 @@
                     {% endifnotequal %}
                 </div>
                 <div id="curr_humidity" class="yui-u">
-                    <span class="humidity_value"></span>
-                    <span class="curr_units">%</span>
+                    <span id="humidity_value" class="humidity_value"></span>
+                    <div>
+                        <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
+                    </div>
                 </div>
             </div>
             <div class="yui-gb weather_title">
@@ -51,10 +53,10 @@
                     <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
                 </div>
                 <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">&nbsp;</span>
+                    &nbsp;
                 </div>
                 <div class="yui-u">
-                    <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                    &nbsp;
                 </div>
             </div>
             <div class="yui-b">

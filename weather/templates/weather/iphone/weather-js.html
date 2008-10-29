@@ -254,7 +254,7 @@ var current_weather = {
         current_weather.update_baros();
         current_weather.update_speeds();
         
-        el = document.getElementById('curr_humidity');
+        el = document.getElementById('humidity_value');
         if (el) {
             el.innerHTML = current_weather.current.humidity+"%";
         }

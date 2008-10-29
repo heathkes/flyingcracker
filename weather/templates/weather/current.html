@@ -60,10 +60,9 @@
                             {% endifnotequal %}
                         </div>
                         <div id="curr_humidity" class="yui-u">
-                            <span class="humidity_value">{{ current.humidity }}</span>
-                            <span class="curr_units">%</span>
-                            <div class="weather_title">
-                                <span class="curr_title" style="visibility: {{ show_titles }}">humidity</span>
+                            <span id="humidity_value" class="humidity_value">{{ current.humidity }}%</span>
+                            <div>
+                                <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
                             </div>
                         </div>
                     </div>
