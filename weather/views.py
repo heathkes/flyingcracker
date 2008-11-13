@@ -365,3 +365,58 @@ def delete(request):
             'form': form,
         })
     return render_to_response('weather/delete.html', c)
+
+def output_data(request):
+    import csv
+    from dateutil.parser import parse as dateparse
+    
+    item = request.GET.get('item')
+    if item == 'temp':
+        attr = item
+    elif item == 'pressure':
+        attr = 'barometer'
+    elif item == 'humidity':
+        attr = item
+    elif item == 'windchill':
+        attr = item
+    else:
+        return HttpResponse(content='unsupported data item: "%s"' % str(item))
+    
+    type = request.GET.get('type')
+    if type == 'range':
+        today_str = date.today().strftime('%Y-%m-%d')
+        start_str = request.GET.get('start', today_str)
+        end_str = request.GET.get('end', today_str)
+        try:
+            start = dateparse(start_str)
+            end = dateparse(end_str)
+        except ValueError:
+            return HttpResponse(content='unrecognized date format: start="%s", end="%s". Please use YYYY-MM-DD format.' % (start_str, end_str))
+        
+        target = date(start.year, start.month, start.day)
+        end = date(end.year, end.month, end.day)
+        interval = timedelta(days=1)
+
+        if target > end:
+            return HttpResponse(content='start (%s) cannot be later than end (%s)' % (str(target), str(end)))
+        
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=fc3weatherdata.csv'
+        writer = csv.writer(response)
+        writer.writerow(['date', 'temp:low', 'temp:high'])
+        
+        # Get the high and low temp for each date.
+        while target <= end:
+            qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
+            vals = [rec.__getattribute__(attr) for rec in qs]
+            if vals:
+                low = min(vals)
+                high = max(vals)
+            else:
+                low = high = 'N/A'
+            writer.writerow([str(target), str(low), str(high)])
+            target += interval
+        return response
+    else:
+        return HttpResponse(content='unsupported report type: "%s"' % str(type))

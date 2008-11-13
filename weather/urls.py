@@ -6,4 +6,5 @@ urlpatterns = patterns('fc3.weather.views',
     url(r'^$',          'weather', name='fc-weather'),
     url(r'^generate/$', 'generate', name='generate-weather'),
     url(r'^delete/$',   'delete', name='delete-weather'),
+    url(r'^data/$',     'output_data', name='output-data'),
 )
