@@ -388,6 +388,8 @@ def output_data(request):
         start_str = request.GET.get('start', today_str)
         end_str = request.GET.get('end', today_str)
         try:
+            # Force both of these to be type 'str', as dateutil parser
+            # does not seem to parse unicode (as retrieved from GET dict).
             start = dateparse(str(start_str))
             end = dateparse(str(end_str))
         except ValueError:
@@ -404,7 +406,7 @@ def output_data(request):
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = 'attachment; filename=fc3weatherdata.csv'
         writer = csv.writer(response)
-        writer.writerow(['date', 'temp:low', 'temp:high'])
+        writer.writerow(['date', '%s:low'%attr, '%s:high'%attr])
         
         # Get the high and low temp for each date.
         while target <= end:
