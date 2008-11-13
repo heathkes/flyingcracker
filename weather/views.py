@@ -391,9 +391,13 @@ def output_data(request):
             # Force both of these to be type 'str', as dateutil parser
             # does not seem to parse unicode (as retrieved from GET dict).
             start = dateparse(str(start_str))
+        except ValueError, e:
+            return HttpResponse(content='start date error: %s' % e)
+            
+        try:
             end = dateparse(str(end_str))
-        except ValueError:
-            return HttpResponse(content='unrecognized date format: start="%s", end="%s". Please use YYYY-MM-DD format.' % (str(start_str), str(end_str)))
+        except ValueError, e:
+            return HttpResponse(content='end date error: %s' % e)
         
         target = date(start.year, start.month, start.day)
         end = date(end.year, end.month, end.day)
