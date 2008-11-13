@@ -388,10 +388,10 @@ def output_data(request):
         start_str = request.GET.get('start', today_str)
         end_str = request.GET.get('end', today_str)
         try:
-            start = dateparse(start_str)
-            end = dateparse(end_str)
+            start = dateparse(str(start_str))
+            end = dateparse(str(end_str))
         except ValueError:
-            return HttpResponse(content='unrecognized date format: start="%s", end="%s". Please use YYYY-MM-DD format.' % (start_str, end_str))
+            return HttpResponse(content='unrecognized date format: start="%s", end="%s". Please use YYYY-MM-DD format.' % (str(start_str), str(end_str)))
         
         target = date(start.year, start.month, start.day)
         end = date(end.year, end.month, end.day)
