@@ -380,7 +380,7 @@ def output_data(request):
     elif item == 'windchill':
         attr = item
     else:
-        return HttpResponse(content='unsupported data item: "%s"' % str(item))
+        return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure", "humidity", "windchill".' % str(item))
     
     type = request.GET.get('type')
     if type == 'range':
@@ -404,7 +404,7 @@ def output_data(request):
         interval = timedelta(days=1)
 
         if target > end:
-            return HttpResponse(content='start (%s) cannot be later than end (%s)' % (str(target), str(end)))
+            return HttpResponse(content='start date cannot be later than end date' % (str(target), str(end)))
         
         # Create the HttpResponse object with the appropriate CSV header.
         response = HttpResponse(mimetype='text/csv')
@@ -425,4 +425,4 @@ def output_data(request):
             target += interval
         return response
     else:
-        return HttpResponse(content='unsupported report type: "%s"' % str(type))
+        return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
