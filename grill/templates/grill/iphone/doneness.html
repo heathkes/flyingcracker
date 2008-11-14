@@ -4,9 +4,10 @@
     <div class="doneness-more">
 {% if more_done %}<input id="more-button" type="image" value="{{ more_done.id }}" src="/static/img/iphone/doneness_more.png" />{% else %}&nbsp;{% endif %}
     </div>
-<a class="doneness" href="{{ doneness.get_absolute_url }}">{{ doneness }}</a>
-<script type="text/javascript">
+<!-- <a class="doneness" href="{{ doneness.get_absolute_url }}">{{ doneness }}</a> -->
+    {{ doneness }}
 
+<script type="text/javascript">
 function initButton() {
     YAHOO.util.Event.addListener(this, "click", newButton);
 };

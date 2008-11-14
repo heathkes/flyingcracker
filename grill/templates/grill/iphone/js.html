@@ -32,7 +32,6 @@ function foodRequest(food_id, doneness_id, hardware_id) {
     url += '?food='+food_id;
     url += '&doneness='+doneness_id;
     url += '&hardware='+hardware_id;
-    url += '&snippet';
-    YAHOO.plugin.Dispatcher.fetch ( 'grilling-detail', url );
+    snippet_navigation(url);
 };
 </script>

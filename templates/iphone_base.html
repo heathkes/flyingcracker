@@ -137,7 +137,15 @@ function dynamic_navigation ( url ) {
 
 // using the dispatcher to load the dynamic content
 function snippet_navigation ( url ) {
-    url = url + '?iphone&snippet';
+    // if url doesn't have a '?' then add one,
+    // else append these options.
+    if (url.indexOf('?') == -1) {
+        url = url + '?snippet&iphone';
+    }
+    else {
+        url = url + '&snippet&iphone';
+    }
+    
     YAHOO.plugin.Dispatcher.fetch ( 'bd', url );
 }
 

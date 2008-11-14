@@ -1,6 +1,7 @@
 from django.template import RequestContext
 from fc3.grill.models import Food, Doneness, Grilling, Hardware
 from django.shortcuts import render_to_response, get_object_or_404
+from django.core.urlresolvers import reverse
 
 def grill(request):
     '''
@@ -35,6 +36,15 @@ def grill(request):
     more_done = doneness.more()
     grill_items = Grilling.objects.filter(food=food, doneness=doneness, hardware=hardware)
     
+    alternatives = []
+    if not grill_items:
+        qs = Doneness.objects.filter(grilling__food=food, grilling__hardware=hardware).distinct()
+        for obj in qs:
+            d = {}
+            d['link'] = reverse('grill')+"?food=%d&doneness=%d&hardware=%d" % (food.id, obj.id, hardware.id)
+            d['title'] = str(food) + ' - ' + str(obj)
+            alternatives.append(d)
+            
     c = RequestContext(request, {'food_list': food_list,
                                  'food': food,
                                  'doneness': doneness,
@@ -42,6 +52,7 @@ def grill(request):
                                  'less_done': less_done,
                                  'more_done': more_done,
                                  'grill_items': grill_items,
+                                 'alternatives': alternatives,
                                 })
         
     agent = request.META.get('HTTP_USER_AGENT')
@@ -63,7 +74,10 @@ def grill(request):
             return render_to_response('grill/iphone/grill.html', c)
     
 def doneness_detail(request, slug):
-    pass
+    doneness = Doneness.objects.get(slug=slug)
+    c = RequestContext(request, {'doneness': doneness,
+                                })
+    return render_to_response('grill/iphone/doneness_detail.html', c)
 
 def doneness_request(request):
     doneness_id = request.GET.get('id', 2)

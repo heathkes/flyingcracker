@@ -14,7 +14,15 @@
 {% endfor %}
 {% else %}
 <div class="grill-items">
-No entries for {{ food }} cooked {{ doneness }}
+No entries for {{ food }} cooked {{ doneness }}.<br />
+{% if alternatives %}
+Try {{ alternatives|pluralize:"this,one of these" }} alternative{{ alternatives|pluralize }}:
+{% for obj in alternatives %}
+<div class="title">
+    <a href="{{ obj.link }}">{{ obj.title }}</a>
+</div>
+{% endfor %}
+{% endif %}
 </div>
 {% endif %}
 <div class="grill-items">
