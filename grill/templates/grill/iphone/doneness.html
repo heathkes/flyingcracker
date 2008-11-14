@@ -1,7 +1,10 @@
-<input type="image" id="less-button" value="{{ less_done.id }}" {% if not less_done %}src="/static/img/iphone/doneness_blank.png" disabled="disabled"{% else %}src="/static/img/iphone/doneness_less.png"{% endif %} />
+    <div class="doneness-less">
+{% if less_done %}<input id="less-button" type="image" value="{{ less_done.id }}" src="/static/img/iphone/doneness_less.png" />{% else %}&nbsp;{% endif %}
+    </div>
+    <div class="doneness-more">
+{% if more_done %}<input id="more-button" type="image" value="{{ more_done.id }}" src="/static/img/iphone/doneness_more.png" />{% else %}&nbsp;{% endif %}
+    </div>
 <a class="doneness" href="{{ doneness.get_absolute_url }}">{{ doneness }}</a>
-<input type="image" id="more-button" value="{{ more_done.id }}" {% if not more_done %}src="/static/img/iphone/doneness_blank.png" disabled="disabled"{% else %}src="/static/img/iphone/doneness_more.png" {% endif %} />
-
 <script type="text/javascript">
 
 function initButton() {
