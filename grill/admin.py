@@ -3,7 +3,12 @@ from django.contrib import admin
 from django.contrib.contenttypes import generic
 import fc3.grill.models as grill
 
-admin.site.register(grill.Doneness)
+
+class DonenessAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
+admin.site.register(grill.Doneness, DonenessAdmin)
+
 admin.site.register(grill.Method)
 admin.site.register(grill.Food)
 admin.site.register(grill.Hardware)

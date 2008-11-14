@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),
     (r'^weatherstation/',                   include('fc3.weatherstation.urls')),
     (r'^weather/',                          include('fc3.weather.urls')),
+    (r'^grill/',                            include('fc3.grill.urls')),
     (r'^miniblog/',                         include('fc3.miniblog.urls')),
     (r'^',                                  include('fc3.home.urls')),
 )

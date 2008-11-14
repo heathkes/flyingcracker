@@ -1,0 +1,22 @@
+{% if grill_items %}
+{% for item in grill_items %}
+<div class="grill-items">
+    <div class="yui-g">
+        <div class="yui-u first cut">
+            {{ item.cut }}
+        </div>
+        <div class="yui-u cooking">
+            <span class="details">{{ item.details }}</span><br />
+            <span class="method">{{ item.method }}</span>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+No entries for {{ food }} cooked {{ doneness }}
+{% endif %}
+<form id="grilling-ids" action="">
+    <input type="hidden" id="food-id" value="{{ food.id }}" />
+    <input type="hidden" id="doneness-id" value="{{ doneness.id }}" />
+    <input type="hidden" id="hardware-id" value="{{ hardware.id }}" />
+</form>

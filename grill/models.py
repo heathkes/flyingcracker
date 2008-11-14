@@ -1,12 +1,38 @@
 from django.db import models
+from django.db.models import permalink
 from django.contrib.auth.models import User
 
 
 class Doneness(models.Model):
     title = models.CharField(max_length=20)
+    slug = models.SlugField()
+    doneness = models.IntegerField()
+    description = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        ordering = ['doneness']
+        verbose_name_plural = 'Donenesses'
+
+    def get_absolute_url(self):
+        return ('grill-doneness-detail', [self.slug])
+    get_absolute_url = permalink(get_absolute_url)
     
     def __unicode__(self):
         return self.title
+    
+    def less(self):
+        try:
+            obj = Doneness.objects.get(doneness=self.doneness-1)
+        except Doneness.DoesNotExist:
+            obj = None
+        return obj
+    
+    def more(self):
+        try:
+            obj = Doneness.objects.get(doneness=self.doneness+1)
+        except Doneness.DoesNotExist:
+            obj = None
+        return obj
 
     
 class Method(models.Model):

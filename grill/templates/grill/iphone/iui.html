@@ -1,0 +1,21 @@
+<div id="custom-doc">
+    <div id="bd">
+        <div id="grilling">
+            <h2>Grilling Times & Temps</h2>
+            <form action="">
+            <div class="yui-g">
+                <div id="food-select" class="yui-u first">
+                {% include "grill/iphone/food_select.html" %}
+                </div>
+                <div id="doneness" class="yui-u">
+                {% include "grill/iphone/doneness.html" %}
+                </div>
+            </div>
+            </form>
+            <div id="grilling-detail" class="yui-b">
+            {% include "grill/iphone/snippet.html" %}
+            </div>
+        </div>
+    </div>
+</div> <!-- custom-doc -->
+{% include "grill/iphone/js.html" %}

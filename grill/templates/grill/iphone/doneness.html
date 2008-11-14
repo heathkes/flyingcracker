@@ -1,0 +1,20 @@
+<input type="image" id="less-button" value="{{ less_done.id }}" {% if not less_done %}src="/static/img/iphone/doneness_blank.png" disabled="disabled"{% else %}src="/static/img/iphone/doneness_less.png"{% endif %} />
+<a class="doneness" href="{{ doneness.get_absolute_url }}">{{ doneness }}</a>
+<input type="image" id="more-button" value="{{ more_done.id }}" {% if not more_done %}src="/static/img/iphone/doneness_blank.png" disabled="disabled"{% else %}src="/static/img/iphone/doneness_more.png" {% endif %} />
+
+<script type="text/javascript">
+
+function initButton() {
+    YAHOO.util.Event.addListener(this, "click", newButton);
+};
+
+function newButton(e) {
+    var t = YAHOO.util.Event.getTarget(e);
+    
+    donenessChange.fire(t.value);
+    YAHOO.util.Event.preventDefault(e);
+};
+
+YAHOO.util.Event.onAvailable('less-button', initButton);
+YAHOO.util.Event.onAvailable('more-button', initButton);
+</script>

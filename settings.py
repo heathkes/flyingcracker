@@ -95,6 +95,7 @@ INSTALLED_APPS = (
 #    'fc3.registration',
     'fc3.cam',
     'fc3.miniblog',
+    'fc3.grill',
 )
 
 AUTHENTICATION_BACKENDS = (
