@@ -33,6 +33,13 @@ def grill(request):
     doneness = Doneness.objects.get(id=doneness_id)
     hardware = Hardware.objects.get(id=hardware_id)
     grill_items = Grilling.objects.filter(food=food, doneness=doneness, hardware=hardware)
+    if not grill_items:
+        grill_items = Grilling.objects.filter(food=food, doneness=doneness)
+        if not grill_items:
+            doneness_list = Doneness.objects.filter(grilling__food=food).distinct()
+            if doneness_list:
+                doneness = doneness_list[0]
+                grill_items = Grilling.objects.filter(food=food, doneness=doneness)
     
     doneness_list = Doneness.objects.filter(grilling__food=food, grilling__hardware=hardware).distinct()
             
