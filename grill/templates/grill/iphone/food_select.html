@@ -1,20 +1,20 @@
 <select id="id-food" class="selectLink">
-    {% for food in food_list %}
-    <option value="{{ food.id }}">{{ food.title }}</option>
+    {% for f in food_list %}
+    <option value="{{ f.id }}"{% ifequal f food %} selected="selected"{% endifequal %}>{{ f.title }}</option>
     {% endfor %}
 </select>
 
 <script type="text/javascript">
-function initSelect() {
-    YAHOO.util.Event.addListener(this, "change", newSelect);
+function initFoodSelect() {
+    YAHOO.util.Event.addListener(this, "change", newFoodSelect);
 };
 
-function newSelect(e) {
+function newFoodSelect(e) {
     var t = YAHOO.util.Event.getTarget(e);
     
     foodChange.fire(t.value);
     YAHOO.util.Event.preventDefault(e);
 };
 
-YAHOO.util.Event.onAvailable('id-food', initSelect);
+YAHOO.util.Event.onAvailable('id-food', initFoodSelect);
 </script>

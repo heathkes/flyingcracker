@@ -16,14 +16,8 @@ function new_food(type, args) {
 
 function new_doneness(type, args) {
     var doneness_id = args[0]
-    // send doneness request
-    // receive doneness html, replace in div
     var food_id = document.getElementById('food-id').value;
     var hardware_id = document.getElementById('hardware-id').value;
-    var url = "{% url grill-doneness %}";
-    url += '?id='+doneness_id;
-    YAHOO.plugin.Dispatcher.fetch ( 'doneness', url );
-    
     foodRequest(food_id, doneness_id, hardware_id);
 };
 

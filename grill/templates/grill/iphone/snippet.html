@@ -1,35 +1,15 @@
-{% if grill_items %}
-{% for item in grill_items %}
-<div class="grill-items">
-    <div class="yui-g">
-        <div class="yui-u first cut">
-            {{ item.cut }}
+    <div id="grilling">
+        <div class="title">Grilling Times & Temps</div>
+        <form action="">
+        <div class="yui-g">
+            <div id="food-select" class="yui-u first">
+            {% include "grill/iphone/food_select.html" %}
+            </div>
+            <div id="doneness" class="yui-u">
+            {% include "grill/iphone/doneness_select.html" %}
+            </div>
         </div>
-        <div class="yui-u cooking">
-            <span class="details">{{ item.details }}</span><br />
-            <span class="method">{{ item.method }}</span>
+        </form>
+        {% include "grill/iphone/detail.html" %}
         </div>
     </div>
-</div>
-{% endfor %}
-{% else %}
-<div class="grill-items">
-No entries for {{ food }} cooked {{ doneness }}.<br />
-{% if alternatives %}
-Try {{ alternatives|pluralize:"this,one of these" }} alternative{{ alternatives|pluralize }}:
-{% for obj in alternatives %}
-<div class="title">
-    <a href="{{ obj.link }}">{{ obj.title }}</a>
-</div>
-{% endfor %}
-{% endif %}
-</div>
-{% endif %}
-<div class="grill-items">
-    Tha-tha-that's all folks!
-</div>
-<form id="grilling-ids" action="">
-    <input type="hidden" id="food-id" value="{{ food.id }}" />
-    <input type="hidden" id="doneness-id" value="{{ doneness.id }}" />
-    <input type="hidden" id="hardware-id" value="{{ hardware.id }}" />
-</form>

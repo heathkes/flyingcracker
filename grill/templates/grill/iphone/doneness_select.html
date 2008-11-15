@@ -1,0 +1,20 @@
+<select id="id-doneness" class="selectLink">
+    {% for temp in doneness_list %}
+    <option value="{{ temp.id }}"{% ifequal temp doneness %} selected="selected"{% endifequal %}>{{ temp.title }}</option>
+    {% endfor %}
+</select>
+
+<script type="text/javascript">
+function initDonenessSelect() {
+    YAHOO.util.Event.addListener(this, "change", newDonenessSelect);
+};
+
+function newDonenessSelect(e) {
+    var t = YAHOO.util.Event.getTarget(e);
+    
+    donenessChange.fire(t.value);
+    YAHOO.util.Event.preventDefault(e);
+};
+
+YAHOO.util.Event.onAvailable('id-doneness', initDonenessSelect);
+</script>
