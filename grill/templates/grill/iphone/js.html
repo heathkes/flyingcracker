@@ -6,6 +6,8 @@ donenessChange.subscribe(new_doneness);
 var foodChange = new YAHOO.util.CustomEvent('food change');
 foodChange.subscribe(new_food);
 
+var hardwareChange = new YAHOO.util.CustomEvent('hardware change');
+hardwareChange.subscribe(new_hardware);
 
 function new_food(type, args) {
     var food_id = args[0];
@@ -21,6 +23,12 @@ function new_doneness(type, args) {
     foodRequest(food_id, doneness_id, hardware_id);
 };
 
+function new_hardware(type, args) {
+    var hardware_id = args[0];
+    var food_id = document.getElementById('food-id').value;
+    var doneness_id = document.getElementById('doneness-id').value;
+    foodRequest(food_id, doneness_id, hardware_id);
+};
 function foodRequest(food_id, doneness_id, hardware_id) {
     var url = "{% url grill %}";
     url += '?food='+food_id;

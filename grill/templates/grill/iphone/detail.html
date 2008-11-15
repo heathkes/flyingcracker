@@ -14,12 +14,9 @@
 {% endfor %}
 {% else %}
 <div class="grill-items">
-Surprisingly, we have no entries for {{ food }}.<br />
+Surprisingly, we have no entries for {{ food }} cooked on a {{ hardware }}.<br />
 </div>
 {% endif %}
-<div class="grill-items">
-    Tha-tha-that's all folks!
-</div>
 <form id="grilling-ids" action="">
     <input type="hidden" id="food-id" value="{{ food.id }}" />
     <input type="hidden" id="doneness-id" value="{{ doneness.id }}" />

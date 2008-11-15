@@ -17,6 +17,7 @@ def grill(request):
     `grill_items` - list of dicts containing a Cut, Method, and Grilling.details
     '''
     food_list = Food.objects.all()
+    hardware_list = Hardware.objects.all()
 
     if request.GET.has_key('snippet'):
         # parameters expected
@@ -32,19 +33,16 @@ def grill(request):
     food = Food.objects.get(id=food_id)
     doneness = Doneness.objects.get(id=doneness_id)
     hardware = Hardware.objects.get(id=hardware_id)
+    doneness_list = Doneness.objects.filter(grilling__food=food, grilling__hardware=hardware).distinct()
     grill_items = Grilling.objects.filter(food=food, doneness=doneness, hardware=hardware)
     if not grill_items:
-        grill_items = Grilling.objects.filter(food=food, doneness=doneness)
-        if not grill_items:
-            doneness_list = Doneness.objects.filter(grilling__food=food).distinct()
-            if doneness_list:
-                doneness = doneness_list[0]
-                grill_items = Grilling.objects.filter(food=food, doneness=doneness)
+        if doneness_list:
+            doneness = doneness_list[0]
+            grill_items = Grilling.objects.filter(food=food, doneness=doneness)
     
-    doneness_list = Doneness.objects.filter(grilling__food=food, grilling__hardware=hardware).distinct()
-            
     c = RequestContext(request, {'food_list': food_list,
                                  'doneness_list': doneness_list,
+                                 'hardware_list': hardware_list,
                                  'food': food,
                                  'doneness': doneness,
                                  'hardware': hardware,

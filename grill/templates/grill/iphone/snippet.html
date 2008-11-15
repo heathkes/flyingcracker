@@ -5,11 +5,13 @@
             <div id="food-select" class="yui-u first">
             {% include "grill/iphone/food_select.html" %}
             </div>
-            <div id="doneness" class="yui-u">
+            <div id="doneness-select" class="yui-u">
             {% include "grill/iphone/doneness_select.html" %}
             </div>
         </div>
         </form>
         {% include "grill/iphone/detail.html" %}
+        <div id="hardware-select" class="yui-b grill-items">
+        Grill: {% include "grill/iphone/hardware_select.html" %}
         </div>
     </div>
