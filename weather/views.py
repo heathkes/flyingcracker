@@ -453,8 +453,7 @@ def output_data(request):
                     for speed in speed_vals:
                         total += speed
                     avg = total / len(speed_vals)
-                    peak_vals = [rec.__getattribute__('wind_peak') for rec in qs]
-                        peak = max(peak_vals)
+                    peak = max([rec.__getattribute__('wind_peak') for rec in qs])
                     writer.writerow([str(target),
                                      str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
                                      str(peak.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
