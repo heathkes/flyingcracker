@@ -403,12 +403,12 @@ def output_data(request):
     if target > end:
         return HttpResponse(content='start date cannot be later than end date' % (str(target), str(end)))
     
+    type = request.GET.get('type')
+    
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=fc3weather_%s_%s_%s-%s.csv' % (item, type, start_str, end_str)
     writer = csv.writer(response)
-    
-    type = request.GET.get('type')
     
     if item == 'temp':
         if type == 'range':
@@ -426,6 +426,8 @@ def output_data(request):
                 writer.writerow([str(target), str(low), str(high)])
                 target += interval
             return response
+        else:
+            return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
     elif item == 'wind':
         if type == 'average':
             writer.writerow(['date', '%s:average (mph)'%attr, '%s:peak (mph)'%attr])
@@ -452,5 +454,5 @@ def output_data(request):
 )])
                 target += interval
             return response
-            
-    return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
+        else:
+            return HttpResponse(content='Unsupported report type: "%s". Valid report types: "average".' % str(type))
