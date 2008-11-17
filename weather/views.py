@@ -405,7 +405,7 @@ def output_data(request):
     
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=fc3weatherdata.csv'
+    response['Content-Disposition'] = 'attachment; filename=fc3weather_%s_%s_%s-%s.csv' % (item, type, start_str, end_str)
     writer = csv.writer(response)
     
     type = request.GET.get('type')
