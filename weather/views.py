@@ -369,7 +369,7 @@ def delete(request):
 def output_data(request):
     import csv
     from dateutil.parser import parse as dateparse
-    from decimal import Decimal
+    from decimal import *
     
     item = request.GET.get('item')
     if item == 'pressure':
