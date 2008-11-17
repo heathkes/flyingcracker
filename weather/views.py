@@ -428,7 +428,7 @@ def output_data(request):
             return response
     elif item == 'wind':
         if type == 'average':
-            writer.writerow(['date', '%s:average'%attr, '%s:peak'%attr])
+            writer.writerow(['date', '%s:average (mph)'%attr, '%s:peak (mph)'%attr])
             
             # Get the average and peak windspeed for each date.
             while target <= end:
@@ -447,7 +447,9 @@ def output_data(request):
                 else:
                     peak = 'N/A'
                     
-                writer.writerow([str(target), str(avg), str(peak)])
+                writer.writerow([str(target), str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)
+), str(peak.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)
+)])
                 target += interval
             return response
             
