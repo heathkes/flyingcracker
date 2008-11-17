@@ -371,58 +371,82 @@ def output_data(request):
     from dateutil.parser import parse as dateparse
     
     item = request.GET.get('item')
-    if item == 'temp':
-        attr = item
-    elif item == 'pressure':
+    if item == 'pressure':
         attr = 'barometer'
-    elif item == 'humidity':
-        attr = item
-    elif item == 'windchill':
+    elif item == 'wind':
+        attr = 'wind_speed'
+    elif item == 'temp' or item == 'humidity' or item == 'windchill':
         attr = item
     else:
-        return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure", "humidity", "windchill".' % str(item))
+        return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure", "humidity", "windchill" and "wind".' % str(item))
+    
+    today_str = date.today().strftime('%Y-%m-%d')
+    start_str = request.GET.get('start', today_str)
+    end_str = request.GET.get('end', today_str)
+    try:
+        # Force both of these to be type 'str', as dateutil parser
+        # does not seem to parse unicode (as retrieved from GET dict).
+        start = dateparse(str(start_str))
+    except ValueError, e:
+        return HttpResponse(content='start date error: %s' % e)
+        
+    try:
+        end = dateparse(str(end_str))
+    except ValueError, e:
+        return HttpResponse(content='end date error: %s' % e)
+    
+    target = date(start.year, start.month, start.day)
+    end = date(end.year, end.month, end.day)
+    interval = timedelta(days=1)
+
+    if target > end:
+        return HttpResponse(content='start date cannot be later than end date' % (str(target), str(end)))
+    
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=fc3weatherdata.csv'
+    writer = csv.writer(response)
     
     type = request.GET.get('type')
-    if type == 'range':
-        today_str = date.today().strftime('%Y-%m-%d')
-        start_str = request.GET.get('start', today_str)
-        end_str = request.GET.get('end', today_str)
-        try:
-            # Force both of these to be type 'str', as dateutil parser
-            # does not seem to parse unicode (as retrieved from GET dict).
-            start = dateparse(str(start_str))
-        except ValueError, e:
-            return HttpResponse(content='start date error: %s' % e)
+    
+    if item == 'temp':
+        if type == 'range':
+            writer.writerow(['date', '%s:low'%attr, '%s:high'%attr])
             
-        try:
-            end = dateparse(str(end_str))
-        except ValueError, e:
-            return HttpResponse(content='end date error: %s' % e)
-        
-        target = date(start.year, start.month, start.day)
-        end = date(end.year, end.month, end.day)
-        interval = timedelta(days=1)
-
-        if target > end:
-            return HttpResponse(content='start date cannot be later than end date' % (str(target), str(end)))
-        
-        # Create the HttpResponse object with the appropriate CSV header.
-        response = HttpResponse(mimetype='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=fc3weatherdata.csv'
-        writer = csv.writer(response)
-        writer.writerow(['date', '%s:low'%attr, '%s:high'%attr])
-        
-        # Get the high and low temp for each date.
-        while target <= end:
-            qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
-            vals = [rec.__getattribute__(attr) for rec in qs]
-            if vals:
-                low = min(vals)
-                high = max(vals)
-            else:
-                low = high = 'N/A'
-            writer.writerow([str(target), str(low), str(high)])
-            target += interval
-        return response
-    else:
-        return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
+            # Get the high and low temp for each date.
+            while target <= end:
+                qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
+                vals = [rec.__getattribute__(attr) for rec in qs]
+                if vals:
+                    low = min(vals)
+                    high = max(vals)
+                else:
+                    low = high = 'N/A'
+                writer.writerow([str(target), str(low), str(high)])
+                target += interval
+            return response
+    elif item == 'wind':
+        if type == 'average':
+            writer.writerow(['date', '%s:average'%attr, '%s:peak'%attr])
+            
+            # Get the average and peak windspeed for each date.
+            while target <= end:
+                qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
+                speed_vals = [rec.__getattribute__(attr) for rec in qs]
+                if speed_vals:
+                    for speed in speed_vals:
+                        total += speed
+                    avg = total / len(speed_vals)
+                else:
+                    avg = 'N/A'
+                peak_vals = [rec.__getattribute__('wind_peak') for rec in qs]
+                if peak_vals:
+                    peak = max(peak_vals)
+                else:
+                    avg = 'N/A'
+                    
+                writer.writerow([str(target), str(avg), str(peak)])
+                target += interval
+            return response
+            
+    return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
