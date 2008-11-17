@@ -369,6 +369,7 @@ def delete(request):
 def output_data(request):
     import csv
     from dateutil.parser import parse as dateparse
+    from decimal import Decimal
     
     item = request.GET.get('item')
     if item == 'pressure':
@@ -433,6 +434,7 @@ def output_data(request):
             while target <= end:
                 qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
                 speed_vals = [rec.__getattribute__(attr) for rec in qs]
+                total = Decimal('0')
                 if speed_vals:
                     for speed in speed_vals:
                         total += speed
@@ -443,7 +445,7 @@ def output_data(request):
                 if peak_vals:
                     peak = max(peak_vals)
                 else:
-                    avg = 'N/A'
+                    peak = 'N/A'
                     
                 writer.writerow([str(target), str(avg), str(peak)])
                 target += interval
