@@ -411,23 +411,35 @@ def output_data(request):
     writer = csv.writer(response)
     
     if item == 'temp':
-        if type == 'range':
-            writer.writerow(['date', '%s:low'%attr, '%s:high'%attr])
+        if type == 'average':
+            writer.writerow(['date', '%s:low (F)'%attr, '%s:high (F)'%attr, '%s:average (F)'%attr])
             
             # Get the high and low temp for each date.
             while target <= end:
                 qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
                 vals = [rec.__getattribute__(attr) for rec in qs]
+                total = Decimal('0')
                 if vals:
                     low = min(vals)
                     high = max(vals)
+                    for temp in vals:
+                        total += temp
+                    avg = total / len(vals)
+                    writer.writerow([str(target),
+                                     str(low),
+                                     str(high),
+                                     str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                                     ])
                 else:
-                    low = high = 'N/A'
-                writer.writerow([str(target), str(low), str(high)])
+                    writer.writerow([str(target),
+                                     'N/A',
+                                     'N/A',
+                                     'N/A',
+                                    ])
                 target += interval
             return response
         else:
-            return HttpResponse(content='Unsupported report type: "%s". Valid report types: "range".' % str(type))
+            return HttpResponse(content='Unsupported report type: "%s". Valid report types: "average".' % str(type))
     elif item == 'wind':
         if type == 'average':
             writer.writerow(['date', '%s:average (mph)'%attr, '%s:peak (mph)'%attr])
@@ -441,17 +453,18 @@ def output_data(request):
                     for speed in speed_vals:
                         total += speed
                     avg = total / len(speed_vals)
+                    peak_vals = [rec.__getattribute__('wind_peak') for rec in qs]
+                        peak = max(peak_vals)
+                    writer.writerow([str(target),
+                                     str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                                     str(peak.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                                    ])
                 else:
-                    avg = 'N/A'
-                peak_vals = [rec.__getattribute__('wind_peak') for rec in qs]
-                if peak_vals:
-                    peak = max(peak_vals)
-                else:
-                    peak = 'N/A'
+                    writer.writerow([str(target),
+                                     'N/A',
+                                     'N/A',
+                                    ])
                     
-                writer.writerow([str(target), str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)
-), str(peak.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)
-)])
                 target += interval
             return response
         else:
