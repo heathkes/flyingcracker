@@ -190,6 +190,11 @@
                 </div>
             </div>
             {% endfor %}
+            {% if cbac.reported_by %}
+            <div class="reporter">
+            reported by {{ cbac.reported_by }}
+            {% endif %}
+            </div>
         </div>  <!-- forecast -->
     </div>  <!-- weatherItem -->
     </div>  <!-- box -->

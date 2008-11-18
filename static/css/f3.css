@@ -397,6 +397,12 @@ th.flowHead{
 .weatherItem .body p {
 	font-size: 1em;
 }
+.weatherItem > .forecast > .reporter {
+	font-weight: normal;
+	font-size: 0.7em;
+	color: #666666;
+    text-align: center;
+}
 
 .forecast .warning {
 	font-size: 1.0em;
