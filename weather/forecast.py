@@ -1,4 +1,8 @@
+import datetime
 from django.utils.encoding import smart_str
+from dateutil import parser as dateutilparser
+from dateutil.tz import tzlocal
+from fc3.weatherstation.tz import USTimeZone
 
 class Forecast(object):
     
@@ -13,6 +17,19 @@ class Forecast(object):
         
     def add_section(self, title, body):
         self.sections.append({'title': title, 'body': body})
+
+    def set_timestamp(self, pubdate = None):
+        if pubdate == None:
+            pubdate = self.pubdate
+        if pubdate:
+            self.timestamp = dateutilparser.parse(pubdate)
+            mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+            self.timestamp = self.timestamp.astimezone(mountain_tz)
+            
+            # figure out if the publication time is old
+            now = datetime.datetime.now(tzlocal()).astimezone(mountain_tz)
+            if (now - self.timestamp) > datetime.timedelta(hours=24):
+                self.stale = True
         
     def __repr__(self):
         s = ''

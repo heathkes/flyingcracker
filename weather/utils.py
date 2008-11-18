@@ -387,9 +387,39 @@ def baro_dict(l):
         i = i+1
     return unit_dict
 
+
+def get_URL_data(url, filename):
+    import os
+    if not os.path.isfile(filename):
+        return save_URL_data(url, filename)
+    try:
+        f = open(filename, 'r')
+    except:
+        lines = save_URL_data(url, filename)
+    else:
+        try:
+            lines = f.read()
+        except:
+            lines = save_URL_data(url, filename)
+    return lines
+
+def save_URL_data(url, filename):
+    from urllib import urlopen
+    
+    try:
+        xml_text = urlopen(url).read()
+    except IOError:
+        return None
+    else:
+        # save the retrieved data
+        f = open(filename, "w")
+        f.write(xml_text)
+        f.close()
+        return xml_text
+
+
 if __name__=='__main__':
     today = get_today_timestamp(None)
     today_wx = weather_on_date(today)
     print gchart.hourly_data(today_wx, today)
     print gchart.halfhour_data(today_wx, today)
-    
