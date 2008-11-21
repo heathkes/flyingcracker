@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from datetime import *
+from decimal import *
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -230,14 +231,18 @@ def get_chart(date, data_type, size, plots, unit):
     except ChartUrl.DoesNotExist:
         # create url
         chart = ChartUrl(date=date, timestamp=now, data_type=data_type, size=size, plots=plots, unit=unit)
-        chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
-        try:
-            chart.save()
-        except ChartUrl.IntegrityError: # someone else got it done first
-            pass
+        # BUGBUG - 2008-11-20 - move the following line up above the previous line,
+        #          once we figure out the correct exception for a save overwrite.
+        #          Restore the 'try' block when we have that exception type.
+        url = utils.create_chart_url(date, data_type, size, plots, unit)
+        chart.url = url
+#        try:
+        chart.save()
+#        except: # someone else got it done first
+#            pass
     else:
-        # recreate url if timestamp is 30 minutes older than now
-        if (now - chart.timestamp) > timedelta(minutes=30):
+        # recreate url if timestamp hour is different than now
+        if now.hour != chart.timestamp.hour:
             # re-create url
             chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
             chart.timestamp = now
@@ -367,9 +372,19 @@ def delete(request):
     return render_to_response('weather/delete.html', c)
 
 def output_data(request):
+    '''
+    Expects GET parameters:
+    `item` - sensor type: temp, wind, barometer, etc.
+    `type` - type of data collection: average, highlow, etc.
+    `start` - date (and optional time) for the start of data collection
+    `end` - date (and optional time) for the end of data collection
+    
+    Returns a CSV file. The first line contains column titles.
+    Subsequent lines contain data values.
+    
+    '''
     import csv
     from dateutil.parser import parse as dateparse
-    from decimal import *
     
     item = request.GET.get('item')
     if item == 'pressure':
@@ -468,3 +483,42 @@ def output_data(request):
             return response
         else:
             return HttpResponse(content='Unsupported report type: "%s". Valid report types: "average".' % str(type))
+
+def chart(request):
+    '''
+    Expects GET parameters:
+    `item` - sensor type: temp, pressure
+    `type` - chart type: multiday
+    `units` - Units for the requested data item. Temp: 'F', 'C'. Pressure: 'in', 'mb'.
+    
+    Returns a URL for a chart of the specified type.
+    
+    '''
+
+    item = request.GET.get('item')
+    if item != 'pressure' and item != 'temp':
+        return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure".' % str(item))
+        
+    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        size = ChartUrl.SIZE_IPHONE
+    else:
+        size = ChartUrl.SIZE_NORMAL
+    
+    type = request.GET.get('type')
+    units = request.GET.get('units')
+    
+    if item == 'temp':
+        if units not in utils.temp_units:
+            return HttpResponse(content='Unsupported temp units: "%s". Valid units: %s.' % (str(units), ','.join(utils.temp_units)))
+        if type != 'multiday':
+            return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
+        
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+    else:
+        if units not in utils.baro_units:
+            return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ','.join(utils.baro_units)))
+        if type != 'multiday':
+            return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
+        
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+    return HttpResponse(content=chart)
