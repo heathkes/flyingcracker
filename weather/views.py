@@ -499,6 +499,7 @@ def chart(request):
     if item != 'pressure' and item != 'temp':
         return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure".' % str(item))
         
+    agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         size = ChartUrl.SIZE_IPHONE
     else:
