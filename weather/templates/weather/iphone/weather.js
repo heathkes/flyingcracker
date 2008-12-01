@@ -63,13 +63,13 @@ function weather_loading_init() {
 
         YAHOO.weather.current.wait = 
                 new YAHOO.widget.Panel("wait",  
-                                                { width: "240px", 
-                                                  fixedcenter: true, 
+                                                { context: ["curr_weather", "tl", "tl"],
+                                                  xy: [50,50],
+                                                  width: "240px", 
                                                   close: false, 
                                                   draggable: false, 
                                                   zindex:4,
                                                   modal: true,
-                                                  context: ["curr_weather", "tr", "tl"],
                                                   visible: false
                                                 } 
                                             );
