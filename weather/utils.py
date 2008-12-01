@@ -92,6 +92,22 @@ def create_chart_url(date, data_type, size, plots, unit):
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
         chart = day_baro_chart(qs_list, unit, plot_func, width, height, plot_colors)
+        
+    elif data_type == ChartUrl.DATA_HUMIDITY:
+        if size == ChartUrl.SIZE_IPHONE:
+            width = 260
+            height = 100
+            plot_func = gchart.day_chart_iphone
+        elif size == ChartUrl.SIZE_NORMAL:
+            width = 400
+            height = 160
+            plot_func = gchart.day_chart_normal
+        else:
+            width = WIDTH_DEFAULT
+            height = HEIGHT_DEFAULT
+            plot_func = gchart.day_chart_normal
+        chart = day_humidity_chart(qs_list, plot_func, width, height, plot_colors)
+        
     else:
         return ''
     return chart.get_url()
@@ -191,6 +207,28 @@ def in_to_mb(val):
         return None
     else:
         return int(round(float(val)*33.8639))
+
+def day_humidity_chart(qs_list, plot_func, width, height, colors):
+    '''
+    Returns a URL which produces one line for each queryset.
+    
+    '''
+    data_list = []  # list of value lists
+    for date_qs in qs_list:
+        humidity = []
+        for rec in date_qs:
+            if rec is None:
+                humidity.append(None)
+            else:
+                humidity.append(rec.humidity)
+        data_list.append(humidity)
+            
+    plot_list = [] # list of plot lines, each a list of values
+    for val_list in data_list:
+        # add list of humidity values to list of plot lines
+        plot_list.append(val_list)
+    chart = plot_func(plot_list, 0, 100, width, height, colors, [4,2,2])
+    return chart
 
 def calc_temp_values(value):
     '''

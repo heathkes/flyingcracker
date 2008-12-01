@@ -53,9 +53,38 @@ function toggleLabels(element) {
     element.setAttribute("toggled", element.getAttribute("toggled") != "true");
 }
 
+YAHOO.namespace("weather.current");
+
+function weather_loading_init() {
+
+    if (!YAHOO.weather.current.wait) {
+
+        // Initialize the temporary Panel to display while waiting for external content to load
+
+        YAHOO.weather.current.wait = 
+                new YAHOO.widget.Panel("wait",  
+                                                { width: "240px", 
+                                                  fixedcenter: true, 
+                                                  close: false, 
+                                                  draggable: false, 
+                                                  zindex:4,
+                                                  modal: true,
+                                                  context: ["curr_weather", "tr", "tl"],
+                                                  visible: false
+                                                } 
+                                            );
+
+        YAHOO.weather.current.wait.setHeader("Loading, please wait...");
+        YAHOO.weather.current.wait.setBody("<img src=\"/static/img/rel_interstitial_loading.gif\"/>");
+        YAHOO.weather.current.wait.render(document.body);
+    }
+}
+
 var current_weather = {
     
     init: function() {
+        weather_loading_init();
+        
         current_weather.current = null;     // this holds all current weather data
         current_weather.retrieve_current(); // ask for the latest data
         
@@ -72,6 +101,9 @@ var current_weather = {
     },
     
     retrieve_current: function() {
+        // Show the "Loading" panel
+        YAHOO.weather.current.wait.show();
+        
         var cObj = YAHOO.util.Connect.asyncRequest('GET', '/weather/current/?xhr', current_weather.retrieve_current_callback);
     },
     
@@ -85,6 +117,7 @@ var current_weather = {
                 alert("Invalid server response in retrieve_current_callback "+o.responseText+", please contact flyingcracker.com")
                 alert(e);
             }
+            
             if (response_obj) {
                 current_weather.current = response_obj;
                 
@@ -100,11 +133,19 @@ var current_weather = {
                     weather_fade_in.animate();
                     });
                 
+                weather_fade_in.onComplete.subscribe(function() {
+                    YAHOO.weather.current.wait.hide();
+                    });
+                
                 weather_fade_out.animate();
+            }
+            else {
+                YAHOO.weather.current.wait.hide();
             }
         },
     
         failure: function(o) {
+            YAHOO.weather.current.wait.hide();
             var a = 1; // alert('An error has occurred');
         },
         

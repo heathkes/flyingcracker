@@ -9,9 +9,9 @@
 <!--	<link href="favicon.ico" type="/static/img/vnd.microsoft.icon" rel="shortcut icon" /> -->
 	<link rel="apple-touch-icon" href={% block favicon %}"/static/img/cocktail-icon.png"{% endblock %} />
     
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/reset-fonts-grids/reset-fonts-grids.css">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/base/base-min.css">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/{{ yui_version }}/build/assets/skins/sam/skin.css">
+    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css">
+    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/base/base-min.css">
+    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
     
 	<link rel="stylesheet" type="text/css" href="/static/css/iphone/fc3.iui.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/iphone/weather.iui.css"/>
@@ -23,7 +23,18 @@
     {% endblock %}
     
     {% block javascript %}
-    <script type="text/javascript" src="http://yui.yahooapis.com/combo?{{ yui_version }}/build/utilities/utilities.js&{{ yui_version }}/build/history/history-min.js&{{ yui_version }}/build/json/json-min.js&{{ yui_version }}/build/button/button-min.js"></script> 
+    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-beta-min.js"></script> 
+    <script type="text/javascript" src="{{ yui_path }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/element/element-beta-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/container/container-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/connection/connection-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/utilities/utilities.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/history/history-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/json/json-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/menu/menu-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/button/button-min.js"></script>
+    
     <script src="http://js.bubbling-library.com/1.5.0/build/bubbling/bubbling.js"></script> 
     <script src="http://js.bubbling-library.com/1.5.0/build/dispatcher/dispatcher.js"></script>
     {% endblock javascript %}

@@ -487,17 +487,18 @@ def output_data(request):
 def chart(request):
     '''
     Expects GET parameters:
-    `item` - sensor type: temp, pressure
+    `item` - sensor type: temp, pressure, humidity
     `type` - chart type: multiday
     `units` - Units for the requested data item. Temp: 'F', 'C'. Pressure: 'in', 'mb'.
     
     Returns a URL for a chart of the specified type.
     
     '''
-
+    item_list = ['temp', 'pressure', 'humidity']
+    
     item = request.GET.get('item')
-    if item != 'pressure' and item != 'temp':
-        return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure".' % str(item))
+    if item not in item_list:
+        return HttpResponse(content='Unsupported data item: "%s". Valid data items are: %s.' % (str(item), ','.join(item_list)))
         
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
@@ -515,11 +516,18 @@ def chart(request):
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
         chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
-    else:
+    elif item == 'pressure':
         if units not in utils.baro_units:
             return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ','.join(utils.baro_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
         chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+    elif item == 'humidity':
+        if type != 'multiday':
+            return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
+        
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+    else:
+        chart = 'none'
     return HttpResponse(content=chart)
