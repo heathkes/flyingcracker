@@ -527,7 +527,7 @@ def chart(request):
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
-        chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%')
     else:
         chart = 'none'
     return HttpResponse(content=chart)
