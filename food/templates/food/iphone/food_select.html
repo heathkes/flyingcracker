@@ -45,7 +45,9 @@ function newSelect(e) {
     var t = YAHOO.util.Event.getTarget(e);
     
     if (t.selectedIndex != 0) {
-        selectChange.fire(t.value);
+        var value = t.value;
+        t.selectedIndex = 0;    // reset the index
+        selectChange.fire(value);
         YAHOO.util.Event.preventDefault(e);
     }
 };
