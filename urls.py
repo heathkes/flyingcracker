@@ -11,10 +11,13 @@ except:
     pass
 
 urlpatterns = patterns('',
+    # Admin URLs
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
     (r'^admin/(.*)',                        admin.site.root),
+    
+    # Project URLs
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
-#   (r'^accounts/',                          include('fc3.registration.urls')),
+#    (r'^accounts/',                         include('fc3.registration.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),
     (r'^cam/',                              include('fc3.cam.urls')),
     (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),
