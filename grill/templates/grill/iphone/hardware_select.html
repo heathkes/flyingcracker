@@ -1,8 +1,10 @@
-<select id="id-hardware" class="selectLink">
+<form action="." method="post">
+    <select id="id-hardware" class="selectLink">
     {% for h in hardware_list %}
     <option value="{{ h.id }}"{% ifequal h hardware %} selected="selected"{% endifequal %}>{{ h }}</option>
     {% endfor %}
-</select>
+    </select>
+</form>
 
 <script type="text/javascript">
 function initHardwareSelect() {

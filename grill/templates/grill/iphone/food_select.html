@@ -1,8 +1,10 @@
-<select id="id-food" class="selectLink">
+<form action="." method="post">
+    <select id="id-food" class="selectLink">
     {% for f in food_list %}
     <option value="{{ f.id }}"{% ifequal f food %} selected="selected"{% endifequal %}>{{ f.title }}</option>
     {% endfor %}
-</select>
+    </select>
+</form>
 
 <script type="text/javascript">
 function initFoodSelect() {

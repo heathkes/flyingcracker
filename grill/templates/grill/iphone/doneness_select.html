@@ -1,8 +1,10 @@
-<select id="id-doneness" class="selectLink">
+<form action="." method="post">
+    <select id="id-doneness" class="selectLink">
     {% for temp in doneness_list %}
     <option value="{{ temp.id }}"{% ifequal temp doneness %} selected="selected"{% endifequal %}>{{ temp.title }}</option>
     {% endfor %}
-</select>
+    </select>
+</form>
 
 <script type="text/javascript">
 function initDonenessSelect() {
