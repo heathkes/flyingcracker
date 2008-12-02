@@ -38,6 +38,10 @@ def create_chart_url(date, data_type, size, plots, unit):
             plot_colors.append('0000FF')
         elif data_type == ChartUrl.DATA_PRESS:
             plot_colors.append('D96C00')
+        elif data_type == ChartUrl.DATA_HUMIDITY:
+            plot_colors.append('00CC00')
+        elif data_type == ChartUrl.DATA_WIND:
+            plot_colors.append('6A006A')
         else:
             plot_colors.append('000000')
     
@@ -50,6 +54,10 @@ def create_chart_url(date, data_type, size, plots, unit):
             plot_colors.append('87CEEB')
         elif data_type == ChartUrl.DATA_PRESS:
             plot_colors.append('FFCC99')
+        elif data_type == ChartUrl.DATA_HUMIDITY:
+            plot_colors.append('88FF88')
+        elif data_type == ChartUrl.DATA_WIND:
+            plot_colors.append('FF00FF')
         else:
             plot_colors.append('888888')
 
@@ -108,6 +116,22 @@ def create_chart_url(date, data_type, size, plots, unit):
             plot_func = gchart.day_chart_normal
         chart = day_humidity_chart(qs_list, plot_func, width, height, plot_colors)
         
+        
+    elif data_type == ChartUrl.DATA_WIND:
+        if size == ChartUrl.SIZE_IPHONE:
+            width = 292
+            height = 100
+            plot_func = gchart.day_chart_iphone
+        elif size == ChartUrl.SIZE_NORMAL:
+            width = 418
+            height = 160
+            plot_func = gchart.day_chart_normal
+        else:
+            width = WIDTH_DEFAULT
+            height = HEIGHT_DEFAULT
+            plot_func = gchart.day_chart_normal
+        chart = day_wind_chart(qs_list, unit, plot_func, width, height, plot_colors)
+
     else:
         return ''
     return chart.get_url()
@@ -230,6 +254,42 @@ def day_humidity_chart(qs_list, plot_func, width, height, colors):
     chart = plot_func(plot_list, 0, 100, width, height, colors, [4,2,2])
     return chart
 
+
+def day_wind_chart(qs_list, unit, plot_func, width, height, colors):
+    '''
+    Returns a URL which produces one line for each queryset.
+    
+    '''
+    data_list = []  # list of value lists
+    for date_qs in qs_list:
+        if date_qs: # only work on this if the queryset is not empty
+            data_list.append(convert_qs_speeds(date_qs, unit))
+            
+    floor = 0
+    ceil = 10
+    plot_list = [] # list of plot lines, each a list of values
+    for val_list in data_list:
+        # add list of speed values to list of plot lines
+        plot_list.append(val_list)
+        # determine the lowest and highest values seen for this unit type
+        ceil = gchart.flex_ceil(val_list, ceil)
+    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4,2,2])
+    return chart
+
+def convert_qs_speeds(qs, unit):
+    '''
+    Returns a list of values converted to `unit` if necessary
+    from a queryset of Weather records.
+    
+    '''
+    speed = []
+    for rec in qs:
+        if rec is None:
+            speed.append(None)
+        else:
+            speed.append(convert_speed(float(rec.wind_speed), unit))
+    return speed
+
 def calc_temp_values(value):
     '''
     Return a list of temperature values equal to the given value,
@@ -291,18 +351,24 @@ def calc_speeds(value):
         if value == 0:
             vlist.append('Calm')
         else:
-            if unit == 'kts':
-                nv = value * 0.868391
-            elif unit == 'km/h':
-                nv = value*1.609344
-            elif unit == 'm/s':
-                nv = value*0.44704
-            elif unit == 'ft/s':
-                nv = value*1.46667
-            else:
-                nv = value
+            nv = convert_speed(value, unit)
             vlist.append("%d" % int(round(nv)))
     return vlist
+
+def convert_speed(value, unit):
+    if unit == SPEED_MPH:
+        nv = value
+    elif unit == SPEED_KTS:
+        nv = value * 0.868391
+    elif unit == SPEED_KMH:
+        nv = value*1.609344
+    elif unit == SPEED_MS:
+        nv = value*0.44704
+    elif unit == SPEED_FTS:
+        nv = value*1.46667
+    else:
+        nv = value
+    return nv
 
 dir_table = {
     'NNE': 22.5,

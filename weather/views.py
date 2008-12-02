@@ -81,6 +81,8 @@ def weather(request):
                 'show_units': show_units,
                 'temp_chart': t_chart,
                 'baro_chart': b_chart,
+                'wind_chart': w_chart,
+                'humidity_chart': h_chart,
                 'cbac': cbac,
                 'noaa': noaa,
                 'cbtv': cbtv,
@@ -96,6 +98,8 @@ def weather(request):
     else:
         t_chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
         b_chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
+        w_chart = get_chart(utils.get_today(request), ChartUrl.DATA_WIND, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.SPEED_MPH)
+        h_chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%')
         
         et.mark_time('charts')
 
@@ -111,6 +115,8 @@ def weather(request):
                 'show_units': show_units,
                 'temp_chart': t_chart,
                 'baro_chart': b_chart,
+                'wind_chart': w_chart,
+                'humidity_chart': h_chart,
                 'cbac': cbac,
                 'noaa': noaa,
                 'cbtv': cbtv,
@@ -171,18 +177,26 @@ def current(request):
 
         t_chart = []
         b_chart = []
+        w_chart = []
+        h_chart = []
         agent = request.META.get('HTTP_USER_AGENT')
         if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
             for unit in utils.temp_units:
                 t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
             for unit in utils.baro_units:
                 b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            for unit in utils.speed_units:
+                w_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_WIND, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         else:
             for unit in utils.temp_units:
                 t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
             for unit in utils.baro_units:
                 b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+            for unit in utils.speed_units:
+                w_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_WIND, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
 
+        h_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%'))
+        
         response_dict = {}
         response_dict.update({'timestamp': timestamp})
         response_dict.update({'temp_units': utils.temp_units})
@@ -200,6 +214,8 @@ def current(request):
         response_dict.update({'humidity': current.humidity})
         response_dict.update({'temp_chart': t_chart})
         response_dict.update({'baro_chart': b_chart})
+        response_dict.update({'humidity_chart': h_chart})
+        response_dict.update({'wind_chart': w_chart})
         response_dict.update({'morning': morning})
         response = JsonResponse(response_dict)
         return response
@@ -494,11 +510,11 @@ def chart(request):
     Returns a URL for a chart of the specified type.
     
     '''
-    item_list = ['temp', 'pressure', 'humidity']
+    item_list = ['temp', 'pressure', 'humidity', 'wind']
     
     item = request.GET.get('item')
     if item not in item_list:
-        return HttpResponse(content='Unsupported data item: "%s". Valid data items are: %s.' % (str(item), ','.join(item_list)))
+        return HttpResponse(content='Unsupported data item: "%s". Valid data items are: %s.' % (str(item), ', '.join(item_list)))
         
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
@@ -511,14 +527,14 @@ def chart(request):
     
     if item == 'temp':
         if units not in utils.temp_units:
-            return HttpResponse(content='Unsupported temp units: "%s". Valid units: %s.' % (str(units), ','.join(utils.temp_units)))
+            return HttpResponse(content='Unsupported temp units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.temp_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
         chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
     elif item == 'pressure':
         if units not in utils.baro_units:
-            return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ','.join(utils.baro_units)))
+            return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.baro_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
@@ -528,6 +544,13 @@ def chart(request):
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
         chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%')
+    elif item == 'wind':
+        if units not in utils.speed_units:
+            return HttpResponse(content='Unsupported speed units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.speed_units)))
+        if type != 'multiday':
+            return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
+        
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_WIND, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
     else:
         chart = 'none'
     return HttpResponse(content=chart)

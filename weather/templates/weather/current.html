@@ -99,6 +99,21 @@
 			</div> <!-- body -->
 		</div>  <!-- weatherItem -->
 	</div>  <!-- box -->
+    
+	<div class="box">
+    	<div class="weatherItem">
+			<div class="body">
+                <div id = "curr-plots">
+                    <div id="curr-humidity-block" style="background: url({{ humidity_chart|safe }}) no-repeat top">
+                        <br /><br /><br />humidity %
+                    </div>
+                    <div id="curr-wind-block" style="background: url({{ wind_chart|safe }}) no-repeat top">
+                        <br /><br /><br />wind
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {% if noaa %}
     <div class="box">

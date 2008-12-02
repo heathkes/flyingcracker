@@ -13,6 +13,7 @@ class ChartUrl(models.Model):
     DATA_TEMP = 'T'
     DATA_PRESS = 'P'
     DATA_HUMIDITY = 'H'
+    DATA_WIND = 'W'
     
     SIZE_IPHONE = 'I'
     SIZE_NORMAL = 'N'
