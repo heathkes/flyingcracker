@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>User: {{ user }}</h1>
+
+<h2>Race Series: {{ series }}</h2>
+
+{% if race_list %}
+<div id="race-list-container">
+    <table id="race-list-table" class="currweatherTable">
+        <thead>
+            <tr>
+                <th>Race</th>
+                <th>My Guess</th>
+                <th>Winner</th>
+                <th>Date</th>
+                <th>Start Time</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for r in race_list %}
+            <tr>
+                <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
+                <td>{% if r.guess %}
+                    {{ r.guess.athlete }}<br />
+                    {% else %}
+                    ------
+                    {% endif %}
+                </td>
+                <td>{{ r.winner }}</td>
+                <td>{{ r.race.race_date|date:"D F d" }}</td>
+                <td>{{ r.race.race_time|time:"f a" }}</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+No races found.
+{% endif %}
+<br />
+<a href="{% url races-series-leaderboard series.pk %}">Series Leaderboard</a>
+{% endblock %}

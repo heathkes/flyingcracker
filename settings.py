@@ -98,6 +98,7 @@ INSTALLED_APPS = (
     'fc3.cam',
     'fc3.miniblog',
     'fc3.grill',
+    'fc3.races',
 )
 
 AUTHENTICATION_BACKENDS = (

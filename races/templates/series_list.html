@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>User: {{ user }}</h1>
+
+<h2>Series List</h2>
+<ul>
+{% for series in series_list %}
+    <li><a href="{{ series.get_absolute_url }}">{{ series }}</a> - [Admin: <a href="mailto:{{ series.owner.email }}">{{ series.owner.get_full_name }}</a>]</li>
+{% empty %}
+    <li>No race series in database</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
