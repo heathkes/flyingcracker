@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from races.models import Series, Race, Athlete, Guess, Result
+from fc3.races.models import Series, Race, Athlete, Guess, Result
 
 @login_required
 def root(request):

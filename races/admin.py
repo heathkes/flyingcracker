@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-import races.models as races
+import fc3.races.models as races
 
 
 admin.site.register(races.Series)
