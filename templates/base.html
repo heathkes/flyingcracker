@@ -79,7 +79,23 @@
 <body onload="if (self != top) top.location = self.location" class=" yui-skin-sam">
 <div id="doc3" class="yui-t2">					
 	<div id="hd" class="top1">
-        CracklyFinger.com<span class="subtitle"> - test site for <a href="http://www.flyingcracker.com">flyingcracker.com</a></span>
+        {% block header %}
+        <div id="user-tools">
+            {% block user %}
+            {% if user.is_authenticated %}
+                Welcome, <strong>{{ user.username }}{% if user.is_staff %} [staff]{% endif %}</strong>.
+            
+                <a href="{% url accounts-logout %}">Log out</a>
+            {% else %}
+                <a href="{% url accounts-login %}?next={% url fc-home %}">Log in</a>
+            {% endif %}
+            {% endblock user %}
+        </div> <!-- user-tools -->
+
+        <div id="branding">
+            <h1 id="site-name">{% block branding %}{{ system_name }} <span class="subtitle"> - test site for <a href="http://www.flyingcracker.com">flyingcracker.com</a></span>{% endblock %}</h1>
+        </div>
+        {% endblock header %}
 	</div>
 	<div id="bd" class="center1">
 

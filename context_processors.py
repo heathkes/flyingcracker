@@ -17,3 +17,11 @@ def miniblog(request):
     from fc3.miniblog.models import Post
     posts = Post.objects.all().order_by('-pub_date')[0:7]
     return {'miniblog': posts}
+
+def system_version(request):
+    from django.conf import settings
+    from fc3 import get_version
+    system = {}
+    system['system_name'] = settings.SYSTEM_NAME
+    system['system_version'] = get_version()
+    return system

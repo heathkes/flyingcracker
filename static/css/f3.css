@@ -915,3 +915,8 @@ th.flowHead{
     color: red;
     font-weight: bold;
 }
+#branding { }
+#branding h1 { font-weight:bold; }
+#branding h2 { font-weight:normal; }
+#user-tools { float:right; padding-right:1em; font-size:85%; text-align:right; }
+#site-owner { font-style: italic; color:#0080c0; }

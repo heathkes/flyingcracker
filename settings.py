@@ -51,6 +51,7 @@ TEMPLATE_LOADERS = (
 # List of context processors, with some custom ones at the top.
 TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.miniblog',
+                               'fc3.context_processors.system_version',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',
@@ -108,7 +109,9 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-YUI_VERSION = "2.6.0"
+YUI_VERSION = "2.7.0"
+
+SYSTEM_NAME = "cracklyfinger.com"
 
 # import local settings overriding the defaults
 try:

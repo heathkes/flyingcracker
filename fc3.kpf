@@ -14,32 +14,28 @@
 <file id="f407c46a-2d7c-4c7e-975e-e02e461266a4" idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/food" name="urls.py" url="food/urls.py">
 </file>
 <preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217">
-  <string id="donotask_action_remotedebug_mapped_uri"></string>
-  <boolean id="donotask_remotedebug_mapped_uri">0</boolean>
   <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*</string>
   <string id="import_include_matches"></string>
   <boolean id="import_live">1</boolean>
   <boolean id="import_recursive">1</boolean>
   <string id="import_type">useFolders</string>
-  <string id="lastTestPlanName_pref">New test plan #1</string>
-  <string id="mappedPaths"></string>
-  <string id="pythonExtraPaths">C:\Python25\Lib\site-packages;C:\Documents and Settings\graham\My Documents\python;C:\Documents and Settings\graham\My Documents\fc3\dev\fc3</string>
+  <string relative="path" id="pythonExtraPaths"></string>
 <preference-set id="testPlans">
-<preference-set id="New test plan #1">
+<preference-set id="fc3.kpf - test plan # 1">
   <string id="command_line"></string>
-  <string relative="url" id="directory"></string>
-  <string id="language">Perl - TAP (*.t)</string>
+  <string relative="url" id="directory">weather</string>
+  <string id="language">Python - unittest</string>
 </preference-set>
 </preference-set>
 </preference-set>
-<preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/gchart.py">
+<preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/utils.py">
 <preference-set id="Invocations">
 <preference-set id="default">
   <string id="cookieparams"></string>
   <string id="cwd"></string>
   <string id="documentRoot"></string>
   <string id="executable-params"></string>
-  <string relative="path" id="filename">gchart.py</string>
+  <string relative="path" id="filename">utils.py</string>
   <string id="getparams"></string>
   <string id="language">Python</string>
   <string id="mpostparams"></string>
@@ -53,29 +49,8 @@
   <string id="userCGIEnvironment"></string>
   <string id="userEnvironment"></string>
 </preference-set>
-<preference-set id="django">
-  <string id="cookieparams"></string>
-  <string id="cwd"></string>
-  <string id="documentRoot"></string>
-  <string id="executable-params"></string>
-  <string relative="path" id="filename">gchart.py</string>
-  <string id="getparams"></string>
-  <string id="language">Python</string>
-  <string id="mpostparams"></string>
-  <string id="params"></string>
-  <string id="postparams"></string>
-  <string id="posttype">application/x-www-form-urlencoded</string>
-  <string id="request-method">GET</string>
-  <boolean id="show-dialog">1</boolean>
-  <boolean id="sim-cgi">0</boolean>
-  <boolean id="use-console">0</boolean>
-  <string id="userCGIEnvironment"></string>
-  <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
-PYTHONPATH=C:\Documents and Settings\graham\My Documents\fc3\dev;C:\Documents and Settings\graham\My Documents\python
-</string>
 </preference-set>
-</preference-set>
-  <string id="lastInvocation">django</string>
+  <string id="lastInvocation">default</string>
 </preference-set>
 <preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/weather/cbac.py">
 <preference-set id="Invocations">
@@ -116,7 +91,52 @@ PYTHONPATH=C:\Documents and Settings\graham\My Documents\fc3\dev;C:\Documents an
   <boolean id="use-console">0</boolean>
   <string id="userCGIEnvironment"></string>
   <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
-PYTHONPATH=c:/documents and settings/graham/my documents/fc3/dev/;$PYTHONPATH
+PYTHONPATH=/Users/grahamullrich/Documents/fc3/django/:$PYTHONPATH
+</string>
+</preference-set>
+</preference-set>
+  <string id="lastInvocation">django</string>
+</preference-set>
+<preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/weather/cbtv.py">
+<preference-set id="Invocations">
+<preference-set id="default">
+  <string id="cookieparams"></string>
+  <string id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">weather/cbtv.py</string>
+  <string id="getparams"></string>
+  <string id="language">Python</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment"></string>
+</preference-set>
+<preference-set id="django">
+  <string id="cookieparams"></string>
+  <string id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">weather/cbtv.py</string>
+  <string id="getparams"></string>
+  <string id="language">Python</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
+PYTHONPATH=/Users/grahamullrich/Documents/fc3/django/:$PYTHONPATH
 </string>
 </preference-set>
 </preference-set>
@@ -143,7 +163,75 @@ PYTHONPATH=c:/documents and settings/graham/my documents/fc3/dev/;$PYTHONPATH
   <string id="userCGIEnvironment"></string>
   <string id="userEnvironment"></string>
 </preference-set>
+<preference-set id="django">
+  <string id="cookieparams"></string>
+  <string id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">weather/noaa.py</string>
+  <string id="getparams"></string>
+  <string id="language">Python</string>
+  <string id="mpostparams"></string>
+  <string id="params">save</string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
+PYTHONPATH=/Users/grahamullrich/Documents/fc3/django/:/Users/grahamullrich/src/python/
+</string>
 </preference-set>
-  <string id="lastInvocation">default</string>
+</preference-set>
+  <string id="lastInvocation">django</string>
+</preference-set>
+<preference-set idref="BD41D085-EEF2-4A3B-80B3-127FF7B67217/weather/utils.py">
+<preference-set id="Invocations">
+<preference-set id="default">
+  <string id="cookieparams"></string>
+  <string id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">weather/utils.py</string>
+  <string id="getparams"></string>
+  <string id="language">Python</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
+PYTHONPATH=/Users/grahamullrich/Documents/fc3/django/:/Users/grahamullrich/src/python/
+</string>
+</preference-set>
+<preference-set id="django">
+  <string id="cookieparams"></string>
+  <string id="cwd"></string>
+  <string id="documentRoot"></string>
+  <string id="executable-params"></string>
+  <string relative="path" id="filename">weather/utils.py</string>
+  <string id="getparams"></string>
+  <string id="language">Python</string>
+  <string id="mpostparams"></string>
+  <string id="params"></string>
+  <string id="postparams"></string>
+  <string id="posttype">application/x-www-form-urlencoded</string>
+  <string id="request-method">GET</string>
+  <boolean id="show-dialog">1</boolean>
+  <boolean id="sim-cgi">0</boolean>
+  <boolean id="use-console">0</boolean>
+  <string id="userCGIEnvironment"></string>
+  <string id="userEnvironment">DJANGO_SETTINGS_MODULE=fc3.settings
+PYTHONPATH=/Users/grahamullrich/Documents/fc3/django/:/Users/grahamullrich/src/python/
+</string>
+</preference-set>
+</preference-set>
+  <string id="lastInvocation">django</string>
 </preference-set>
 </project>
