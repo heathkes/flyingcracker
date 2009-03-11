@@ -90,16 +90,16 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'mobileadmin',
+    'registration',
     'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',
     'fc3.food',
     'fc3.blog',
-#    'fc3.registration',
     'fc3.cam',
     'fc3.miniblog',
     'fc3.grill',
-    'fc3.races',
+    'fc3.fantasy',
 )
 
 AUTHENTICATION_BACKENDS = (
