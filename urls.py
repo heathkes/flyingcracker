@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     
     # Project URLs
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
-    (r'^accounts/',                         include('fc3.accounts.urls')),
+    (r'^accounts/',                         include('registration.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),
     (r'^cam/',                              include('fc3.cam.urls')),
     (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     (r'^weather/',                          include('fc3.weather.urls')),
     (r'^grill/',                            include('fc3.grill.urls')),
     (r'^miniblog/',                         include('fc3.miniblog.urls')),
-    (r'^races/',                            include('fc3.races.urls')),
+    (r'^fantasy/',                          include('fc3.fantasy.urls')),
     (r'^',                                  include('fc3.home.urls')),
 )
 
