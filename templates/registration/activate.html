@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div>
+{% if account %}
+Welcome {{ account }}, your registration is now complete. Nice job!<br />
+You may now use the advanced features of this site.
+{% else %}
+Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url  registration_register %}">try again</a>.
+{% endif %}</div>
+{% endblock %}
