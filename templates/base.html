@@ -85,9 +85,9 @@
             {% if user.is_authenticated %}
                 Welcome, <strong>{{ user.username }}{% if user.is_staff %} [staff]{% endif %}</strong>.
             
-                <a href="{% url accounts-logout %}">Log out</a>
+                <a href="{% url auth_logout %}">Log out</a>
             {% else %}
-                <a href="{% url accounts-login %}?next={% url fc-home %}">Log in</a>
+                <a href="{% url auth_login %}?next={% url fc-home %}">Log in</a> or <a href="{% url registration_register %}">Sign up</a>
             {% endif %}
             {% endblock user %}
         </div> <!-- user-tools -->
@@ -111,7 +111,7 @@
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url fc-cam %}">WebCams</a></li>
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="cocktail" %}">Cocktails</a></li>
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url food-recipe-list recipe_type="food" %}">Food</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url races-root %}">Races</a></li>
+                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url fantasy-root %}">Fantasy</a></li>
                             {% endblock %}
                         </ul>            
                     </div>
