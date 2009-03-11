@@ -22,7 +22,7 @@ class Series(models.Model):
         return u'%s' % self.name
     
     def get_absolute_url(self):
-        return ('races-series-detail', [self.pk])
+        return ('fantasy-series-detail', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
     class Meta:
@@ -47,7 +47,7 @@ class Race(models.Model):
         return u'%s' % self.name
     
     def get_absolute_url(self):
-        return ('races-race-detail', [self.pk])
+        return ('fantasy-race-detail', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
 

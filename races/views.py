@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from fc3.races.models import Series, Race, Athlete, Guess, Result
+from fc3.fantasy.models import Series, Race, Athlete, Guess, Result
 
 @login_required
 def root(request):
@@ -72,7 +72,7 @@ def race_detail(request, id):
             guess.result = 1
             guess.user = request.user
             guess.save()
-            return HttpResponseRedirect(reverse('races-series-detail', args=[race.series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
     else:
         form = GuessForm(athletes, race.series.athlete_label, instance=guess)
 

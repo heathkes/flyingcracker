@@ -2,7 +2,7 @@
 import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from fc3.races.models import Guess
+from fc3.fantasy.models import Guess
 
 
 attrs_dict = { 'class': 'required' }
