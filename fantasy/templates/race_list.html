@@ -2,7 +2,9 @@
 
 {% block body %}
 <h2>Series: {{ series }}</h2>
-
+<br />
+<a href="{% url fantasy-series-leaderboard series.pk %}">Leaderboard</a>
+<br /><br />
 {% if race_list %}
 <div id="race-list-container">
     <table id="race-list-table" class="currweatherTable">
@@ -39,8 +41,6 @@
 No races found.
 {% endif %}
 <br />
-<a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a>
-<br /><br />
 {% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race</a>{% endif %}
 {% if is_admin %}<br /><a href="{% url fantasy-athlete-list series.pk %}">Athletes</a>{% endif %}
 {% endblock %}
