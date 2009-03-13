@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>{% if race.pk %}Edit {{ race }} in{% else %}Add Race to{% endif %} {{ series }}</h2>
+
+<form method="POST" action="">
+
+{{ race_form.as_p }}
+
+<input type="submit" value="Submit" />
+
+</form>
+
+{% endblock %}

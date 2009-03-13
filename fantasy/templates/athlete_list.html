@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<h2>Athlete List</h2>
+<ul>
+{% for athlete in athlete_list %}
+    <li>
+        {{ athlete }}
+        {% ifequal series.owner user %} <a href="{% url fantasy-athlete-edit athlete.pk %}">Edit</a>
+        {% endifequal %}
+    </li>
+{% empty %}
+    <li>No athletes for {{ series }} in database</li>
+{% endfor %}
+</ul>
+<br />
+<a href="{% url fantasy-athlete-add series.pk %}">Add athlete</a>
+{% endblock %}

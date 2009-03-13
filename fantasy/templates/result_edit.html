@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Series: {{ series }}</h1>
+<h2>Race: {{ race }}</h2>
+
+<form method="POST" action="">
+{% if formset %}
+<h2>Edit Race Results</h2>
+    <table>
+    {{ formset }}
+    </table>
+{% endif %}
+
+<input type="submit" value="Submit" />
+
+</form>
+
+{% endblock %}
