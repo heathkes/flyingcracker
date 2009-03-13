@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>User: {{ user }}</h1>
-
-<h2>Race Series: {{ series }}</h2>
+<h2>Series: {{ series }}</h2>
 
 {% if race_list %}
 <div id="race-list-container">
@@ -15,6 +13,7 @@
                 <th>Winner</th>
                 <th>Date</th>
                 <th>Start Time</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -28,8 +27,9 @@
                     {% endif %}
                 </td>
                 <td>{{ r.winner }}</td>
-                <td>{{ r.race.race_date|date:"D F d" }}</td>
-                <td>{{ r.race.race_time|time:"f a" }}</td>
+                <td>{{ r.race.date|date:"D F d" }}</td>
+                <td>{{ r.race.start_time|time:"f a" }} UTC</td>
+                <td>{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>
             </tr>
 {% endfor %}
         </tbody>
@@ -40,4 +40,7 @@ No races found.
 {% endif %}
 <br />
 <a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a>
+<br /><br />
+{% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race</a>{% endif %}
+{% if is_admin %}<br /><a href="{% url fantasy-athlete-list series.pk %}">Athletes</a>{% endif %}
 {% endblock %}

@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
 {% block body %}
-
-<h1>User: {{ user }}</h1>
-
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 
 <h3>Race: {{ race }}</h3>
 
-<h2>My Pick to Win</h2>
 <form method="POST" action="">
 
-{{ form }}
-
+{{ guess_form.as_p }}
+{% if add_athlete_ok %}
+Or
+<br />
+<a href="{% url fantasy-athlete-add series.pk %}?next={% url fantasy-race-detail race.pk %}">Add new {{ series.athlete_label }}</a>
+{% endif %}
+<br /><br />
 <input type="submit" value="Submit" />
 
 </form>
