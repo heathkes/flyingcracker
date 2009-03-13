@@ -86,7 +86,7 @@ def leaderboard(request, id):
     '''
     series = get_object_or_404(Series, pk=id)
     points_list = []
-    users = User.objects.filter(guess__race__series=series)
+    users = User.objects.filter(guess__race__series=series).distinct()
     for u in users:
         guesses = Guess.objects.filter(race__series=series, user=u)
         points = 0
