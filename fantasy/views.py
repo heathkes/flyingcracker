@@ -96,7 +96,7 @@ def leaderboard(request, id):
                 place = r.place
             except:
                 place = 0
-            points += F1Points(place)
+            points += series.scoring_system.points(place)
         points_list.append({'name': str(u), 'points': points})
         
     import operator
@@ -106,14 +106,6 @@ def leaderboard(request, id):
         'points_list': points_list,
     })
     return render_to_response('leaderboard.html', c)
-
-
-F1PointMap = {1: 10, 2: 8, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1}
-def F1Points(place):
-    if place not in F1PointMap:
-        return 0
-    else:
-        return F1PointMap[place]
 
 @login_required
 def athlete_list(request, id):

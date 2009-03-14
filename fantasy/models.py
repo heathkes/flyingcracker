@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import permalink
 from datetime import date
 from django.utils.translation import ugettext_lazy as _
+from scoresys.models import ScoringSystem
 
 
 class Series(models.Model):
@@ -19,6 +20,7 @@ class Series(models.Model):
     invite_only     = models.BooleanField('Users must be invited')
     only_members_can_view = models.BooleanField('Only members can view results')
     users_enter_athletes = models.BooleanField('Users can add Athletes', default=True)
+    scoring_system  = models.ForeignKey(ScoringSystem, blank=True, null=True)
     
     # BUGBUG - this will eventually be:
     # user_group = models.ForeignKey(UserGroup)
