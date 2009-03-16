@@ -39,20 +39,15 @@ class GuessForm(forms.ModelForm):
         self['athlete'].field.help_text = 'My pick to win'
 
 class ResultBaseFormset(formsets.BaseFormSet):
+
     def __init__(self, *args, **kwargs):
-        results = kwargs.pop("results", None)
-        if results:
-            self.results = list(results)
-        else:
-            self.results = None
-        self.extra = 8
+        self.athletes = kwargs.pop('athletes', None)
         super(ResultBaseFormset, self).__init__(*args, **kwargs)
-
+    
     def _construct_form(self, i, **kwargs):
-        if self.results:
-            kwargs["result"] = self.results[i]
+        kwargs["athletes"] = self.athletes
         return super(ResultBaseFormset, self)._construct_form(i, **kwargs)
-
+    
     def clean(self):
         super(ResultBaseFormset,self).clean()
         if self.is_valid() and self.cleaned_data:
@@ -63,12 +58,15 @@ class ResultBaseFormset(formsets.BaseFormSet):
 class ResultForm(forms.Form):
     place = forms.IntegerField(required=False)
     athlete = forms.ChoiceField(choices=[], required=False)
-    
+
     def __init__(self, *args, **kwargs):
-        result = kwargs.pop("result", None)
+        athlete_list = kwargs.pop('athletes', None)
         super(ResultForm, self).__init__(*args, **kwargs)
-        if result:
-            self['place'].field.value = result['place']
-            self['athlete'].field.widget.choices = result['athletes']
-            if result.get('choice', None):
-                self['athlete'].field.selected = result['choice']
+        self['athlete'].field.choices = athlete_list
+
+    def clean(self):
+        place = self.cleaned_data.get('place', None)
+        athlete = self.cleaned_data.get('athlete', None)
+        if athlete and not place:
+            raise forms.ValidationError, _(u'This athlete has no place!')
+        return self.cleaned_data

@@ -32,10 +32,10 @@
     {% endblock extrastyle %}
     
     {% block javascript %}
-    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-beta-min.js"></script> 
+    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-min.js"></script> 
     <script type="text/javascript" src="{{ yui_path }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/element/element-beta-min.js"></script>
-    <script type="text/javascript" src="{{ yui_path }}/build/layout/layout-beta-min.js"></script>
+    <script type="text/javascript" src="{{ yui_path }}/build/layout/layout-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/container/container-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/connection/connection-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/json/json-min.js"></script>
@@ -77,6 +77,7 @@
 </head>
 
 <body onload="if (self != top) top.location = self.location" class=" yui-skin-sam">
+
 <div id="doc3" class="yui-t2">					
 	<div id="hd" class="top1">
         {% block header %}

@@ -16,6 +16,7 @@
         <tr>
             <td>{{ form.place }} {{ form.place.errors }}</td>
             <td>{{ form.athlete }} {{ form.athlete.errors }}</td>
+            {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
         </tr>
         {% endfor %}
     </table>

@@ -341,13 +341,13 @@ def result_edit(request, id):
     
     curr_results = Result.objects.filter(race=race)
     if not curr_results:
-        results = [{'place': i, 'athletes': athlete_choices} for i in range(1, series.scoring_system.num_places+1)]
+        results = [{'place': i} for i in range(1, series.scoring_system.num_places+1)]
     else:
-        results = [{'place': r.place, 'athletes': athlete_choices, 'choice': r.athlete.pk} for r in curr_results]
-        results.extend([{'place': '', 'athletes': athlete_choices} for i in range(0, series.scoring_system.num_places - len(curr_results))])
+        results = [{'place': r.place, 'athlete': r.athlete.pk} for r in curr_results]
+        results.extend([{'place': ''} for i in range(0, series.scoring_system.num_places - len(curr_results))])
         
     if request.method == 'POST':
-        formset = ResultFormset(request.POST, results=results)
+        formset = ResultFormset(request.POST, initial=results, athletes=athlete_choices)
         if formset.is_valid():
             curr_results.delete()   # delete all existing results for this race
             for result in formset.cleaned_data:
@@ -358,7 +358,7 @@ def result_edit(request, id):
                     r.save()
             return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
     else:
-        formset = ResultFormset(results=results)
+        formset = ResultFormset(initial=results, athletes=athlete_choices)
 
     c = RequestContext(request, {
         'series': race.series,
