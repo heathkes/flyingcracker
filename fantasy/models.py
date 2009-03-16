@@ -88,6 +88,7 @@ class Result(models.Model):
     
     class Meta:
         ordering = ['place']
+        unique_together = ('athlete','race')
 
 
 class Guess(models.Model):

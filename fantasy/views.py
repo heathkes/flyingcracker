@@ -327,23 +327,38 @@ def result_edit(request, id):
     Edit the results for a race.
     
     '''
-    from django.forms.models import modelformset_factory
+    from fantasy.forms import ResultForm, ResultBaseFormset
+    from django.forms.formsets import formset_factory
     
     race = get_object_or_404(Race, pk=id)
     series = race.series
-    
-    ResultFormSet = modelformset_factory(Result, fields=('athlete', 'place'), max_num=8, extra=8)
 
+    ResultFormset = formset_factory(ResultForm, ResultBaseFormset,
+                                    max_num=series.scoring_system.num_places)
+
+    athlete_choices = [('', '------')]
+    athlete_choices.extend([(a.pk, str(a)) for a in Athlete.objects.filter(series=series)])
+    
+    curr_results = Result.objects.filter(race=race)
+    if not curr_results:
+        results = [{'place': i, 'athletes': athlete_choices} for i in range(1, series.scoring_system.num_places+1)]
+    else:
+        results = [{'place': r.place, 'athletes': athlete_choices, 'choice': r.athlete.pk} for r in curr_results]
+        results.extend([{'place': '', 'athletes': athlete_choices} for i in range(0, series.scoring_system.num_places - len(curr_results))])
+        
     if request.method == 'POST':
-        formset = ResultFormSet(request.POST, queryset=Result.objects.filter(race=race))
+        formset = ResultFormset(request.POST, results=results)
         if formset.is_valid():
-            results = formset.save(commit=False)
-            for result in results:
-                result.race = race
-                result.save()
+            curr_results.delete()   # delete all existing results for this race
+            for result in formset.cleaned_data:
+                if result['place'] and result['athlete']:
+                    r = Result(race=race,
+                               place=result['place'],
+                               athlete=Athlete.objects.get(pk=result['athlete']))
+                    r.save()
             return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
     else:
-        formset = ResultFormSet(queryset=Result.objects.filter(race=race))
+        formset = ResultFormset(results=results)
 
     c = RequestContext(request, {
         'series': race.series,

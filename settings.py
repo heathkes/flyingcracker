@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'fc3.miniblog',
     'fc3.grill',
     'fc3.fantasy',
+    'fc3.scoresys',
 )
 
 AUTHENTICATION_BACKENDS = (
