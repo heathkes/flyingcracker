@@ -67,9 +67,16 @@ def series_detail(request, id):
             
         try:
             guess = Guess.objects.get(race=race, user=request.user)
+            try:
+                result = Result.objects.get(race=race, competitor=guess.competitor)
+            except Result.DoesNotExist:
+                place = '?'
+            else:
+                place = result.place
         except Guess.DoesNotExist:
             guess = None
-        races.append({'race': race, 'winner': winner, 'guess': guess})
+            place = None
+        races.append({'race': race, 'winner': winner, 'guess': guess, 'place': place})
         
     c = RequestContext(request, {
         'series': series,

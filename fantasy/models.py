@@ -16,8 +16,8 @@ class Series(models.Model):
     name                    = models.CharField('Series name', max_length=100, unique=True)
     start_date              = models.DateField()
     end_date                = models.DateField()
-    competitor_label        = models.CharField(help_text='How are competitors referred to in this series, i.e. "Driver" or "Rider"', max_length=50, blank=True, null=True)
-    num_guesses             = models.PositiveIntegerField(default=1)
+    competitor_label        = models.CharField(help_text='How are competitors referred to in this series, i.e. "Driver" or "Rider".', max_length=50, blank=True, null=True)
+    num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each race.', default=1)
     invite_only             = models.BooleanField('Users must be invited')
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
@@ -88,7 +88,7 @@ class Result(models.Model):
         return u'%s' % self.competitor
 
     def guessers(self):
-        guessers = Guess.objects.filter(race=self, competitor=self.competitor)
+        guessers = Guess.objects.filter(race=self.race, competitor=self.competitor)
         return [g.user for g in guessers]
 
 class Guess(models.Model):

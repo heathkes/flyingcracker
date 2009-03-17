@@ -9,7 +9,7 @@ Remove {{ competitor }} from the results for {{ result_list|pluralize:"this race
 <ul>
 {% for result in result_list %}
     <li>
-        #{{ result.place }} in <a href="{{ result.race.get_absolute_url }}">{{ result.race }}</a>, picked by {{ result.guessers|join:", " }}
+        #{{ result.place }} in <a href="{{ result.race.get_absolute_url }}">{{ result.race }}</a>{% with result.guessers as guessers %}{% if guessers %}, picked by {{ result.guessers|join:", " }}{% endif %}{% endwith %}
     </li>
 {% endfor %}
 </ul>

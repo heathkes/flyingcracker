@@ -11,8 +11,9 @@
         <thead>
             <tr>
                 <th>Race</th>
-                <th>My Guess</th>
                 <th>Winner</th>
+                <th>My Guess</th>
+                <th>Place</th>
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>&nbsp;</th>
@@ -22,13 +23,9 @@
 {% for r in race_list %}
             <tr>
                 <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
-                <td>{% if r.guess %}
-                    {{ r.guess.competitor }}<br />
-                    {% else %}
-                    ------
-                    {% endif %}
-                </td>
                 <td>{{ r.winner }}</td>
+                <td>{% if r.guess %}{{ r.guess.competitor }}{% else %}------{% endif %}</td>
+                <td>{{ r.place }}</td>
                 <td>{{ r.race.date|date:"D F d" }}</td>
                 <td>{{ r.race.start_time|time:"f a" }} UTC</td>
                 <td>{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>
@@ -41,6 +38,7 @@
 No races found.
 {% endif %}
 <br />
-{% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race</a>{% endif %}
+{% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race to Series</a>{% endif %}
 {% if is_admin %}<br /><a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a>{% endif %}
+{% if is_admin %}<br /><a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a>{% endif %}
 {% endblock %}
