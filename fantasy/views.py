@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from fc3.fantasy.models import Series, Race, Athlete, Guess, Result
+from fc3.fantasy.models import Series, Race, Competitor, Guess, Result
 
 @login_required
 def root(request):
@@ -61,9 +61,9 @@ def series_detail(request, id):
         if not qs:
             winner = '?'
         elif len(qs) == 1:
-            winner = str(qs[0].athlete)
+            winner = str(qs[0].competitor)
         else:
-            winner = ', '.join([str(result.athlete) for result in qs])
+            winner = ', '.join([str(result.competitor) for result in qs])
             
         try:
             guess = Guess.objects.get(race=race, user=request.user)
@@ -92,7 +92,7 @@ def leaderboard(request, id):
         points = 0
         for g in guesses:
             try:
-                r = Result.objects.get(race=g.race, athlete=g.athlete)
+                r = Result.objects.get(race=g.race, competitor=g.competitor)
                 place = r.place
             except:
                 place = 0
@@ -104,113 +104,118 @@ def leaderboard(request, id):
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('leaderboard.html', c)
 
 @login_required
-def athlete_list(request, id):
+def competitor_list(request, id):
     '''
-    List all athletes associated with this Series.
+    List all competitors associated with this Series.
     
     '''
     series = get_object_or_404(Series, pk=id)
-    qs = Athlete.objects.filter(series=series)
+    qs = Competitor.objects.filter(series=series)
     c = RequestContext(request, {
         'series': series,
-        'athlete_list': qs,
+        'competitor_list': qs,
+        'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('athlete_list.html', c)
+    return render_to_response('competitor_list.html', c)
 
 @login_required
-def athlete_add(request, id):
+def competitor_add(request, id):
     '''
-    Add an athlete for the specified Series.
+    Add a competitor for the specified Series.
     
     '''
-    from fantasy.forms import AthleteForm
+    from fantasy.forms import CompetitorForm
 
     #scup = request.session.get('scup')
     #service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
-    athlete = Athlete(series=series)
+    competitor = Competitor(series=series)
 
     if request.method == 'POST':
-        athlete_form = AthleteForm(data=request.POST, instance=athlete)
-        if athlete_form.is_valid():
-            athlete = athlete_form.save(commit=False)
-            athlete.series = series
-            athlete.save()
+        competitor_form = CompetitorForm(data=request.POST, instance=competitor)
+        if competitor_form.is_valid():
+            competitor = competitor_form.save(commit=False)
+            competitor.series = series
+            competitor.save()
             next = request.GET.get('next', None)
             if next:
                 return HttpResponseRedirect(next)
             else:
-                return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
+                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
             
     else:
-        athlete_form = AthleteForm(instance=athlete)
+        competitor_form = CompetitorForm(instance=competitor)
 
     c = RequestContext(request, {
         #'service_client': service_client,
-        'athlete_form': athlete_form,
+        'competitor_form': competitor_form,
         'series': series,
-        'athlete': athlete,
+        'competitor': competitor,
+        'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('athlete_edit.html', c)
+    return render_to_response('competitor_edit.html', c)
 
 @login_required
-def athlete_edit(request, id):
+def competitor_edit(request, id):
     '''
-    Edit the specified Athlete.
+    Edit the specified Competitor.
     
     '''
-    from fantasy.forms import AthleteForm
+    from fantasy.forms import CompetitorForm
 
     #scup = request.session.get('scup')
     #service_client = scup.service_client
 
-    athlete = get_object_or_404(Athlete, pk=id)
-    series = athlete.series
+    competitor = get_object_or_404(Competitor, pk=id)
+    series = competitor.series
 
     if request.method == 'POST':
-        athlete_form = AthleteForm(data=request.POST, instance=athlete, initial={'series_pk': series.pk})
-        if athlete_form.is_valid():
-            athlete_form.save()
-            return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
+        competitor_form = CompetitorForm(data=request.POST, instance=competitor, initial={'series_pk': series.pk})
+        if competitor_form.is_valid():
+            competitor_form.save()
+            return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
     else:
-        athlete_form = AthleteForm(instance=athlete, initial={'series_pk': series.pk})
+        competitor_form = CompetitorForm(instance=competitor, initial={'series_pk': series.pk})
 
     c = RequestContext(request, {
         #'service_client': service_client,
-        'athlete_form': athlete_form,
+        'competitor_form': competitor_form,
         'series': series,
-        'athlete': athlete,
+        'competitor': competitor,
+        'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('athlete_edit.html', c)
+    return render_to_response('competitor_edit.html', c)
 
 @login_required
-def athlete_delete(request, id):
+def competitor_delete(request, id):
     '''
-    Delete the specified Athlete from its Series.
+    Delete the specified Competitor from its Series.
     
     '''
     #scup = request.session.get('scup')
     #service_client = scup.service_client
 
-    athlete = get_object_or_404(Athlete, pk=id)
-    series = athlete.series
+    competitor = get_object_or_404(Competitor, pk=id)
+    series = competitor.series
 
-    results = Result.objects.filter(athlete=athlete)
+    results = Result.objects.filter(competitor=competitor)
     if results:
         c = RequestContext(request, {
             'series': series,
-            'athlete': athlete,
+            'competitor': competitor,
             'result_list': results,
+            'is_admin': series.is_admin(request.user),
         })
-        return render_to_response('athlete_delete.html', c)
+        return render_to_response('competitor_delete.html', c)
     else:
-        athlete.delete()
-        return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
+        competitor.delete()
+        return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
 
 @login_required
 def race_add(request, id):
@@ -241,6 +246,7 @@ def race_add(request, id):
         'race_form': race_form,
         'series': series,
         'race': race,
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('race_edit.html', c)
 
@@ -271,6 +277,7 @@ def race_edit(request, id):
         'race_form': race_form,
         'series': series,
         'race': race,
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('race_edit.html', c)
 
@@ -292,6 +299,7 @@ def race_delete(request, id):
             'series': series,
             'race': race,
             'result_list': results,
+            'is_admin': series.is_admin(request.user),
         })
         return render_to_response('race_delete.html', c)
     else:
@@ -303,8 +311,8 @@ def race_detail(request, id):
     '''
     Shows either the results of a race
     or
-    Allows user to select an Athlete he thinks will win the race
-    or possibly enter a new Athlete.
+    Allows user to select an Competitor he thinks will win the race
+    or possibly enter a new Competitor.
     
     '''
     race = get_object_or_404(Race, pk=id)
@@ -321,11 +329,11 @@ def race_detail(request, id):
     except Guess.DoesNotExist:
         guess = None
 
-    athletes = Athlete.objects.filter(series=race.series)
+    competitors = Competitor.objects.filter(series=race.series)
     from fantasy.forms import GuessForm
 
     if request.method == 'POST':
-        guess_form = GuessForm(athletes, race.series.athlete_label, data=request.POST, instance=guess)
+        guess_form = GuessForm(competitors, race.series.competitor_label, data=request.POST, instance=guess)
         if guess_form.is_valid():
             guess = guess_form.save(commit=False)
             guess.race = race
@@ -334,15 +342,16 @@ def race_detail(request, id):
             guess.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
     else:
-        guess_form = GuessForm(athletes, race.series.athlete_label, instance=guess)
+        guess_form = GuessForm(competitors, race.series.competitor_label, instance=guess)
 
-    add_athlete_ok = series.users_enter_athletes
+    add_competitor_ok = series.users_enter_competitors
     
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
         'guess_form': guess_form,
-        'add_athlete_ok': add_athlete_ok,
+        'add_competitor_ok': add_competitor_ok,
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('race_guess.html', c)
 
@@ -379,33 +388,34 @@ def result_edit(request, id):
     ResultFormset = formset_factory(ResultForm, ResultBaseFormset,
                                     max_num=series.scoring_system.num_places)
 
-    athlete_choices = [('', '------')]
-    athlete_choices.extend([(a.pk, str(a)) for a in Athlete.objects.filter(series=series)])
+    competitor_choices = [('', '------')]
+    competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
     
     curr_results = Result.objects.filter(race=race)
     if not curr_results:
         results = [{'place': i} for i in range(1, series.scoring_system.num_places+1)]
     else:
-        results = [{'place': r.place, 'athlete': r.athlete.pk} for r in curr_results]
+        results = [{'place': r.place, 'competitor': r.competitor.pk} for r in curr_results]
         results.extend([{'place': ''} for i in range(0, series.scoring_system.num_places - len(curr_results))])
         
     if request.method == 'POST':
-        formset = ResultFormset(request.POST, initial=results, athletes=athlete_choices)
+        formset = ResultFormset(request.POST, initial=results, competitors=competitor_choices)
         if formset.is_valid():
             curr_results.delete()   # delete all existing results for this race
             for result in formset.cleaned_data:
-                if result['place'] and result['athlete']:
+                if result['place'] and result['competitor']:
                     r = Result(race=race,
                                place=result['place'],
-                               athlete=Athlete.objects.get(pk=result['athlete']))
+                               competitor=Competitor.objects.get(pk=result['competitor']))
                     r.save()
             return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
     else:
-        formset = ResultFormset(initial=results, athletes=athlete_choices)
+        formset = ResultFormset(initial=results, competitors=competitor_choices)
 
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
         'formset': formset,
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('result_edit.html', c)

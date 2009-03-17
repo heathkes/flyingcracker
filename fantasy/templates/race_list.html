@@ -23,7 +23,7 @@
             <tr>
                 <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
                 <td>{% if r.guess %}
-                    {{ r.guess.athlete }}<br />
+                    {{ r.guess.competitor }}<br />
                     {% else %}
                     ------
                     {% endif %}
@@ -42,5 +42,5 @@ No races found.
 {% endif %}
 <br />
 {% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race</a>{% endif %}
-{% if is_admin %}<br /><a href="{% url fantasy-athlete-list series.pk %}">Athletes</a>{% endif %}
+{% if is_admin %}<br /><a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a>{% endif %}
 {% endblock %}

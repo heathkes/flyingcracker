@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>{% if competitor.pk %}Edit {% else %}Add {% endif %}{{ series.competitor_label }}</h1>
+<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+
+<form method="POST" action="">
+    <table>
+    {{ competitor_form.as_table }}
+    </table>
+    <input type="submit" value="Submit" />
+</form>
+{% if is_admin and competitor.pk %}<br /><a href="{% url fantasy-competitor-delete competitor.pk %}">Delete this {{ series.competitor_label }}</a>{% endif %}
+{% if is_admin %}<br /><a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} list</a>{% endif %}
+{% endblock %}

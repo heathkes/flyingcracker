@@ -15,13 +15,13 @@
         <thead>
         <tr>
             <th>Place</th>
-            <th>{{ series.athlete_label }}</th>
+            <th>{{ series.competitor_label }}</th>
         </thead>
         <tbody>
         {% for form in formset.forms %}
         <tr>
             <td>{{ form.place }} {{ form.place.errors }}</td>
-            <td>{{ form.athlete }} {{ form.athlete.errors }}</td>
+            <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
             {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
         </tr>
         {% endfor %}
@@ -32,5 +32,5 @@
 <input type="submit" value="Submit" />
 
 </form>
-<p>Clear the {{ series.athlete_label}} name field to delete a result.</p>
+<p>Clear the {{ series.competitor_label}} name to delete a result.</p>
 {% endblock %}

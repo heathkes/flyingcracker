@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>{{ series.competitor_label }} List</h1>
+<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<ul>
+{% for competitor in competitor_list %}
+    <li>
+        {{ competitor }}
+        {% ifequal series.owner user %} <a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>
+        {% endifequal %}
+    </li>
+{% empty %}
+    <li>No {{ series.competitor_label }}s for {{ series }} in database</li>
+{% endfor %}
+</ul>
+{% if is_admin %}<br /><a href="{% url fantasy-competitor-add series.pk %}">Add {{ series.competitor_label }}</a>{% endif %}
+{% endblock %}

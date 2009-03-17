@@ -10,7 +10,7 @@
         <thead>
             <tr>
                 <th>Place</th>
-                <th>{{ series.athlete_label }}</th>
+                <th>{{ series.competitor_label }}</th>
                 <th>Picked By</th>
             </tr>
         </thead>
@@ -18,7 +18,7 @@
 {% for r in result_list %}
             <tr>
                 <td>{{ r.place }}</td>
-                <td>{{ r.athlete }}</td>
+                <td>{{ r.competitor }}</td>
                 <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>
 {% endfor %}
@@ -29,7 +29,7 @@
 No results found.
 {% endif %}
 <br />
-<a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a>
+<a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a><br />
 {% if is_admin %}<br /><a href="{% url fantasy-result-edit race.pk %}">Edit results</a>{% endif %}
 {% if is_admin and not result_list %}<br /><a href="{% url fantasy-race-delete race.pk %}">Delete race</a>{% endif %}
 {% endblock %}

@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>User: {{ user }}</h1>
-
+<h1>Leaderboard</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 
 <div id="leaderboard-container">
     <table id="leaderboard-table" class="currweatherTable">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Total Points</th>
+                <th>Fan</th>
+                <th>Points</th>
             </tr>
         </thead>
         <tbody>

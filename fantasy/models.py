@@ -13,14 +13,15 @@ class Series(models.Model):
     One or more races, i.e. Formula One 2009.
     
     '''
-    name            = models.CharField('Series name', max_length=100, unique=True)
-    start_date      = models.DateField()
-    end_date        = models.DateField()
-    athlete_label   = models.CharField(help_text='How are athletes referred to in this series, i.e. "Driver" or "Rider"', max_length=50, blank=True, null=True)
-    invite_only     = models.BooleanField('Users must be invited')
-    only_members_can_view = models.BooleanField('Only members can view results')
-    users_enter_athletes = models.BooleanField('Users can add Athletes', default=True)
-    scoring_system  = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    name                    = models.CharField('Series name', max_length=100, unique=True)
+    start_date              = models.DateField()
+    end_date                = models.DateField()
+    competitor_label        = models.CharField(help_text='How are competitors referred to in this series, i.e. "Driver" or "Rider"', max_length=50, blank=True, null=True)
+    num_guesses             = models.PositiveIntegerField(default=1)
+    invite_only             = models.BooleanField('Users must be invited')
+    only_members_can_view   = models.BooleanField('Only members can view results')
+    users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
+    scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
     
     # BUGBUG - this will eventually be:
     # user_group = models.ForeignKey(UserGroup)
@@ -63,20 +64,8 @@ class Race(models.Model):
     get_absolute_url = permalink(get_absolute_url)
 
 
-class Team(models.Model):
+class Competitor(models.Model):
     name        = models.CharField(max_length=100)
-    series      = models.ForeignKey(Series)
-    
-    class Meta:
-        unique_together = ('name', 'series')
-        
-    def __unicode__(self):
-        return u'%s' % self.name
-
-
-class Athlete(models.Model):
-    name        = models.CharField(max_length=100)
-    team        = models.ForeignKey(Team, blank=True, null=True)
     series      = models.ForeignKey(Series)
     
     class Meta:
@@ -87,29 +76,29 @@ class Athlete(models.Model):
 
 
 class Result(models.Model):
-    athlete     = models.ForeignKey(Athlete)
+    competitor  = models.ForeignKey(Competitor)
     race        = models.ForeignKey(Race)
     place       = models.PositiveIntegerField()
     
     class Meta:
         ordering = ['place']
-        unique_together = ('athlete','race')
+        unique_together = ('competitor','race')
     
     def __unicode__(self):
-        return u'%s' % self.athlete
+        return u'%s' % self.competitor
 
     def guessers(self):
-        guessers = Guess.objects.filter(race=self, athlete=self.athlete)
+        guessers = Guess.objects.filter(race=self, competitor=self.competitor)
         return [g.user for g in guessers]
 
 class Guess(models.Model):
     user        = models.ForeignKey(User)   # BUGBUG - will eventually be a SCUP
-    athlete     = models.ForeignKey(Athlete)
+    competitor  = models.ForeignKey(Competitor)
     race        = models.ForeignKey(Race)
 
     class Meta:
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
-        return u'%s' % self.athlete
+        return u'%s' % self.competitor
 
