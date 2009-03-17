@@ -16,15 +16,52 @@ class SeriesForm(forms.ModelForm):
 
 
 class AthleteForm(forms.ModelForm):
+    series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
+    
     class Meta:
         model = Athlete
-        fields = ('name',)
+        fields = ('name','series')
+        
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        series = self.cleaned_data.get('series')
+        if self.instance.pk:
+            existing = Athlete.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
+            if existing:
+                raise forms.ValidationError, u'Athlete "%s" already exists for this series, try another name' % name
+            else:
+                return self.cleaned_data
+        else:
+            try:
+                existing = Athlete.objects.get(name__iexact=name, series=series)
+            except Athlete.DoesNotExist:
+                return self.cleaned_data
+            else:
+                raise forms.ValidationError, u'Athlete "%s" already exists for this series, try another name' % name
 
 
 class RaceForm(forms.ModelForm):
+    series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
+    
     class Meta:
         model = Race
-        exclude  = ('series',)
+        
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        series = self.cleaned_data.get('series')
+        if self.instance.pk:
+            existing = Race.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
+            if existing:
+                raise forms.ValidationError, u'Race "%s" already exists for this series, try another name' % name
+            else:
+                return self.cleaned_data
+        else:
+            try:
+                existing = Race.objects.get(name__iexact=name, series=series)
+            except Race.DoesNotExist:
+                return self.cleaned_data
+            else:
+                raise forms.ValidationError, u'Race "%s" already exists for this series, try another name' % name
 
 
 class GuessForm(forms.ModelForm):
@@ -70,3 +107,4 @@ class ResultForm(forms.Form):
         if athlete and not place:
             raise forms.ValidationError, _(u'This athlete has no place!')
         return self.cleaned_data
+    

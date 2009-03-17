@@ -25,6 +25,9 @@ class Series(models.Model):
     # BUGBUG - this will eventually be:
     # user_group = models.ForeignKey(UserGroup)
     owner           = models.ForeignKey(User)
+
+    class Meta:
+        verbose_name_plural = 'series'
     
     def is_admin(self, user):
         return user == self.owner
@@ -36,16 +39,13 @@ class Series(models.Model):
         return ('fantasy-series-detail', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
-    class Meta:
-        verbose_name_plural = 'series'
-
 
 class Race(models.Model):
     '''
     A portion of an race series, i.e. Monaco Grand Prix.
     
     '''
-    name        = models.CharField('Race name', max_length=100, unique=True, db_index=True)
+    name        = models.CharField('Race name', max_length=100)
     date        = models.DateField()
     start_time  = models.TimeField(help_text='in UTC (Greenwich time)')
     location    = models.CharField(max_length=100, blank=True, null=True)
@@ -53,7 +53,8 @@ class Race(models.Model):
     
     class Meta:
         ordering = ['date']
-        
+        unique_together = ('name', 'series')
+
     def __unicode__(self):
         return u'%s' % self.name
     
@@ -63,16 +64,23 @@ class Race(models.Model):
 
 
 class Team(models.Model):
-    name        = models.CharField(max_length=100, unique=True, db_index=True)
+    name        = models.CharField(max_length=100)
+    series      = models.ForeignKey(Series)
     
+    class Meta:
+        unique_together = ('name', 'series')
+        
     def __unicode__(self):
         return u'%s' % self.name
 
 
 class Athlete(models.Model):
-    name        = models.CharField(max_length=100, unique=True)
+    name        = models.CharField(max_length=100)
     team        = models.ForeignKey(Team, blank=True, null=True)
     series      = models.ForeignKey(Series)
+    
+    class Meta:
+        unique_together = ('name', 'series')
     
     def __unicode__(self):
         return u'%s' % self.name
@@ -83,22 +91,22 @@ class Result(models.Model):
     race        = models.ForeignKey(Race)
     place       = models.PositiveIntegerField()
     
-    def __unicode__(self):
-        return u'%s' % self.athlete
-    
     class Meta:
         ordering = ['place']
         unique_together = ('athlete','race')
+    
+    def __unicode__(self):
+        return u'%s' % self.athlete
 
 
 class Guess(models.Model):
     user        = models.ForeignKey(User)   # BUGBUG - will eventually be a SCUP
     athlete     = models.ForeignKey(Athlete)
     race        = models.ForeignKey(Race)
-    
-    def __unicode__(self):
-        return u'%s' % self.athlete
 
     class Meta:
         verbose_name_plural = 'guesses'
+    
+    def __unicode__(self):
+        return u'%s' % self.athlete
 

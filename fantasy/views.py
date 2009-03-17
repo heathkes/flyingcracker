@@ -136,7 +136,7 @@ def athlete_add(request, id):
     athlete = Athlete(series=series)
 
     if request.method == 'POST':
-        athlete_form = AthleteForm(data=request.POST)
+        athlete_form = AthleteForm(data=request.POST, instance=athlete)
         if athlete_form.is_valid():
             athlete = athlete_form.save(commit=False)
             athlete.series = series
@@ -146,8 +146,9 @@ def athlete_add(request, id):
                 return HttpResponseRedirect(next)
             else:
                 return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
+            
     else:
-        athlete_form = AthleteForm()
+        athlete_form = AthleteForm(instance=athlete)
 
     c = RequestContext(request, {
         #'service_client': service_client,
@@ -172,12 +173,12 @@ def athlete_edit(request, id):
     series = athlete.series
 
     if request.method == 'POST':
-        athlete_form = AthleteForm(data=request.POST, instance=athlete)
+        athlete_form = AthleteForm(data=request.POST, instance=athlete, initial={'series_pk': series.pk})
         if athlete_form.is_valid():
             athlete_form.save()
             return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
     else:
-        athlete_form = AthleteForm(instance=athlete)
+        athlete_form = AthleteForm(instance=athlete, initial={'series_pk': series.pk})
 
     c = RequestContext(request, {
         #'service_client': service_client,
@@ -203,14 +204,14 @@ def race_add(request, id):
     race = Race(series=series)
 
     if request.method == 'POST':
-        race_form = RaceForm(data=request.POST)
+        race_form = RaceForm(data=request.POST, instance=race)
         if race_form.is_valid():
             race = race_form.save(commit=False)
             race.series = series
             race.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
     else:
-        race_form = RaceForm()
+        race_form = RaceForm(instance=race)
 
     c = RequestContext(request, {
         #'service_client': service_client,
