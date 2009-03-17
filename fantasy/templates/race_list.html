@@ -12,8 +12,7 @@
             <tr>
                 <th>Race</th>
                 <th>Winner</th>
-                <th>My Guess</th>
-                <th>Place</th>
+                <th>My Guesses</th>
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>&nbsp;</th>
@@ -24,8 +23,7 @@
             <tr>
                 <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
                 <td>{{ r.winner }}</td>
-                <td>{% if r.guess %}{{ r.guess.competitor }}{% else %}------{% endif %}</td>
-                <td>{{ r.place }}</td>
+                <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
                 <td>{{ r.race.date|date:"D F d" }}</td>
                 <td>{{ r.race.start_time|time:"f a" }} UTC</td>
                 <td>{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>

@@ -64,33 +64,32 @@ class RaceForm(forms.ModelForm):
                 raise forms.ValidationError, u'Race "%s" already exists for this series, try another name' % name
 
 
-class GuessForm(forms.ModelForm):
-    class Meta:
-        model = Guess
-        fields = ('competitor',)
-
-    def __init__(self, choices, label, *args, **kwargs):
-        super(GuessForm, self).__init__(*args, **kwargs)
-        self['competitor'].field.queryset = choices
-        self['competitor'].field.label = label
-        self['competitor'].field.help_text = 'My pick to win'
-
-class ResultBaseFormset(formsets.BaseFormSet):
+class GuessAndResultBaseFormset(formsets.BaseFormSet):
 
     def __init__(self, *args, **kwargs):
         self.competitors = kwargs.pop('competitors', None)
-        super(ResultBaseFormset, self).__init__(*args, **kwargs)
+        super(GuessAndResultBaseFormset, self).__init__(*args, **kwargs)
     
     def _construct_form(self, i, **kwargs):
         kwargs["competitors"] = self.competitors
-        return super(ResultBaseFormset, self)._construct_form(i, **kwargs)
+        return super(GuessAndResultBaseFormset, self)._construct_form(i, **kwargs)
     
     def clean(self):
-        super(ResultBaseFormset,self).clean()
+        super(GuessAndResultBaseFormset,self).clean()
         if self.is_valid() and self.cleaned_data:
             competitors = [dct['competitor'] for dct in self.cleaned_data if dct['competitor']]
             if len(competitors) is not len(set(competitors)):
                 raise forms.ValidationError, u'Duplicate competitor.'
+
+
+class GuessForm(forms.Form):
+    competitor = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        competitor_list = kwargs.pop('competitors', None)
+        super(GuessForm, self).__init__(*args, **kwargs)
+        self['competitor'].field.choices = competitor_list
+
 
 class ResultForm(forms.Form):
     place = forms.IntegerField(required=False)

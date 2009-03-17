@@ -60,23 +60,15 @@ def series_detail(request, id):
         qs = Result.objects.filter(race=race, place=1)
         if not qs:
             winner = '?'
-        elif len(qs) == 1:
-            winner = str(qs[0].competitor)
         else:
             winner = ', '.join([str(result.competitor) for result in qs])
             
-        try:
-            guess = Guess.objects.get(race=race, user=request.user)
-            try:
-                result = Result.objects.get(race=race, competitor=guess.competitor)
-            except Result.DoesNotExist:
-                place = '?'
-            else:
-                place = result.place
-        except Guess.DoesNotExist:
-            guess = None
-            place = None
-        races.append({'race': race, 'winner': winner, 'guess': guess, 'place': place})
+        qs = Guess.objects.filter(race=race, user=request.user)
+        if not qs:
+            guesses = None
+        else:
+            guesses = [str(guess.competitor) for guess in qs]
+        races.append({'race': race, 'winner': winner, 'guesses': guesses})
         
     c = RequestContext(request, {
         'series': series,
@@ -327,37 +319,41 @@ def race_detail(request, id):
     
     from datetime import datetime
     start_time = datetime(race.date.year, race.date.month, race.date.day, race.start_time.hour, race.start_time.minute)
+    # If Race start time has passed show results.
     if start_time < datetime.now():
         return race_result(request, id)
-    
-    qs = Result.objects.filter(race=race)
-    try:
-        guess = Guess.objects.get(race=race, user=request.user)
-    except Guess.DoesNotExist:
-        guess = None
 
-    competitors = Competitor.objects.filter(series=race.series)
-    from fantasy.forms import GuessForm
+    from fantasy.forms import GuessForm, GuessAndResultBaseFormset
+    from django.forms.formsets import formset_factory
+
+    GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
+                                    max_num=series.num_guesses)
+
+    competitor_choices = [('', '------')]
+    competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
+    
+    curr_guesses = Guess.objects.filter(race=race)
+    guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
 
     if request.method == 'POST':
-        guess_form = GuessForm(competitors, race.series.competitor_label, data=request.POST, instance=guess)
-        if guess_form.is_valid():
-            guess = guess_form.save(commit=False)
-            guess.race = race
-            guess.result = 1
-            guess.user = request.user
-            guess.save()
+        formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
+        if formset.is_valid():
+            curr_guesses.delete()   # delete all existing guesses for this race
+            for guess in formset.cleaned_data:
+                if guess['competitor']:
+                    g = Guess(race=race,
+                              user=request.user,
+                              competitor=Competitor.objects.get(pk=guess['competitor']))
+                    g.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
     else:
-        guess_form = GuessForm(competitors, race.series.competitor_label, instance=guess)
+        formset = GuessFormset(initial=guesses, competitors=competitor_choices)
 
-    add_competitor_ok = series.users_enter_competitors
-    
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
-        'guess_form': guess_form,
-        'add_competitor_ok': add_competitor_ok,
+        'formset': formset,
+        'add_competitor_ok': series.users_enter_competitors,
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('race_guess.html', c)
@@ -386,13 +382,13 @@ def result_edit(request, id):
     Edit the results for a race.
     
     '''
-    from fantasy.forms import ResultForm, ResultBaseFormset
+    from fantasy.forms import ResultForm, GuessAndResultBaseFormset
     from django.forms.formsets import formset_factory
     
     race = get_object_or_404(Race, pk=id)
     series = race.series
 
-    ResultFormset = formset_factory(ResultForm, ResultBaseFormset,
+    ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
                                     max_num=series.scoring_system.num_places)
 
     competitor_choices = [('', '------')]
