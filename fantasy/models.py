@@ -98,6 +98,9 @@ class Result(models.Model):
     def __unicode__(self):
         return u'%s' % self.athlete
 
+    def guessers(self):
+        guessers = Guess.objects.filter(race=self, athlete=self.athlete)
+        return [g.user for g in guessers]
 
 class Guess(models.Model):
     user        = models.ForeignKey(User)   # BUGBUG - will eventually be a SCUP

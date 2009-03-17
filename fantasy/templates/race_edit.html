@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 
 {% block body %}
+<h1>{% if race.pk %}Edit Race "{{ race }}"{% else %}Add Race{% endif %}</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<h2>{% if race.pk %}Edit {{ race }}{% else %}Add Race{% endif %}</h2>
 
 <form method="POST" action="">
-
-{{ race_form.as_p }}
-
+<table>
+{{ race_form.as_table }}
+{% if race.pk %}
+<tr><td><a href="{% url fantasy-race-delete race.pk %}">Delete</a></td></tr>
+{% endif %}
+</table>
 <input type="submit" value="Submit" />
 
 </form>

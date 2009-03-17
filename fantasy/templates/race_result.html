@@ -1,19 +1,16 @@
 {% extends "base.html" %}
 
 {% block body %}
+<h1>Race Result</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-
 <h3>Race: {{ race }}</h3>
-
-<h2>Result</h2>
-
 {% if result_list %}
 <div id="result-list-container">
     <table id="result-list-table" class="currweatherTable">
         <thead>
             <tr>
                 <th>Place</th>
-                <th>Competitor</th>
+                <th>{{ series.athlete_label }}</th>
                 <th>Picked By</th>
             </tr>
         </thead>
@@ -22,7 +19,7 @@
             <tr>
                 <td>{{ r.place }}</td>
                 <td>{{ r.athlete }}</td>
-                <td>{% if r.picked_by %}{{ r.picked_by }}{% else %}------{% endif %}
+                <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>
 {% endfor %}
         </tbody>
@@ -34,4 +31,5 @@ No results found.
 <br />
 <a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a>
 {% if is_admin %}<br /><a href="{% url fantasy-result-edit race.pk %}">Edit results</a>{% endif %}
+{% if is_admin and not result_list %}<br /><a href="{% url fantasy-race-delete race.pk %}">Delete race</a>{% endif %}
 {% endblock %}

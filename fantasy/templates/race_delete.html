@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Delete Race</h1>
+<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<p>Race "<a href="{{ race.get_absolute_url }}">{{ race }}</a>" has results and therefore cannot be deleted.
+Delete all the results for this race and try again.</p>
+<ul>
+{% for result in result_list %}
+    <li>
+        #{{ result.place }} {{ result.athlete }}
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

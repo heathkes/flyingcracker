@@ -188,6 +188,29 @@ def athlete_edit(request, id):
     })
     return render_to_response('athlete_edit.html', c)
 
+@login_required
+def athlete_delete(request, id):
+    '''
+    Delete the specified Athlete from its Series.
+    
+    '''
+    #scup = request.session.get('scup')
+    #service_client = scup.service_client
+
+    athlete = get_object_or_404(Athlete, pk=id)
+    series = athlete.series
+
+    results = Result.objects.filter(athlete=athlete)
+    if results:
+        c = RequestContext(request, {
+            'series': series,
+            'athlete': athlete,
+            'result_list': results,
+        })
+        return render_to_response('athlete_delete.html', c)
+    else:
+        athlete.delete()
+        return HttpResponseRedirect(reverse('fantasy-athlete-list', args=[series.pk]))
 
 @login_required
 def race_add(request, id):
@@ -252,6 +275,30 @@ def race_edit(request, id):
     return render_to_response('race_edit.html', c)
 
 @login_required
+def race_delete(request, id):
+    '''
+    Delete the specified Race from the Series.
+    
+    '''
+    #scup = request.session.get('scup')
+    #service_client = scup.service_client
+
+    race = get_object_or_404(Race, pk=id)
+    series = race.series
+
+    results = Result.objects.filter(race=race)
+    if results:
+        c = RequestContext(request, {
+            'series': series,
+            'race': race,
+            'result_list': results,
+        })
+        return render_to_response('race_delete.html', c)
+    else:
+        race.delete()
+        return HttpResponseRedirect(series.get_absolute_url)
+
+@login_required
 def race_detail(request, id):
     '''
     Shows either the results of a race
@@ -308,16 +355,11 @@ def race_result(request, id):
     race = get_object_or_404(Race, pk=id)
     series = race.series
     qs = Result.objects.filter(race=race)
-    result_list = []
-    for result in qs:
-        guesses = Guess.objects.filter(user=request.user, athlete=result.athlete, race=race)
-        picked_by = ', '.join([str(g.user) for g in guesses])
-        result_list.append({'place': result.place, 'athlete': result.athlete, 'picked_by': picked_by})
         
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
-        'result_list': result_list,
+        'result_list': qs,
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('race_result.html', c)

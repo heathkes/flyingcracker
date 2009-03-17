@@ -5,11 +5,15 @@
 <h2>{% if athlete.pk %}Edit {{ athlete }}{% else %}Add Athlete{% endif %}</h2>
 
 <form method="POST" action="">
-
-{{ athlete_form.as_p }}
+<table>
+{{ athlete_form.as_table }}
+{% if athlete.pk %}
+<tr><td><a href="{% url fantasy-athlete-delete athlete.pk %}">Delete</a></td></tr>
+{% endif %}
+</table>
 
 <input type="submit" value="Submit" />
 
 </form>
-
+<a href="{% url fantasy-athlete-list series.pk %}">Athlete list</a>
 {% endblock %}
