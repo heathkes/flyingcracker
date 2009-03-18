@@ -1,37 +1,37 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block body %}
-<h1>Choose {{ series.competitor_label }}(s)</h1>
+<h1>Choose {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }}</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 <h3>Race: <a href="{{ race.get_absolute_url }}">{{ race }}</a></h3>
-
-<form method="POST" action="">
-{% if formset %}
-    {{ formset.management_form }}
-    {% for error in formset.non_form_errors %}
-    {{ error }}
-    {% endfor %}
-    <table>
-        <thead>
-        <tr>
-            <th>&nbsp;</th>
-            <th>{{ series.competitor_label }}</th>
-        </thead>
-        <tbody>
-        {% for form in formset.forms %}
-        <tr>
-            <td>{{ form.competitor.label }}</td>
-            <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
-            {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
-        </tr>
+<div class="fantasy-form-help">Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} who you think will do well in this race.</div>
+<div id="race-guess-container">
+    <form method="POST" action="">
+    {% if formset %}
+        {{ formset.management_form }}
+        {% for error in formset.non_form_errors %}
+        {{ error }}
         {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
-
-<input type="submit" value="Submit" />
-
-</form>
+        <table id="race-guess-table" class="currweatherTable">
+            <thead>
+            </thead>
+            <tbody>
+            {% for form in formset.forms %}
+            <tr>
+                <td>{{ form.competitor.label }}</td>
+                <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
+                {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    
+    <input type="submit" value="Submit" />
+    
+    </form>
+</div>
 {% if add_competitor_ok %}
 <br />
 Or
