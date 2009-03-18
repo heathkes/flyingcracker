@@ -10,6 +10,7 @@
     <table id="race-list-table" class="currweatherTable">
         <thead>
             <tr>
+                <th>&nbsp;</th>
                 <th>Race</th>
                 <th>Winner</th>
                 <th>My Guess{{ series.num_guesses|pluralize:",es" }}</th>
@@ -21,6 +22,7 @@
         <tbody>
 {% for r in race_list %}
             <tr>
+                <td>{{ forloop.counter }}.</td>
                 <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
                 <td>{{ r.winner }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>

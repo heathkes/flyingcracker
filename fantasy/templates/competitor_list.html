@@ -13,5 +13,13 @@
     <li>No {{ series.competitor_label }}s for {{ series }} in database</li>
 {% endfor %}
 </ul>
+<br />
+<form method="POST" action="">
+    <table>
+    {{ competitor_form.as_table }}
+    </table>
+    <input type="submit" value="Add {{ series.competitor_label }}" />
+</form>
+
 {% if is_admin %}<br /><a href="{% url fantasy-competitor-add series.pk %}">Add {{ series.competitor_label }}</a>{% endif %}
 {% endblock %}

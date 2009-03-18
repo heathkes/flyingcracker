@@ -124,14 +124,35 @@ def competitor_list(request, id):
     List all competitors associated with this Series.
     
     '''
+    from fc3.fantasy.forms import CompetitorForm
+    
     scup = request.session.get('scup')
     service_client = scup.service_client
     
     series = get_object_or_404(Series, pk=id)
+    competitor = Competitor(series=series)
+
+    if request.method == 'POST':
+        competitor_form = CompetitorForm(data=request.POST, instance=competitor)
+        if competitor_form.is_valid():
+            competitor = competitor_form.save(commit=False)
+            competitor.series = series
+            competitor.save()
+            next = request.GET.get('next', None)
+            if next:
+                return HttpResponseRedirect(next)
+            else:
+                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+            
+    else:
+        competitor_form = CompetitorForm(instance=competitor)
+    
     qs = Competitor.objects.filter(series=series)
     c = RequestContext(request, {
         'series': series,
         'competitor_list': qs,
+        'competitor_form': competitor_form,
+        'competitor': competitor,
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_list.html', c)
