@@ -360,7 +360,7 @@ def race_detail(request, id):
         if formset.is_valid():
             curr_guesses.delete()   # delete all existing guesses for this race
             for guess in formset.cleaned_data:
-                if guess['competitor']:
+                if guess.get('competitor', None):
                     g = Guess(race=race,
                               user=scup,
                               competitor=Competitor.objects.get(pk=guess['competitor']))

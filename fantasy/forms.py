@@ -78,7 +78,7 @@ class GuessAndResultBaseFormset(formsets.BaseFormSet):
     def clean(self):
         super(GuessAndResultBaseFormset,self).clean()
         if self.is_valid() and self.cleaned_data:
-            competitors = [dct['competitor'] for dct in self.cleaned_data if dct['competitor']]
+            competitors = [dct['competitor'] for dct in self.cleaned_data if dct.get('competitor',None)]
             if len(competitors) is not len(set(competitors)):
                 raise forms.ValidationError, u'Duplicate competitor.'
 
