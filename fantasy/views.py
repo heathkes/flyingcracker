@@ -25,7 +25,7 @@ def series_edit(request, id=None):
     Create a new Series or edit an existing Series.
     
     '''
-    from fantasy.forms import SeriesForm
+    from fc3.fantasy.forms import SeriesForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -142,7 +142,7 @@ def competitor_add(request, id):
     Add a competitor for the specified Series.
     
     '''
-    from fantasy.forms import CompetitorForm
+    from fc3.fantasy.forms import CompetitorForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -179,7 +179,7 @@ def competitor_edit(request, id):
     Edit the specified Competitor.
     
     '''
-    from fantasy.forms import CompetitorForm
+    from fc3.fantasy.forms import CompetitorForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -234,7 +234,7 @@ def race_add(request, id):
     Add a new race to the specified Series.
     
     '''
-    from fantasy.forms import RaceForm
+    from fc3.fantasy.forms import RaceForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -267,7 +267,7 @@ def race_edit(request, id):
     Edit the specified Race.
     
     '''
-    from fantasy.forms import RaceForm
+    from fc3.fantasy.forms import RaceForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -343,7 +343,7 @@ def race_detail(request, id):
     #
     #  Otherwise, solicit guess(es).
     #
-    from fantasy.forms import GuessForm, GuessAndResultBaseFormset
+    from fc3.fantasy.forms import GuessForm, GuessAndResultBaseFormset
     from django.forms.formsets import formset_factory
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
@@ -405,7 +405,7 @@ def result_edit(request, id):
     Edit the results for a race.
     
     '''
-    from fantasy.forms import ResultForm, GuessAndResultBaseFormset
+    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset
     from django.forms.formsets import formset_factory
     
     scup = request.session.get('scup')
