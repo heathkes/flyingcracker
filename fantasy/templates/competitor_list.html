@@ -29,6 +29,7 @@
         </tbody>
     </table>
 </div>
+{% if is_admin %}
 <br />
 <form method="POST" action="">
     <table>
@@ -36,6 +37,6 @@
     </table>
     <input type="submit" value="Add {{ series.competitor_label }}" />
 </form>
+{% endif %}
 
-{% if is_admin %}<br /><a href="{% url fantasy-competitor-add series.pk %}">Add {{ series.competitor_label }}</a>{% endif %}
 {% endblock %}
