@@ -3,16 +3,32 @@
 {% block body %}
 <h1>{{ series.competitor_label }} List</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<ul>
+<div id="competitor-list-container">
+    <table id="race-list-table" class="currweatherTable">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>{{ series.competitor_label }}</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
 {% for competitor in competitor_list %}
-    <li>
-        {{ competitor }}
-        {% if is_admin %} <a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% endif %}
-    </li>
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ competitor }}</td>
+                <td>{% if is_admin %}<a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
+            </tr>
 {% empty %}
-    <li>No {{ series.competitor_label }}s for {{ series }} in database</li>
+            <tr>
+                <td>&nbsp;</td>
+                <td>No {{ series.competitor_label }}s for {{ series }} in database</td>
+                <td>&nbsp;</td>
+            </tr>
 {% endfor %}
-</ul>
+        </tbody>
+    </table>
+</div>
 <br />
 <form method="POST" action="">
     <table>
