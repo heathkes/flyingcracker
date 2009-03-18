@@ -91,6 +91,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'mobileadmin',
     'registration',
+    'serviceclient',
     'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',

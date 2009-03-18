@@ -6,6 +6,7 @@ from django.db.models import permalink
 from datetime import date
 from django.utils.translation import ugettext_lazy as _
 from scoresys.models import ScoringSystem
+from serviceclient.models import ServiceClientUserProfile as SCUP
 
 
 class Series(models.Model):
@@ -25,13 +26,14 @@ class Series(models.Model):
     
     # BUGBUG - this will eventually be:
     # user_group = models.ForeignKey(UserGroup)
-    owner           = models.ForeignKey(User)
+    # and the creator should be an ADMIN_TYPE in that group.
+    owner           = models.ForeignKey(SCUP)
 
     class Meta:
         verbose_name_plural = 'series'
     
-    def is_admin(self, user):
-        return user == self.owner
+    def is_admin(self, scup):
+        return scup == self.owner
     
     def __unicode__(self):
         return u'%s' % self.name
@@ -92,7 +94,7 @@ class Result(models.Model):
         return [g.user for g in guessers]
 
 class Guess(models.Model):
-    user        = models.ForeignKey(User)   # BUGBUG - will eventually be a SCUP
+    user        = models.ForeignKey(SCUP)
     competitor  = models.ForeignKey(Competitor)
     race        = models.ForeignKey(Race)
 

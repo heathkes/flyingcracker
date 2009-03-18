@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.conf import settings
+from fc3 import views
 
 admin.autodiscover()
 
@@ -15,9 +16,11 @@ urlpatterns = patterns('',
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
     (r'^admin/(.*)',                        admin.site.root),
     
-    # Project URLs
+    # Application URLs
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
+ url(r'^accounts/login/$',                  views.login, {'template_name': 'login.html'}, name='auth_login'),
     (r'^accounts/',                         include('registration.urls')),
+    (r'^client/',                           include('serviceclient.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),
     (r'^cam/',                              include('fc3.cam.urls')),
     (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),

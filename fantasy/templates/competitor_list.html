@@ -7,8 +7,7 @@
 {% for competitor in competitor_list %}
     <li>
         {{ competitor }}
-        {% ifequal series.owner user %} <a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>
-        {% endifequal %}
+        {% if is_admin %} <a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% endif %}
     </li>
 {% empty %}
     <li>No {{ series.competitor_label }}s for {{ series }} in database</li>

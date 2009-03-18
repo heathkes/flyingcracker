@@ -72,6 +72,7 @@ class GuessAndResultBaseFormset(formsets.BaseFormSet):
     
     def _construct_form(self, i, **kwargs):
         kwargs["competitors"] = self.competitors
+        kwargs["form_num"] = i
         return super(GuessAndResultBaseFormset, self)._construct_form(i, **kwargs)
     
     def clean(self):
@@ -87,8 +88,10 @@ class GuessForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         competitor_list = kwargs.pop('competitors', None)
+        form_num = int(kwargs.pop('form_num', 0)) + 1
         super(GuessForm, self).__init__(*args, **kwargs)
         self['competitor'].field.choices = competitor_list
+        self['competitor'].field.label = 'Pick #%d ' % form_num
 
 
 class ResultForm(forms.Form):
@@ -97,6 +100,7 @@ class ResultForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         competitor_list = kwargs.pop('competitors', None)
+        form_num = kwargs.pop('form_num', 0)
         super(ResultForm, self).__init__(*args, **kwargs)
         self['competitor'].field.choices = competitor_list
 

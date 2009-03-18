@@ -5,12 +5,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from fc3.fantasy.models import Series, Race, Competitor, Guess, Result
+from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 
 @login_required
 def root(request):
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     qs = Series.objects.all()
     c = RequestContext(request, {
         'series_list': qs,
+        'scup': scup,
     })
     return render_to_response('series_list.html', c)
 
@@ -22,19 +27,19 @@ def series_edit(request, id=None):
     '''
     from fantasy.forms import SeriesForm
 
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     if id:
         series = get_object_or_404(Series, pk=id)
     else:
-        series = Series(owner=request.user)
+        series = Series(owner=scup)
 
     if request.method == 'POST':
         series_form = SeriesForm(data=request.POST, instance=series)
         if series_form.is_valid():
             series = series_form.save(commit=False)
-            series.owner = request.user
+            series.owner = scup
             series.save()
             return HttpResponseRedirect(reverse('fantasy-root'))
     else:
@@ -53,6 +58,9 @@ def series_detail(request, id):
     A list of races for the series, with winner if applicable, and user's current guess if applicable.
     
     '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     series = get_object_or_404(Series, pk=id)
     qs = Race.objects.filter(series=series)
     races = []
@@ -63,7 +71,7 @@ def series_detail(request, id):
         else:
             winner = ', '.join([str(result.competitor) for result in qs])
             
-        qs = Guess.objects.filter(race=race, user=request.user)
+        qs = Guess.objects.filter(race=race, user=scup)
         if not qs:
             guesses = None
         else:
@@ -73,7 +81,7 @@ def series_detail(request, id):
     c = RequestContext(request, {
         'series': series,
         'race_list': races,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_list.html', c)
 
@@ -83,9 +91,12 @@ def leaderboard(request, id):
     A list of user scores for races in the series.
     
     '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     series = get_object_or_404(Series, pk=id)
     points_list = []
-    users = User.objects.filter(guess__race__series=series).distinct()
+    users = SCUP.objects.filter(guess__race__series=series).distinct()
     for u in users:
         guesses = Guess.objects.filter(race__series=series, user=u)
         points = 0
@@ -103,7 +114,7 @@ def leaderboard(request, id):
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('leaderboard.html', c)
 
@@ -113,12 +124,15 @@ def competitor_list(request, id):
     List all competitors associated with this Series.
     
     '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     series = get_object_or_404(Series, pk=id)
     qs = Competitor.objects.filter(series=series)
     c = RequestContext(request, {
         'series': series,
         'competitor_list': qs,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_list.html', c)
 
@@ -130,8 +144,8 @@ def competitor_add(request, id):
     '''
     from fantasy.forms import CompetitorForm
 
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
     competitor = Competitor(series=series)
@@ -152,11 +166,10 @@ def competitor_add(request, id):
         competitor_form = CompetitorForm(instance=competitor)
 
     c = RequestContext(request, {
-        #'service_client': service_client,
         'competitor_form': competitor_form,
         'series': series,
         'competitor': competitor,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_edit.html', c)
 
@@ -168,8 +181,8 @@ def competitor_edit(request, id):
     '''
     from fantasy.forms import CompetitorForm
 
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
@@ -183,11 +196,10 @@ def competitor_edit(request, id):
         competitor_form = CompetitorForm(instance=competitor, initial={'series_pk': series.pk})
 
     c = RequestContext(request, {
-        #'service_client': service_client,
         'competitor_form': competitor_form,
         'series': series,
         'competitor': competitor,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_edit.html', c)
 
@@ -197,8 +209,8 @@ def competitor_delete(request, id):
     Delete the specified Competitor from its Series.
     
     '''
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
@@ -209,7 +221,7 @@ def competitor_delete(request, id):
             'series': series,
             'competitor': competitor,
             'result_list': results,
-            'is_admin': series.is_admin(request.user),
+            'is_admin': series.is_admin(scup),
         })
         return render_to_response('competitor_delete.html', c)
     else:
@@ -224,8 +236,8 @@ def race_add(request, id):
     '''
     from fantasy.forms import RaceForm
 
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
     race = Race(series=series)
@@ -245,7 +257,7 @@ def race_add(request, id):
         'race_form': race_form,
         'series': series,
         'race': race,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_edit.html', c)
 
@@ -257,8 +269,8 @@ def race_edit(request, id):
     '''
     from fantasy.forms import RaceForm
 
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     race = get_object_or_404(Race, pk=id)
     series = race.series
@@ -276,7 +288,7 @@ def race_edit(request, id):
         'race_form': race_form,
         'series': series,
         'race': race,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_edit.html', c)
 
@@ -286,8 +298,8 @@ def race_delete(request, id):
     Delete the specified Race from the Series.
     
     '''
-    #scup = request.session.get('scup')
-    #service_client = scup.service_client
+    scup = request.session.get('scup')
+    service_client = scup.service_client
 
     race = get_object_or_404(Race, pk=id)
     series = race.series
@@ -298,7 +310,7 @@ def race_delete(request, id):
             'series': series,
             'race': race,
             'result_list': results,
-            'is_admin': series.is_admin(request.user),
+            'is_admin': series.is_admin(scup),
         })
         return render_to_response('race_delete.html', c)
     else:
@@ -314,25 +326,33 @@ def race_detail(request, id):
     or possibly enter a new Competitor.
     
     '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     race = get_object_or_404(Race, pk=id)
     series = race.series
     
     from datetime import datetime
     start_time = datetime(race.date.year, race.date.month, race.date.day, race.start_time.hour, race.start_time.minute)
-    # If Race start time has passed show results.
+    #
+    #  If Race start time has passed don't allow guessing
+    #
     if start_time < datetime.now():
         return race_result(request, id)
 
+    #
+    #  Otherwise, solicit guess(es).
+    #
     from fantasy.forms import GuessForm, GuessAndResultBaseFormset
     from django.forms.formsets import formset_factory
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
-                                    max_num=series.num_guesses)
+                                    max_num=series.num_guesses, extra=series.num_guesses)
 
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
     
-    curr_guesses = Guess.objects.filter(race=race)
+    curr_guesses = Guess.objects.filter(race=race, user=scup)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
 
     if request.method == 'POST':
@@ -342,7 +362,7 @@ def race_detail(request, id):
             for guess in formset.cleaned_data:
                 if guess['competitor']:
                     g = Guess(race=race,
-                              user=request.user,
+                              user=scup,
                               competitor=Competitor.objects.get(pk=guess['competitor']))
                     g.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
@@ -354,7 +374,7 @@ def race_detail(request, id):
         'race': race,
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_guess.html', c)
 
@@ -364,6 +384,9 @@ def race_result(request, id):
     Shows the results of a race.
     
     '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
     race = get_object_or_404(Race, pk=id)
     series = race.series
     qs = Result.objects.filter(race=race)
@@ -372,7 +395,7 @@ def race_result(request, id):
         'series': race.series,
         'race': race,
         'result_list': qs,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_result.html', c)
 
@@ -384,6 +407,9 @@ def result_edit(request, id):
     '''
     from fantasy.forms import ResultForm, GuessAndResultBaseFormset
     from django.forms.formsets import formset_factory
+    
+    scup = request.session.get('scup')
+    service_client = scup.service_client
     
     race = get_object_or_404(Race, pk=id)
     series = race.series
@@ -419,6 +445,6 @@ def result_edit(request, id):
         'series': race.series,
         'race': race,
         'formset': formset,
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)
