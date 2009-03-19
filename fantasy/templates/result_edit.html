@@ -1,36 +1,36 @@
-{% extends "base.html" %}
+{% extends "fantasy.html" %}
 
-{% block body %}
-<h1>Edit Race Results</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<h3>Race: <a href="{{ race.get_absolute_url }}">{{ race }}</a></h3>
-
-<form method="POST" action="">
-{% if formset %}
-    {{ formset.management_form }}
-    {% for error in formset.non_form_errors %}
-    {{ error }}
-    {% endfor %}
-    <table>
-        <thead>
-        <tr>
-            <th>Place</th>
-            <th>{{ series.competitor_label }}</th>
-        </thead>
-        <tbody>
-        {% for form in formset.forms %}
-        <tr>
-            <td>{{ form.place }} {{ form.place.errors }}</td>
-            <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
-            {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
-        </tr>
+{% block fantasy-main %}
+<h1>Edit Results</h1>
+<h2><a href="{{ race.get_absolute_url }}">{{ race }}</a> - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<div class="fantasy-form-help">Pick a {{ series.competitor_label }} and enter their place for each result.<br />Clear the {{ series.competitor_label}} name to delete a result.</div>
+<div class="fantasy-form-container">
+    <form method="POST" action="">
+    {% if formset %}
+        {{ formset.management_form }}
+        {% for error in formset.non_form_errors %}
+        {{ error }}
         {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
-
-<input type="submit" value="Submit" />
-
-</form>
-<p>Clear the {{ series.competitor_label}} name to delete a result.</p>
+        <table class="fantasy-list-table">
+            <thead>
+            <tr>
+                <th>{{ series.competitor_label }}</th>
+                <th>Place</th>
+            </thead>
+            <tbody>
+            {% for form in formset.forms %}
+            <tr>
+                <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
+                <td>{{ form.place }} {{ form.place.errors }}</td>
+                {% if form.non_field_errors %}<td class="nobg"> {{ form.non_field_errors }}</td>{% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    
+    <input type="submit" value="Submit" />
+    
+    </form>
+</div>
 {% endblock %}

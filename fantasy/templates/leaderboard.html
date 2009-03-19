@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "fantasy.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h1>Leaderboard</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 
-<div id="leaderboard-container">
-    <table id="leaderboard-table" class="currweatherTable">
+<div id="leaderboard-container" class="fantasy-list-container">
+    <table id="leaderboard-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th>Fan</th>

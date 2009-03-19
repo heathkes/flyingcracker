@@ -1,0 +1,11 @@
+        <div id="fantasy-top-ten" class="fantasy-nav-item">
+            <div class="title">Series Point Leaders</div>
+            <div class="body">
+            <ul>
+            {% for p in points_list %}
+                <li>{{ p.name }} - {{ p.points }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+            <a href="{% url fantasy-series-leaderboard series.pk %}">Leaderboard</a>
+        </div>

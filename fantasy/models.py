@@ -15,6 +15,7 @@ class Series(models.Model):
     
     '''
     name                    = models.CharField('Series name', max_length=100, unique=True)
+    description             = models.CharField(max_length=100, blank=True, null=True)
     start_date              = models.DateField()
     end_date                = models.DateField()
     competitor_label        = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, blank=True, null=True)

@@ -1,14 +1,12 @@
-{% extends "base.html" %}
+{% extends "fantasy.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h2>{% if series.pk %}Edit{% else %}Add{% endif %} Series</h2>
 
-<form method="POST" action="">
-
-{{ series_form.as_p }}
-
-<input type="submit" value="Submit" />
-
-</form>
-
+<div class="fantasy-form-container">
+    <form method="POST" action="">
+        {{ series_form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+</div>
 {% endblock %}

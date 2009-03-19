@@ -1,16 +1,32 @@
-{% extends "base.html" %}
+{% extends "fantasy.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h1>Delete Race</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<p>Race "<a href="{{ race.get_absolute_url }}">{{ race }}</a>" has results and therefore cannot be deleted.<br />
-Delete all the results for this race and try again.</p>
-<h3>Results</h3>
-<ul>
-{% for result in result_list %}
-    <li>
-        #{{ result.place }} {{ result.competitor }}
-    </li>
+<div class="fantasy-form-help">
+    Race "<a href="{{ race.get_absolute_url }}">{{ race }}</a>" has results and therefore cannot be deleted.<br />
+    Delete all the results for this race and try again.
+</div>
+<div class="fantasy-list-container">
+{% if result_list %}
+    <table id="result-list-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th>Place</th>
+                <th>{{ series.competitor_label }}</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for r in result_list %}
+            <tr>
+                <td class="center">{{ r.place }}</td>
+                <td>{{ r.competitor }}</td>
+            </tr>
 {% endfor %}
-</ul>
+        </tbody>
+    </table>
+{% else %}
+No results found.
+{% endif %}
+</div>
 {% endblock %}

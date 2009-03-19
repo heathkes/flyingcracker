@@ -1,18 +1,22 @@
-{% extends "base.html" %}
+{% extends "fantasy.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h1>Delete {{ series.competitor_label }}</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<p>{{ series.competitor_label }} "{{ competitor }}" has a result in one or more races and therefore cannot be deleted.<br />
-Remove {{ competitor }} from the results for {{ result_list|pluralize:"this race,these races" }} and try again.</p>
+<div class="fantasy-form-help">
+    {{ series.competitor_label }} "{{ competitor }}" has a result in one or more races and therefore cannot be deleted.<br />
+    Remove {{ competitor }} from the results for {{ result_list|pluralize:"this race,these races" }} and try again.
+</div>
 <h3>Results for {{ competitor }}</h3>
-<ul>
-{% for result in result_list %}
-    <li>
-        #{{ result.place }} in <a href="{{ result.race.get_absolute_url }}">{{ result.race }}</a>{% with result.guessers as guessers %}{% if guessers %}, picked by {{ result.guessers|join:", " }}{% endif %}{% endwith %}
-    </li>
-{% endfor %}
-</ul>
+<div class="fantasy-list-container">
+    <ul>
+    {% for result in result_list %}
+        <li>
+            #{{ result.place }} in <a href="{{ result.race.get_absolute_url }}">{{ result.race }}</a>{% with result.guessers as guessers %}{% if guessers %}, picked by {{ result.guessers|join:", " }}{% endif %}{% endwith %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
 <br />
 <a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} list</a>
 {% endblock %}

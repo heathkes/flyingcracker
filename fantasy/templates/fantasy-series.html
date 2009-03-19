@@ -1,0 +1,18 @@
+{% extends "fantasy.html" %}
+{% block fantasy-bd %}
+<div class="yui-ge">
+    <div id="fantasy-main-container" class="yui-u first">
+        <div class="main">
+        {% block fantasy-main %}
+        {% endblock %}
+        </div>
+    </div>
+    <div id="fantasy-nav-container" class="yui-u">
+        <div class="main">
+        {% block fantasy-nav %}
+        {% include "fantasy-leaders.html" %}
+        {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

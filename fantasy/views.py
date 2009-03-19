@@ -85,21 +85,12 @@ def series_detail(request, id):
     c = RequestContext(request, {
         'series': series,
         'race_list': races,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_list.html', c)
 
-@login_required
-@set_scup
-def leaderboard(request, id):
-    '''
-    A list of user scores for races in the series.
-    
-    '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
-    series = get_object_or_404(Series, pk=id)
+def series_points_list(series):
     points_list = []
     users = SCUP.objects.filter(guess__race__series=series).distinct()
     for u in users:
@@ -112,10 +103,24 @@ def leaderboard(request, id):
             except:
                 place = 0
             points += series.scoring_system.points(place)
-        points_list.append({'name': str(u.user), 'points': points})
+        points_list.append({'name': str(u.user.username), 'points': points})
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)
+    return points_list
+    
+@login_required
+@set_scup
+def leaderboard(request, id):
+    '''
+    A list of user scores for races in the series.
+    
+    '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    series = get_object_or_404(Series, pk=id)
+    points_list = series_points_list(series)    
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
@@ -159,6 +164,7 @@ def competitor_list(request, id):
         'competitor_list': qs,
         'competitor_form': competitor_form,
         'competitor': competitor,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_list.html', c)
@@ -406,6 +412,7 @@ def race_detail(request, id):
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
+        'points_list': series_points_list(series)[:10],
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
         'is_admin': series.is_admin(scup),
@@ -430,6 +437,7 @@ def race_result(request, id):
         'series': race.series,
         'race': race,
         'result_list': qs,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('race_result.html', c)

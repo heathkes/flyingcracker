@@ -920,3 +920,89 @@ th.flowHead{
 #branding h2 { font-weight:normal; }
 #user-tools { float:right; padding-right:1em; font-size:85%; text-align:right; }
 #site-owner { font-style: italic; color:#0080c0; }
+
+#fantasy-sponsor {
+    font-size: 120%;
+    padding-bottom: 1em;
+}
+#fantasy-main-container {
+}
+#fantasy-main-container .main {
+    padding: 1em;
+}
+#fantasy-main-container h1 {
+    font-size: 120%;
+    font-weight: bold;
+    padding-bottom: 0.5em;
+}
+#fantasy-main-container h2{
+    font-size: 110%;
+    font-weight: bold;
+    padding-bottom: 0.5em;
+}
+#fantasy-main-container h3{
+    font-size: 100%;
+    font-weight: bold;
+    padding-bottom: 0.5em;
+}
+.fantasy-form-help {
+    font-style: italic;
+    padding-left: 1em;
+}
+.fantasy-list-container {
+    padding-top: 1em;
+//    padding-bottom: 1em;
+}
+.fantasy-form-container {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+.fantasy-list-table {
+    margin-bottom: 1em;
+}
+.fantasy-list-table th {
+	font: bold 11px Arial, Helvetica, Verdana;
+	background: #1F3543;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	text-align: left;
+	color : #FFFFFF;
+	padding: 6px 6px 6px 12px;
+}
+.fantasy-list-table th.nobg {
+	border-top: 0;
+	border-left: 0;
+	background: none;
+}
+.fantasy-list-table td {
+	font-family : Arial, Helvetica, Verdana;
+	font-size : 10pt;
+	vertical-align : top;
+	border-bottom: thin solid #666699;
+    background: lightGray;
+	padding: 6px 6px 6px 12px;
+}
+.fantasy-list-table td.nobg {
+	border-top: 0;
+	border-left: 0;
+    border-bottom: 0;
+	background: none;
+}
+.fantasy-list-table td.center {
+    text-align: center;
+}
+#fantasy-nav-container {
+    background-color: pink;
+}
+#fantasy-nav-container .main {
+    padding: 1em;
+}
+.fantasy-nav-item {
+    font: inherit;
+}
+#fantasy-top-ten div.title {
+    font-weight: bold;
+}
+#fantasy-top-ten div.body {
+    padding: 0.5em 0 0.5em 0;
+}

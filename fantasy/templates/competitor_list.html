@@ -1,15 +1,17 @@
-{% extends "base.html" %}
+{% extends "fantasy-series.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h1>{{ series.competitor_label }} List</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<div id="competitor-list-container">
-    <table id="race-list-table" class="currweatherTable">
+<div class="fantasy-form-help">These {{ series.competitor_label }}s available for this series.<br />
+To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.</div>
+<div id="competitor-list-container" class="fantasy-list-container">
+    <table id="competitor-list-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th>&nbsp;</th>
                 <th>{{ series.competitor_label }}</th>
-                <th>&nbsp;</th>
+                <th class="nobg">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -17,26 +19,27 @@
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ competitor }}</td>
-                <td>{% if is_admin %}<a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
             </tr>
 {% empty %}
             <tr>
                 <td>&nbsp;</td>
                 <td>No {{ series.competitor_label }}s for {{ series }} in database</td>
-                <td>&nbsp;</td>
+                <td class="nobg">&nbsp;</td>
             </tr>
 {% endfor %}
         </tbody>
     </table>
 </div>
 {% if is_admin %}
-<br />
-<form method="POST" action="">
-    <table>
-    {{ competitor_form.as_table }}
-    </table>
-    <input type="submit" value="Add {{ series.competitor_label }}" />
-</form>
+<div class="fantasy-form-container">
+    <form method="POST" action="">
+        <table>
+        {{ competitor_form.as_p }}
+        </table>
+        <input type="submit" value="Add {{ series.competitor_label }}" />
+    </form>
+</div>
 {% endif %}
 
 {% endblock %}

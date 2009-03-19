@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "fantasy-series.html" %}
 
-{% block body %}
+{% block fantasy-main %}
 <h1>Race Result</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<h3>Race: {{ race }}</h3>
+<h2>{{ race }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<div id="result-list-container" class="fantasy-list-container">
 {% if result_list %}
-<div id="result-list-container">
-    <table id="result-list-table" class="currweatherTable">
+    <table id="result-list-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th>Place</th>
@@ -17,19 +16,17 @@
         <tbody>
 {% for r in result_list %}
             <tr>
-                <td>{{ r.place }}</td>
+                <td class="center">{{ r.place }}</td>
                 <td>{{ r.competitor }}</td>
                 <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>
 {% endfor %}
         </tbody>
     </table>
-</div>
 {% else %}
 No results found.
 {% endif %}
-<br />
-<a href="{% url fantasy-series-leaderboard series.pk %}">Series Leaderboard</a><br />
-{% if is_admin %}<br /><a href="{% url fantasy-result-edit race.pk %}">Edit results</a>{% endif %}
+</div>
+{% if is_admin %}<a href="{% url fantasy-result-edit race.pk %}">Edit results</a>{% endif %}
 {% if is_admin and not result_list %}<br /><a href="{% url fantasy-race-delete race.pk %}">Delete race</a>{% endif %}
 {% endblock %}

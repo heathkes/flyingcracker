@@ -1,13 +1,13 @@
-{% extends "base.html" %}
+{% extends "fantasy-series.html" %}
 
-{% block body %}
-<h2>Series: {{ series }}</h2>
-<br />
-<a href="{% url fantasy-series-leaderboard series.pk %}">Leaderboard</a>
-<br /><br />
+{% block fantasy-main %}
+<h1>{{ series }}</h1>
+<div class="fantasy-form-help">
+Click on a race to enter your picks or see results.<br />
+</div>
 {% if race_list %}
-<div id="race-list-container">
-    <table id="race-list-table" class="currweatherTable">
+<div id="race-list-container" class="fantasy-list-container">
+    <table id="race-list-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th>&nbsp;</th>
@@ -16,7 +16,7 @@
                 <th>My Guess{{ series.num_guesses|pluralize:",es" }}</th>
                 <th>Date</th>
                 <th>Start Time</th>
-                <th>&nbsp;</th>
+                <th class="nobg">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
                 <td>{{ r.race.date|date:"D F d" }}</td>
                 <td>{{ r.race.start_time|time:"f a" }} UTC</td>
-                <td>{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>
             </tr>
 {% endfor %}
         </tbody>
@@ -37,8 +37,9 @@
 {% else %}
 No races found.
 {% endif %}
-<br />
-{% if is_admin %}<br /><a href="{% url fantasy-race-add series.pk %}">Add Race to Series</a>{% endif %}
-{% if is_admin %}<br /><a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a>{% endif %}
-{% if is_admin %}<br /><a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a>{% endif %}
+{% if is_admin %}
+<a href="{% url fantasy-race-add series.pk %}">Add Race to Series</a><br />
+<a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
+<a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a>
+{% endif %}
 {% endblock %}
