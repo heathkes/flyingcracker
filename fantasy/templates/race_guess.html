@@ -3,8 +3,7 @@
 
 {% block fantasy-main %}
 <h1>Choose {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }}</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<h3>Race: <a href="{{ race.get_absolute_url }}">{{ race }}</a></h3>
+<h2><a href="{{ race.get_absolute_url }}">{{ race }}</a> - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 <div class="fantasy-form-help">Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} who you think will do well in this race.</div>
 <div id="race-guess-container" class="fantasy-form-container">
     <form method="POST" action="">
