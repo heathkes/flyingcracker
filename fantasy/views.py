@@ -107,7 +107,7 @@ def leaderboard(request, id):
             except:
                 place = 0
             points += series.scoring_system.points(place)
-        points_list.append({'name': str(u), 'points': points})
+        points_list.append({'name': str(u.user), 'points': points})
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)
