@@ -107,6 +107,10 @@ def series_points_list(series):
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)
+    
+    # Return an empty list if there are no points
+    if points_list and points_list[0]['points'] == 0:
+        points_list = []
     return points_list
     
 @login_required

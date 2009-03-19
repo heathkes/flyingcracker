@@ -5,6 +5,7 @@
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 
 <div id="leaderboard-container" class="fantasy-list-container">
+{% if points_list %}
     <table id="leaderboard-table" class="fantasy-list-table">
         <thead>
             <tr>
@@ -21,5 +22,8 @@
 {% endfor %}
         </tbody>
     </table>
+{% else %}
+No leaders yet!
+{% endif %}
 </div>
 {% endblock %}
