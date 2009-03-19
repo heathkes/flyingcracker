@@ -6,14 +6,14 @@
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 <h3>Race: <a href="{{ race.get_absolute_url }}">{{ race }}</a></h3>
 <div class="fantasy-form-help">Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} who you think will do well in this race.</div>
-<div id="race-guess-container">
+<div id="race-guess-container" class="fantasy-form-container">
     <form method="POST" action="">
     {% if formset %}
         {{ formset.management_form }}
         {% for error in formset.non_form_errors %}
         {{ error }}
         {% endfor %}
-        <table id="race-guess-table" class="currweatherTable">
+        <table id="race-guess-table" class="fantasy-list-table">
             <thead>
             </thead>
             <tbody>
