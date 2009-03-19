@@ -18,7 +18,6 @@ urlpatterns = patterns('',
     
     # Application URLs
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
- url(r'^accounts/login/$',                  views.login, {'template_name': 'login.html'}, name='auth_login'),
     (r'^accounts/',                         include('registration.urls')),
     (r'^client/',                           include('serviceclient.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),

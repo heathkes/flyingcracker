@@ -6,8 +6,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from fc3.fantasy.models import Series, Race, Competitor, Guess, Result
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
+from serviceclient.decorators import set_scup
 
 @login_required
+@set_scup
 def root(request):
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -20,6 +22,7 @@ def root(request):
     return render_to_response('series_list.html', c)
 
 @login_required
+@set_scup
 def series_edit(request, id=None):
     '''
     Create a new Series or edit an existing Series.
@@ -53,6 +56,7 @@ def series_edit(request, id=None):
     return render_to_response('series_edit.html', c)
 
 @login_required
+@set_scup
 def series_detail(request, id):
     '''
     A list of races for the series, with winner if applicable, and user's current guess if applicable.
@@ -86,6 +90,7 @@ def series_detail(request, id):
     return render_to_response('race_list.html', c)
 
 @login_required
+@set_scup
 def leaderboard(request, id):
     '''
     A list of user scores for races in the series.
@@ -119,6 +124,7 @@ def leaderboard(request, id):
     return render_to_response('leaderboard.html', c)
 
 @login_required
+@set_scup
 def competitor_list(request, id):
     '''
     List all competitors associated with this Series.
@@ -158,6 +164,7 @@ def competitor_list(request, id):
     return render_to_response('competitor_list.html', c)
 
 @login_required
+@set_scup
 def competitor_add(request, id):
     '''
     Add a competitor for the specified Series.
@@ -195,6 +202,7 @@ def competitor_add(request, id):
     return render_to_response('competitor_edit.html', c)
 
 @login_required
+@set_scup
 def competitor_edit(request, id):
     '''
     Edit the specified Competitor.
@@ -225,6 +233,7 @@ def competitor_edit(request, id):
     return render_to_response('competitor_edit.html', c)
 
 @login_required
+@set_scup
 def competitor_delete(request, id):
     '''
     Delete the specified Competitor from its Series.
@@ -250,6 +259,7 @@ def competitor_delete(request, id):
         return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
 
 @login_required
+@set_scup
 def race_add(request, id):
     '''
     Add a new race to the specified Series.
@@ -283,6 +293,7 @@ def race_add(request, id):
     return render_to_response('race_edit.html', c)
 
 @login_required
+@set_scup
 def race_edit(request, id):
     '''
     Edit the specified Race.
@@ -314,6 +325,7 @@ def race_edit(request, id):
     return render_to_response('race_edit.html', c)
 
 @login_required
+@set_scup
 def race_delete(request, id):
     '''
     Delete the specified Race from the Series.
@@ -339,6 +351,7 @@ def race_delete(request, id):
         return HttpResponseRedirect(series.get_absolute_url)
 
 @login_required
+@set_scup
 def race_detail(request, id):
     '''
     Shows either the results of a race
@@ -400,6 +413,7 @@ def race_detail(request, id):
     return render_to_response('race_guess.html', c)
 
 @login_required
+@set_scup
 def race_result(request, id):
     '''
     Shows the results of a race.
@@ -421,6 +435,7 @@ def race_result(request, id):
     return render_to_response('race_result.html', c)
 
 @login_required
+@set_scup
 def result_edit(request, id):
     '''
     Edit the results for a race.
