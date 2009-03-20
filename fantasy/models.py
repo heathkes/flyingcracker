@@ -32,6 +32,7 @@ class Series(models.Model):
 
     class Meta:
         verbose_name_plural = 'series'
+        ordering = ('name',)
     
     def is_admin(self, scup):
         return scup == self.owner
