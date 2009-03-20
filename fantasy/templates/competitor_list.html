@@ -1,9 +1,11 @@
 {% extends "fantasy-series.html" %}
 
 {% block fantasy-main %}
-<h1>{{ series.competitor_label }} List</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<div class="fantasy-form-help">These {{ series.competitor_label }}s available for this series.<br />
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">The following {{ series.competitor_label }}s are available for this series.<br />
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.</div>
 <div id="competitor-list-container" class="fantasy-list-container">
     <table id="competitor-list-table" class="fantasy-list-table">
@@ -35,11 +37,14 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
 <div class="fantasy-form-container">
     <form method="POST" action="">
         <table>
-        {{ competitor_form.as_p }}
+        {{ competitor_form.as_table }}
         </table>
         <input type="submit" value="Add {{ series.competitor_label }}" />
     </form>
 </div>
 {% endif %}
+<div class="fantasy-list-container">
+    <a href="{% url fantasy-competitor-export series.pk %}">Export all {{ series.competitor_label }}s</a>
+</div>
 
 {% endblock %}

@@ -1,8 +1,11 @@
 {% extends "fantasy-series.html" %}
 
 {% block fantasy-main %}
-<h1>Race Result</h1>
-<h2>{{ race }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a> - {{ race }}</div>
+    {% if race.description %}<div class="section-tagline">{{ race.description }}</div>{% endif %}
+</div>
+<h2>Race Result</h2>
 <div id="result-list-container" class="fantasy-list-container">
 {% if result_list %}
     <table id="result-list-table" class="fantasy-list-table">

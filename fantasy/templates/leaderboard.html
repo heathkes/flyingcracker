@@ -1,9 +1,11 @@
-{% extends "fantasy.html" %}
+{% extends "fantasy-series.html" %}
 
 {% block fantasy-main %}
-<h1>Leaderboard</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-
+<div class="section-header">
+    <div class="section-title">{{ series }}</div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
+<h2>Leaderboard</h2>
 <div id="leaderboard-container" class="fantasy-list-container">
 {% if points_list %}
     <table id="leaderboard-table" class="fantasy-list-table">
@@ -31,5 +33,6 @@ No leaders yet!<br /><br />
 {% endfor %}
 </ul>
 {% endif %}
+<a href="{{ series.get_absolute_url }}">Race List</a>
 </div>
 {% endblock %}

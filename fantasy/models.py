@@ -24,11 +24,11 @@ class Series(models.Model):
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
     scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
-    
     # BUGBUG - this will eventually be:
     # user_group = models.ForeignKey(UserGroup)
     # and the creator should be an ADMIN_TYPE in that group.
-    owner           = models.ForeignKey(SCUP)
+    owner                   = models.ForeignKey(SCUP)
+    #is_completed            = models.BooleanField('Is this series over?', default=False)
 
     class Meta:
         verbose_name_plural = 'series'
@@ -51,6 +51,7 @@ class Race(models.Model):
     
     '''
     name        = models.CharField('Race name', max_length=100)
+#    description             = models.CharField(max_length=100, blank=True, null=True)
     date        = models.DateField()
     start_time  = models.TimeField(help_text='in UTC (Greenwich time)')
     location    = models.CharField(max_length=100, blank=True, null=True)

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -169,7 +169,6 @@ def competitor_list(request, id):
         'series': series,
         'competitor_list': qs,
         'competitor_form': competitor_form,
-        'competitor': competitor,
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
@@ -372,11 +371,14 @@ def race_detail(request, id):
     or possibly enter a new Competitor.
     
     '''
+    from fc3.fantasy.forms import CompetitorForm
+
     scup = request.session.get('scup')
     service_client = scup.service_client
     
     race = get_object_or_404(Race, pk=id)
     series = race.series
+    competitor = Competitor(series=series)
     
     from datetime import datetime
     start_time = datetime(race.date.year, race.date.month, race.date.day, race.start_time.hour, race.start_time.minute)
@@ -403,22 +405,33 @@ def race_detail(request, id):
 
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
-        if formset.is_valid():
-            curr_guesses.delete()   # delete all existing guesses for this race
-            for guess in formset.cleaned_data:
-                if guess.get('competitor', None):
-                    g = Guess(race=race,
-                              user=scup,
-                              competitor=Competitor.objects.get(pk=guess['competitor']))
-                    g.save()
-            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
+        competitor_form = CompetitorForm(data=request.POST, instance=competitor)
+        
+        if request.POST.get('guess', None) != u'Submit Picks':
+            if competitor_form.is_valid():
+                competitor = competitor_form.save(commit=False)
+                competitor.series = series
+                competitor.save()
+                return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
+        else:
+            if formset.is_valid():
+                curr_guesses.delete()   # delete all existing guesses for this race
+                for guess in formset.cleaned_data:
+                    if guess.get('competitor', None):
+                        g = Guess(race=race,
+                                  user=scup,
+                                  competitor=Competitor.objects.get(pk=guess['competitor']))
+                        g.save()
+                return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
+        competitor_form = CompetitorForm(instance=competitor)
 
     c = RequestContext(request, {
         'series': race.series,
         'race': race,
         'points_list': series_points_list(series)[:10],
+        'competitor_form': competitor_form,
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
         'is_admin': series.is_admin(scup),
@@ -498,3 +511,28 @@ def result_edit(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)
+
+@login_required
+@set_scup
+def competitor_export(request, id):
+    '''
+    Export all competitors associated with this Series.
+    
+    '''
+    import csv
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
+    series = get_object_or_404(Series, pk=id)
+    
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=competitor_list_series_%d.csv' % series.pk
+    writer = csv.writer(response)
+    
+    writer.writerow(['name'])
+    qs = Competitor.objects.filter(series=series)
+    for competitor in qs:
+        writer.writerow([str(competitor.name)])
+    return response

@@ -2,11 +2,16 @@
 {% load humanize %}
 
 {% block fantasy-main %}
-<h1>Choose {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }}</h1>
-<h2><a href="{{ race.get_absolute_url }}">{{ race }}</a> - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<div class="fantasy-form-help">Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} who you think will do well in this race.</div>
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a> - {{ race }}</div>
+    {% if race.description %}<div class="section-tagline">{{ race.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">
+Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this race.<br />
+To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.
+</div>
 <div id="race-guess-container" class="fantasy-form-container">
-    <form method="POST" action="">
+    <form name="guess-form" method="POST" action="">
     {% if formset %}
         {{ formset.management_form }}
         {% for error in formset.non_form_errors %}
@@ -27,15 +32,19 @@
         </table>
     {% endif %}
     
-    <input type="submit" value="Submit" />
+    <input type="submit" name="guess" value="Submit Picks" />
+
+{% if add_competitor_ok %}
+<br /><br />
+or
+<br /><br />
+    <table>
+    {{ competitor_form.as_table }}
+    </table>
+    
+    <input type="submit" name="guess" value="Add {{ series.competitor_label }}" />
+{% endif %}
     
     </form>
 </div>
-{% if add_competitor_ok %}
-<br />
-Or
-<br /><br />
-<a href="{% url fantasy-competitor-add series.pk %}?next={% url fantasy-race-detail race.pk %}">Add new {{ series.competitor_label }}</a>
-{% endif %}
-<br />
 {% endblock %}

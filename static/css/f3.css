@@ -933,21 +933,32 @@ th.flowHead{
 #fantasy-main-container h1 {
     font-size: 120%;
     font-weight: bold;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.25em;
 }
 #fantasy-main-container h2{
     font-size: 110%;
     font-weight: bold;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.25em;
 }
 #fantasy-main-container h3{
     font-size: 100%;
     font-weight: bold;
+    padding-bottom: 0.25em;
+}
+.section-header {
     padding-bottom: 0.5em;
+}
+.section-title {
+    font-size: 130%;
+    font-weight: bold;
+}
+.section-tagline {
+    font-size: 100%;
 }
 .fantasy-form-help {
     font-style: italic;
     padding-left: 1em;
+    color: #555555
 }
 .fantasy-list-container {
     padding-top: 1em;
