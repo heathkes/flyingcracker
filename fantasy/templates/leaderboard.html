@@ -23,7 +23,13 @@
         </tbody>
     </table>
 {% else %}
-No leaders yet!
+No leaders yet!<br /><br />
+<h2>Guessers in this Series</h2>
+<ul>
+{% for u in user_list %}
+    <li>{{ u.user }}</li>
+{% endfor %}
+</ul>
 {% endif %}
 </div>
 {% endblock %}

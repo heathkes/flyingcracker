@@ -124,10 +124,12 @@ def leaderboard(request, id):
     service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
-    points_list = series_points_list(series)    
+    points_list = series_points_list(series)
+    user_list = SCUP.objects.filter(guess__race__series=series).distinct()
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
+        'user_list': user_list,
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('leaderboard.html', c)
