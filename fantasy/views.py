@@ -520,6 +520,7 @@ def competitor_export(request, id):
     
     '''
     import csv
+    from django.utils.encoding import smart_str, smart_unicode
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -534,5 +535,5 @@ def competitor_export(request, id):
     writer.writerow(['name'])
     qs = Competitor.objects.filter(series=series)
     for competitor in qs:
-        writer.writerow([str(competitor.name)])
+        writer.writerow([smart_str(competitor.name)])
     return response
