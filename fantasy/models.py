@@ -28,7 +28,7 @@ class Series(models.Model):
     # user_group = models.ForeignKey(UserGroup)
     # and the creator should be an ADMIN_TYPE in that group.
     owner                   = models.ForeignKey(SCUP)
-    #is_completed            = models.BooleanField('Is this series over?', default=False)
+    #status INITIALIZE, ACTIVE, COMPLETE
 
     class Meta:
         verbose_name_plural = 'series'

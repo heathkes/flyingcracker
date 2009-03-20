@@ -15,6 +15,11 @@ def root(request):
     service_client = scup.service_client
     
     qs = Series.objects.all()
+    # BUGBUG
+    # filter to:
+    #   series for which I am admin
+    # plus
+    #   series which have 1+ associated Race and 2+ associated Athletes
     c = RequestContext(request, {
         'series_list': qs,
         'scup': scup,
@@ -271,6 +276,80 @@ def competitor_delete(request, id):
 
 @login_required
 @set_scup
+def competitor_export(request, id):
+    '''
+    Export all competitors associated with this Series.
+    
+    '''
+    import csv
+    from django.utils.encoding import smart_str, smart_unicode
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
+    series = get_object_or_404(Series, pk=id)
+    
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=competitor_list_series_%d.csv' % series.pk
+    writer = csv.writer(response)
+    
+    writer.writerow(['name'])
+    qs = Competitor.objects.filter(series=series)
+    for competitor in qs:
+        writer.writerow([smart_str(competitor.name)])
+    return response
+
+@login_required
+@set_scup
+def competitor_import(request, id):
+    '''
+    Import Competitors from other Series into the specified Series.
+    
+    '''
+    from fc3.fantasy.forms import CompetitorImportForm
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    series = get_object_or_404(Series, pk=id)
+
+    qs = Series.objects.filter(only_members_can_view=False)
+    #
+    # BUGBUG - Add private Series, for which I am admin, to this queryset
+    #
+    if request.method == 'POST':
+        import_form = CompetitorImportForm(data=request.POST, series_qs=qs)
+        if import_form.is_valid():
+            import_series = import_form.cleaned_data['series']
+            if import_series:
+                my_comps = Competitor.objects.filter(series=series)
+                my_names = [c.name.lower() for c in my_comps]
+                import_comps = Competitor.objects.filter(series=import_series)
+                new_names = [c.name for c in import_comps if c.name.lower() not in my_names]
+                for name in new_names:
+                    new_competitor = Competitor(name=name, series=series)
+                    new_competitor.save()
+                c = RequestContext(request, {
+                    'series': series,
+                    'competitor_list': Competitor.objects.filter(name__in=new_names, series=series),
+                    'is_admin': series.is_admin(scup),
+                })
+                return render_to_response('competitors_imported.html', c)
+            else:
+                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+    else:
+        import_form = CompetitorImportForm(series_qs=qs)
+
+    c = RequestContext(request, {
+        'import_form': import_form,
+        'series': series,
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('competitor_import.html', c)
+
+@login_required
+@set_scup
 def race_add(request, id):
     '''
     Add a new race to the specified Series.
@@ -511,29 +590,3 @@ def result_edit(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)
-
-@login_required
-@set_scup
-def competitor_export(request, id):
-    '''
-    Export all competitors associated with this Series.
-    
-    '''
-    import csv
-    from django.utils.encoding import smart_str, smart_unicode
-
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
-    series = get_object_or_404(Series, pk=id)
-    
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=competitor_list_series_%d.csv' % series.pk
-    writer = csv.writer(response)
-    
-    writer.writerow(['name'])
-    qs = Competitor.objects.filter(series=series)
-    for competitor in qs:
-        writer.writerow([smart_str(competitor.name)])
-    return response

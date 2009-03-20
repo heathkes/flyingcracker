@@ -109,3 +109,11 @@ class ResultForm(forms.Form):
             raise forms.ValidationError, _(u'This competitor has no place!')
         return self.cleaned_data
     
+
+class CompetitorImportForm(forms.Form):
+    series = forms.ModelChoiceField(queryset=Series.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        series_qs = kwargs.pop('series_qs', [])
+        super(CompetitorImportForm, self).__init__(*args, **kwargs)
+        self['series'].field.queryset = series_qs

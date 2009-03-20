@@ -1,0 +1,17 @@
+{% extends "fantasy-series.html" %}
+
+{% block fantasy-main %}
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">
+    Choose a series from which to import competitors.
+</div>
+<div class="fantasy-form-container">
+    <form method="POST" action="">
+        {{ import_form.as_p }}
+        <input type="submit" value="Import" />
+    </form>
+</div>
+{% endblock %}

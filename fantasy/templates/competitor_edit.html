@@ -1,8 +1,10 @@
 {% extends "fantasy.html" %}
 
 {% block fantasy-main %}
-<h1>{% if competitor.pk %}Edit {% else %}Add {% endif %}{{ series.competitor_label }}</h1>
-<h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
 <div class="fantasy-form-help">
     {% if not competitor.pk %}Enter a new {{ series.competitor_label|lower }} for this series.<br />
     {% endif %}
@@ -14,6 +16,6 @@
         <input type="submit" value="Submit" />
     </form>
 </div>
-{% if is_admin and competitor.pk %}<br /><a href="{% url fantasy-competitor-delete competitor.pk %}">Delete this {{ series.competitor_label }}</a>{% endif %}
+{% if is_admin and competitor.pk %}<br /><a href="{% url fantasy-competitor-delete competitor.pk %}">Delete this {{ series.competitor_label }}</a> (from {{ series }}){% endif %}
 {% if is_admin %}<br /><a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} list</a>{% endif %}
 {% endblock %}
