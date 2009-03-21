@@ -464,7 +464,7 @@ def race_detail(request, id):
     #
     #  If Race start time has passed don't allow guessing
     #
-    if start_time < datetime.now():
+    if start_time < datetime.utcnow():
         return race_result(request, id)
 
     #
