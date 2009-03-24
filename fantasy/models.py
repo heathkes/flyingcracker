@@ -20,7 +20,7 @@ class Series(models.Model):
     end_date                = models.DateField()
     competitor_label        = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, blank=True, null=True)
     num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each race.', default=1)
-    invite_only             = models.BooleanField('Users must be invited')
+    invite_only             = models.BooleanField('Users must be invited', default=False)
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
     scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
@@ -28,7 +28,7 @@ class Series(models.Model):
     # user_group = models.ForeignKey(UserGroup)
     # and the creator should be an ADMIN_TYPE in that group.
     owner                   = models.ForeignKey(SCUP)
-    #status INITIALIZE, ACTIVE, COMPLETE
+    #status SETUP, ACTIVE, COMPLETE
 
     class Meta:
         verbose_name_plural = 'series'
@@ -50,12 +50,13 @@ class Race(models.Model):
     A portion of an race series, i.e. Monaco Grand Prix.
     
     '''
-    name        = models.CharField('Race name', max_length=100)
+    name            = models.CharField('Race name', max_length=100)
 #    description             = models.CharField(max_length=100, blank=True, null=True)
-    date        = models.DateField()
-    start_time  = models.TimeField(help_text='in UTC (Greenwich time)')
-    location    = models.CharField(max_length=100, blank=True, null=True)
-    series      = models.ForeignKey(Series)
+    date            = models.DateField()
+    start_time      = models.TimeField(help_text='in UTC (Greenwich time)')
+    location        = models.CharField(max_length=100, blank=True, null=True)
+    series          = models.ForeignKey(Series)
+    #result_locked   = models.BooleanField('Prevent changes to results for this race', default=False)
     
     class Meta:
         ordering = ['date']
