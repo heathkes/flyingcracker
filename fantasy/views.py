@@ -100,6 +100,10 @@ def series_detail(request, id):
     return render_to_response('event_list.html', c)
 
 def series_points_list(series):
+    '''
+    Returns a list of usernames and their accumulated points in a Series.
+    
+    '''
     points_list = []
     users = SCUP.objects.filter(guess__event__series=series).distinct()
     for u in users:
@@ -562,9 +566,9 @@ def event_result(request, id):
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    qs = Result.objects.filter(event=event)
+    result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
-    out_of_the_money = Competitor.objects.filter(Q(guess__event=event) & ~Q(result__in=series.scoring_system.results())).distinct()
+    out_of_the_money = Competitor.objects.filter(Q(guess__event=event) & ~Q(result__place__in=series.scoring_system.results())).distinct()
     bad_guess_list = []
     for bad_guess in out_of_the_money:
         try:
@@ -579,7 +583,7 @@ def event_result(request, id):
     c = RequestContext(request, {
         'series': event.series,
         'event': event,
-        'result_list': qs,
+        'result_list': result_qs,
         'points_list': series_points_list(series)[:10],
         'bad_guess_list': bad_guess_list,
         'is_admin': series.is_admin(scup),
