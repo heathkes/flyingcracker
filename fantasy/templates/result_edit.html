@@ -1,9 +1,12 @@
-{% extends "fantasy.html" %}
+{% extends "fantasy-series.html" %}
 
 {% block fantasy-main %}
-<h1>Edit Results</h1>
-<h2><a href="{{ race.get_absolute_url }}">{{ race }}</a> - <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
-<div class="fantasy-form-help">Pick a {{ series.competitor_label }} and enter their place for each result.<br />Clear the {{ series.competitor_label}} name to delete a result.</div>
+<div class="section-header">
+    <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">Pick a {{ series.competitor_label }} and enter their place for each result.<br />
+Clear {{ series.competitor_label|capfirst }} name to delete a result.</div>
 <div class="fantasy-form-container">
     <form method="POST" action="">
     {% if formset %}
@@ -27,6 +30,9 @@
             {% endfor %}
             </tbody>
         </table>
+    {% endif %}
+    {% if is_admin %}
+    {{ options_form.as_p }}
     {% endif %}
     
     <input type="submit" value="Submit" />

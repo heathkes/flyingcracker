@@ -3,7 +3,7 @@ import datetime
 from django import forms
 from django.forms import formsets
 from django.utils.translation import ugettext_lazy as _
-from fc3.fantasy.models import Series, Race, Competitor, Guess, Result
+from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
 
 
 attrs_dict = { 'class': 'required' }
@@ -40,28 +40,28 @@ class CompetitorForm(forms.ModelForm):
                 raise forms.ValidationError, u'Competitor "%s" already exists for this series, try another name' % name
 
 
-class RaceForm(forms.ModelForm):
+class EventForm(forms.ModelForm):
     series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
     
     class Meta:
-        model = Race
+        model = Event
         
     def clean(self):
         name = self.cleaned_data.get('name')
         series = self.cleaned_data.get('series')
         if self.instance.pk:
-            existing = Race.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
+            existing = Event.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
             if existing:
-                raise forms.ValidationError, u'Race "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists for this series, try another name' % name
             else:
                 return self.cleaned_data
         else:
             try:
-                existing = Race.objects.get(name__iexact=name, series=series)
-            except Race.DoesNotExist:
+                existing = Event.objects.get(name__iexact=name, series=series)
+            except Event.DoesNotExist:
                 return self.cleaned_data
             else:
-                raise forms.ValidationError, u'Race "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists for this series, try another name' % name
 
 
 class GuessAndResultBaseFormset(formsets.BaseFormSet):
@@ -108,7 +108,14 @@ class ResultForm(forms.Form):
         if competitor and not place:
             raise forms.ValidationError, _(u'This competitor has no place!')
         return self.cleaned_data
+
+
+class EventOptionsForm(forms.ModelForm):
     
+    class Meta:
+        model = Event
+        fields = ('result_locked',)
+
 
 class CompetitorImportForm(forms.Form):
     series = forms.ModelChoiceField(queryset=Series.objects.all())

@@ -6,15 +6,15 @@
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">
-Click on a race to enter your picks or see results.<br />
+Click on a {{ series.event_label|lower }} to enter your picks or see results.<br />
 </div>
-{% if race_list %}
-<div id="race-list-container" class="fantasy-list-container">
-    <table id="race-list-table" class="fantasy-list-table">
+{% if event_list %}
+<div id="event-list-container" class="fantasy-list-container">
+    <table id="event-list-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th>&nbsp;</th>
-                <th>Race</th>
+                <th>{{ series.event_label }}</th>
                 <th>Winner</th>
                 <th>My Guess{{ series.num_guesses|pluralize:",es" }}</th>
                 <th>Date</th>
@@ -23,25 +23,25 @@ Click on a race to enter your picks or see results.<br />
             </tr>
         </thead>
         <tbody>
-{% for r in race_list %}
+{% for r in event_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td><a href="{{ r.race.get_absolute_url }}">{{ r.race }}</a></td>
+                <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a></td>
                 <td>{{ r.winner }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
-                <td>{{ r.race.date|date:"D F d" }}</td>
-                <td>{{ r.race.start_time|time:"f a" }} UTC</td>
-                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-race-edit r.race.pk %}">Edit race</a>{% endif %}</td>
+                <td>{{ r.event.date|date:"D F d" }}</td>
+                <td>{{ r.event.start_time|time:"f a" }} UTC</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-event-edit r.event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}</td>
             </tr>
 {% endfor %}
         </tbody>
     </table>
 </div>
 {% else %}
-No races found.<br />
+No {{ series.event_label|lower }}s found.<br />
 {% endif %}
 {% if is_admin %}
-<a href="{% url fantasy-race-add series.pk %}">Add Race to Series</a><br />
+<a href="{% url fantasy-event-add series.pk %}">Add {{ series.event_label }} to Series</a><br />
 <a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
 <a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a>
 {% endif %}

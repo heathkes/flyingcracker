@@ -1,0 +1,63 @@
+{% extends "fantasy-series.html" %}
+
+{% block fantasy-main %}
+<div class="section-header">
+    <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
+</div>
+<h2>Result</h2>
+{% if not event.result_locked %}(pending Series Admin approval){% endif %}
+<div id="result-list-container" class="fantasy-list-container">
+{% if result_list %}
+    <table id="result-list-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th>Place</th>
+                <th>{{ series.competitor_label }}</th>
+                <th>Picked By</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for r in result_list %}
+            <tr>
+                <td class="center">{{ r.place }}</td>
+                <td>{{ r.competitor }}</td>
+                <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+{% else %}
+No results found.
+{% endif %}
+<div  class="fantasy-form-container">
+    {% if is_admin or not event.result_locked %}
+<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+    {% endif %}
+</div>
+{% if bad_guess_list %}
+<h2>Out of the points</h2>
+<div id="result-list-container" class="fantasy-list-container">
+    <table id="guesser-list-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th>Place</th>
+                <th>{{ series.competitor_label }}</th>
+                <th>Picked By</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for g in bad_guess_list %}
+            <tr>
+                <td class="center">{{ g.place }}</td>
+                <td>{{ g.competitor }}</td>
+                <td>{% with g.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+</div>
+{% if is_admin and not result_list %}<br /><a href="{% url fantasy-event-delete event.pk %}">Delete {{ series.event_label|lower }}</a>{% endif %}
+{% endblock %}

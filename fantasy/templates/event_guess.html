@@ -3,21 +3,21 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a> - {{ race }}</div>
-    {% if race.description %}<div class="section-tagline">{{ race.description }}</div>{% endif %}
+    <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">
-Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this race.<br />
+Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.
 </div>
-<div id="race-guess-container" class="fantasy-form-container">
+<div id="event-guess-container" class="fantasy-form-container">
     <form name="guess-form" method="POST" action="">
     {% if formset %}
         {{ formset.management_form }}
         {% for error in formset.non_form_errors %}
         {{ error }}
         {% endfor %}
-        <table id="race-guess-table" class="fantasy-list-table">
+        <table id="event-guess-table" class="fantasy-list-table">
             <thead>
                 <th>{{ series.competitor_label }}</th>
             </thead>
@@ -46,5 +46,10 @@ or
 {% endif %}
     
     </form>
+</div>
+<div  class="fantasy-list-container">
+    {% if is_admin or not event.result_locked %}
+<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+    {% endif %}
 </div>
 {% endblock %}

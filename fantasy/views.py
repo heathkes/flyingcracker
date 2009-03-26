@@ -4,7 +4,8 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from fc3.fantasy.models import Series, Race, Competitor, Guess, Result
+from django.db.models import Q
+from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup
 
@@ -14,12 +15,12 @@ def root(request):
     scup = request.session.get('scup')
     service_client = scup.service_client
     
-    qs = Series.objects.all()
+    qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
     # BUGBUG
     # filter to:
     #   series for which I am admin
     # plus
-    #   series which have 1+ associated Race and 2+ associated Athletes
+    #   series which have 1+ associated Event and 2+ associated Athletes
     c = RequestContext(request, {
         'series_list': qs,
         'scup': scup,
@@ -40,6 +41,9 @@ def series_edit(request, id=None):
 
     if id:
         series = get_object_or_404(Series, pk=id)
+        if not series.is_admin(scup):
+            # cannot edit Series if you're not an admin
+            return HttpResponseRedirect(reverse('fantasy-root'))
     else:
         series = Series(owner=scup)
 
@@ -64,46 +68,46 @@ def series_edit(request, id=None):
 @set_scup
 def series_detail(request, id):
     '''
-    A list of races for the series, with winner if applicable, and user's current guess if applicable.
+    A list of events for the series, with winner if applicable, and user's current guess if applicable.
     
     '''
     scup = request.session.get('scup')
     service_client = scup.service_client
     
     series = get_object_or_404(Series, pk=id)
-    qs = Race.objects.filter(series=series)
-    races = []
-    for race in qs:
-        qs = Result.objects.filter(race=race, place=1)
+    qs = Event.objects.filter(series=series)
+    events = []
+    for event in qs:
+        qs = Result.objects.filter(event=event, place=1)
         if not qs:
             winner = '?'
         else:
             winner = ', '.join([str(result.competitor) for result in qs])
             
-        qs = Guess.objects.filter(race=race, user=scup)
+        qs = Guess.objects.filter(event=event, user=scup)
         if not qs:
             guesses = None
         else:
             guesses = [str(guess.competitor) for guess in qs]
-        races.append({'race': race, 'winner': winner, 'guesses': guesses})
+        events.append({'event': event, 'winner': winner, 'guesses': guesses})
         
     c = RequestContext(request, {
         'series': series,
-        'race_list': races,
+        'event_list': events,
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
-    return render_to_response('race_list.html', c)
+    return render_to_response('event_list.html', c)
 
 def series_points_list(series):
     points_list = []
-    users = SCUP.objects.filter(guess__race__series=series).distinct()
+    users = SCUP.objects.filter(guess__event__series=series).distinct()
     for u in users:
-        guesses = Guess.objects.filter(race__series=series, user=u)
+        guesses = Guess.objects.filter(event__series=series, event__result_locked=True, user=u)
         points = 0
         for g in guesses:
             try:
-                r = Result.objects.get(race=g.race, competitor=g.competitor)
+                r = Result.objects.get(event=g.event, competitor=g.competitor)
                 place = r.place
             except:
                 place = 0
@@ -122,18 +126,17 @@ def series_points_list(series):
 @set_scup
 def leaderboard(request, id):
     '''
-    A list of user scores for races in the series.
+    A list of user scores for events in the series.
     
     '''
     scup = request.session.get('scup')
     service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
-    points_list = series_points_list(series)
-    user_list = SCUP.objects.filter(guess__race__series=series).distinct()
+    user_list = SCUP.objects.filter(guess__event__series=series).distinct()
     c = RequestContext(request, {
         'series': series,
-        'points_list': points_list,
+        'points_list': series_points_list(series),
         'user_list': user_list,
         'is_admin': series.is_admin(scup),
     })
@@ -152,6 +155,9 @@ def competitor_list(request, id):
     service_client = scup.service_client
     
     series = get_object_or_404(Series, pk=id)
+    if not series.is_admin(scup):
+        # cannot edit Series data if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
     competitor = Competitor(series=series)
 
     if request.method == 'POST':
@@ -192,6 +198,9 @@ def competitor_add(request, id):
     service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
+    if not series.is_admin(scup) and not series.users_enter_competitors:
+        # cannot edit Series if you're not an admin and users not allowed to enter competitors
+        return HttpResponseRedirect(reverse('fantasy-root'))
     competitor = Competitor(series=series)
 
     if request.method == 'POST':
@@ -231,6 +240,9 @@ def competitor_edit(request, id):
 
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
     if request.method == 'POST':
         competitor_form = CompetitorForm(data=request.POST, instance=competitor, initial={'series_pk': series.pk})
@@ -260,6 +272,9 @@ def competitor_delete(request, id):
 
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
     results = Result.objects.filter(competitor=competitor)
     if results:
@@ -288,6 +303,9 @@ def competitor_export(request, id):
     service_client = scup.service_client
     
     series = get_object_or_404(Series, pk=id)
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
     
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
@@ -313,6 +331,9 @@ def competitor_import(request, id):
     service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
     qs = Series.objects.filter(only_members_can_view=False)
     #
@@ -350,103 +371,115 @@ def competitor_import(request, id):
 
 @login_required
 @set_scup
-def race_add(request, id):
+def event_add(request, id):
     '''
-    Add a new race to the specified Series.
+    Add a new event to the specified Series.
     
     '''
-    from fc3.fantasy.forms import RaceForm
+    from fc3.fantasy.forms import EventForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
 
     series = get_object_or_404(Series, pk=id)
-    race = Race(series=series)
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
+    event = Event(series=series)
 
     if request.method == 'POST':
-        race_form = RaceForm(data=request.POST, instance=race)
-        if race_form.is_valid():
-            race = race_form.save(commit=False)
-            race.series = series
-            race.save()
+        event_form = EventForm(data=request.POST, instance=event)
+        if event_form.is_valid():
+            event = event_form.save(commit=False)
+            event.series = series
+            event.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
     else:
-        race_form = RaceForm(instance=race)
+        event_form = EventForm(instance=event)
 
     c = RequestContext(request, {
         #'service_client': service_client,
-        'race_form': race_form,
+        'event_form': event_form,
         'series': series,
-        'race': race,
+        'event': event,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
-    return render_to_response('race_edit.html', c)
+    return render_to_response('event_edit.html', c)
 
 @login_required
 @set_scup
-def race_edit(request, id):
+def event_edit(request, id):
     '''
-    Edit the specified Race.
+    Edit the specified Event.
     
     '''
-    from fc3.fantasy.forms import RaceForm
+    from fc3.fantasy.forms import EventForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
 
-    race = get_object_or_404(Race, pk=id)
-    series = race.series
+    event = get_object_or_404(Event, pk=id)
+    series = event.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
     if request.method == 'POST':
-        race_form = RaceForm(data=request.POST, instance=race)
-        if race_form.is_valid():
-            race = race_form.save()
+        event_form = EventForm(data=request.POST, instance=event)
+        if event_form.is_valid():
+            event = event_form.save()
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
     else:
-        race_form = RaceForm(instance=race)
+        event_form = EventForm(instance=event)
 
     c = RequestContext(request, {
         #'service_client': service_client,
-        'race_form': race_form,
+        'event_form': event_form,
         'series': series,
-        'race': race,
+        'event': event,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
-    return render_to_response('race_edit.html', c)
+    return render_to_response('event_edit.html', c)
 
 @login_required
 @set_scup
-def race_delete(request, id):
+def event_delete(request, id):
     '''
-    Delete the specified Race from the Series.
+    Delete the specified Event from the Series.
     
     '''
     scup = request.session.get('scup')
     service_client = scup.service_client
 
-    race = get_object_or_404(Race, pk=id)
-    series = race.series
+    event = get_object_or_404(Event, pk=id)
+    series = event.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
-    results = Result.objects.filter(race=race)
+    results = Result.objects.filter(event=event)
     if results:
         c = RequestContext(request, {
             'series': series,
-            'race': race,
+            'event': event,
             'result_list': results,
+            'points_list': series_points_list(series)[:10],
             'is_admin': series.is_admin(scup),
         })
-        return render_to_response('race_delete.html', c)
+        return render_to_response('event_delete.html', c)
     else:
-        race.delete()
+        event.delete()
         return HttpResponseRedirect(series.get_absolute_url)
 
 @login_required
 @set_scup
-def race_detail(request, id):
+def event_detail(request, id):
     '''
-    Shows either the results of a race
+    Shows either the results of a event
     or
-    Allows user to select an Competitor he thinks will win the race
+    Allows user to select an Competitor he thinks will win the event
     or possibly enter a new Competitor.
     
     '''
@@ -455,17 +488,17 @@ def race_detail(request, id):
     scup = request.session.get('scup')
     service_client = scup.service_client
     
-    race = get_object_or_404(Race, pk=id)
-    series = race.series
+    event = get_object_or_404(Event, pk=id)
+    series = event.series
     competitor = Competitor(series=series)
     
     from datetime import datetime
-    start_time = datetime(race.date.year, race.date.month, race.date.day, race.start_time.hour, race.start_time.minute)
+    start_time = datetime(event.date.year, event.date.month, event.date.day, event.start_time.hour, event.start_time.minute)
     #
-    #  If Race start time has passed don't allow guessing
+    #  If Event start time has passed don't allow guessing
     #
     if start_time < datetime.utcnow():
-        return race_result(request, id)
+        return event_result(request, id)
 
     #
     #  Otherwise, solicit guess(es).
@@ -479,7 +512,7 @@ def race_detail(request, id):
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
     
-    curr_guesses = Guess.objects.filter(race=race, user=scup)
+    curr_guesses = Guess.objects.filter(event=event, user=scup)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
 
     if request.method == 'POST':
@@ -491,70 +524,86 @@ def race_detail(request, id):
                 competitor = competitor_form.save(commit=False)
                 competitor.series = series
                 competitor.save()
-                return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
+                return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
         else:
             if formset.is_valid():
-                curr_guesses.delete()   # delete all existing guesses for this race
+                curr_guesses.delete()   # delete all existing guesses for this event
                 for guess in formset.cleaned_data:
                     if guess.get('competitor', None):
-                        g = Guess(race=race,
+                        g = Guess(event=event,
                                   user=scup,
                                   competitor=Competitor.objects.get(pk=guess['competitor']))
                         g.save()
-                return HttpResponseRedirect(reverse('fantasy-series-detail', args=[race.series.pk]))
+                return HttpResponseRedirect(reverse('fantasy-series-detail', args=[event.series.pk]))
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(instance=competitor)
 
     c = RequestContext(request, {
-        'series': race.series,
-        'race': race,
+        'series': event.series,
+        'event': event,
         'points_list': series_points_list(series)[:10],
         'competitor_form': competitor_form,
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
         'is_admin': series.is_admin(scup),
     })
-    return render_to_response('race_guess.html', c)
+    return render_to_response('event_guess.html', c)
 
 @login_required
 @set_scup
-def race_result(request, id):
+def event_result(request, id):
     '''
-    Shows the results of a race.
+    Shows the results of a event.
     
     '''
     scup = request.session.get('scup')
     service_client = scup.service_client
     
-    race = get_object_or_404(Race, pk=id)
-    series = race.series
-    qs = Result.objects.filter(race=race)
+    event = get_object_or_404(Event, pk=id)
+    series = event.series
+    qs = Result.objects.filter(event=event)
+
+    out_of_the_money = Competitor.objects.filter(Q(guess__event=event) & ~Q(result__in=series.scoring_system.results())).distinct()
+    bad_guess_list = []
+    for bad_guess in out_of_the_money:
+        try:
+            result = Result.objects.get(event=event, competitor=bad_guess)
+        except Result.DoesNotExist:
+            place = '?'
+        else:
+            place = result.place
+        guessers = Guess.objects.filter(event=event, competitor=bad_guess)
+        bad_guess_list.append({'competitor': bad_guess, 'place': place, 'guessers': [g.user for g in guessers ]})
         
     c = RequestContext(request, {
-        'series': race.series,
-        'race': race,
+        'series': event.series,
+        'event': event,
         'result_list': qs,
         'points_list': series_points_list(series)[:10],
+        'bad_guess_list': bad_guess_list,
         'is_admin': series.is_admin(scup),
     })
-    return render_to_response('race_result.html', c)
+    return render_to_response('event_result.html', c)
 
 @login_required
 @set_scup
 def result_edit(request, id):
     '''
-    Edit the results for a race.
+    Edit the results for a event.
     
     '''
-    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset
+    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset, EventOptionsForm
     from django.forms.formsets import formset_factory
     
     scup = request.session.get('scup')
     service_client = scup.service_client
     
-    race = get_object_or_404(Race, pk=id)
-    series = race.series
+    event = get_object_or_404(Event, pk=id)
+    series = event.series
+    if not series.is_admin(scup) and event.result_locked:
+        # cannot edit Series if you're not an admin and users not allowed to enter competitors
+        return HttpResponseRedirect(reverse('fantasy-root'))
 
     ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
                                     max_num=series.scoring_system.num_places)
@@ -562,7 +611,7 @@ def result_edit(request, id):
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
     
-    curr_results = Result.objects.filter(race=race)
+    curr_results = Result.objects.filter(event=event)
     if not curr_results:
         results = [{'place': i} for i in range(1, series.scoring_system.num_places+1)]
     else:
@@ -571,22 +620,27 @@ def result_edit(request, id):
         
     if request.method == 'POST':
         formset = ResultFormset(request.POST, initial=results, competitors=competitor_choices)
-        if formset.is_valid():
-            curr_results.delete()   # delete all existing results for this race
+        options_form = EventOptionsForm(data=request.POST, instance=event)
+        if formset.is_valid() and options_form.is_valid():
+            event = options_form.save()
+            curr_results.delete()   # delete all existing results for this event
             for result in formset.cleaned_data:
                 if result['place'] and result['competitor']:
-                    r = Result(race=race,
+                    r = Result(event=event,
                                place=result['place'],
                                competitor=Competitor.objects.get(pk=result['competitor']))
                     r.save()
-            return HttpResponseRedirect(reverse('fantasy-race-detail', args=[race.pk]))
+            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:
         formset = ResultFormset(initial=results, competitors=competitor_choices)
+        options_form = EventOptionsForm(instance=event)
 
     c = RequestContext(request, {
-        'series': race.series,
-        'race': race,
+        'series': event.series,
+        'event': event,
         'formset': formset,
+        'options_form': options_form,
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)

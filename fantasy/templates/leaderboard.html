@@ -2,7 +2,7 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title">{{ series }}</div>
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <h2>Leaderboard</h2>
@@ -33,6 +33,6 @@ No leaders yet!<br /><br />
 {% endfor %}
 </ul>
 {% endif %}
-<a href="{{ series.get_absolute_url }}">Race List</a>
+<a href="{{ series.get_absolute_url }}">{{ series.event_label|capfirst }} List</a>
 </div>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "fantasy-series.html" %}
+
+{% block fantasy-main %}
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">
+Enter information about an event for {{ series }}. Click Submit when you are done.
+</div>
+<div class="fantasy-form-container">
+    <form method="POST" action="">
+        {{ event_form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+{% if event.pk and is_admin %}
+<a href="{% url fantasy-event-delete event.pk %}">Delete this {{ series.event_label|lower }}</a><br />
+<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+{% endif %}
+
+{% endblock %}
