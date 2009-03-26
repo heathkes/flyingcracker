@@ -8,7 +8,9 @@
 </div>
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
+{% if add_competitor_ok %}
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.
+{% endif %}
 </div>
 <div id="event-guess-container" class="fantasy-form-container">
     <form name="guess-form" method="POST" action="">
