@@ -2,7 +2,9 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    <div class="section-title">
+        {{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a>
+    </div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 
@@ -60,6 +62,5 @@
     </table>
 </div>
 {% endif %}
-</div>
 {% if is_admin and not result_list %}<br /><a href="{% url fantasy-event-delete event.pk %}">Delete {{ series.event_label|lower }}</a>{% endif %}
 {% endblock %}
