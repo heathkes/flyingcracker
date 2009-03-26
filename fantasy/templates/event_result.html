@@ -5,8 +5,9 @@
     <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
+
 <h2>Result</h2>
-{% if not event.result_locked %}(pending Series Admin approval){% endif %}
+{% if result_list and not event.result_locked %}(pending Series administrator approval){% endif %}
 <div id="result-list-container" class="fantasy-list-container">
 {% if result_list %}
     <table id="result-list-table" class="fantasy-list-table">
@@ -28,11 +29,12 @@
         </tbody>
     </table>
 {% else %}
-No results found.
+    No results found.
 {% endif %}
+</div>
 <div  class="fantasy-form-container">
     {% if is_admin or not event.result_locked %}
-<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+    <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
     {% endif %}
 </div>
 {% if bad_guess_list %}
