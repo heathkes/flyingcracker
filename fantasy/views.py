@@ -568,17 +568,19 @@ def event_result(request, id):
     series = event.series
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
-    out_of_the_money = Competitor.objects.filter((Q(guess__event=event) | Q(result__event=event)) & ~Q(result__place__in=series.scoring_system.results())).distinct()
+    no_points_list = Competitor.objects.filter(Q(result__event=event) & ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
+    no_result_list = Competitor.objects.filter(guess__event=event, result=None)
+    
     bad_guess_list = []
-    for bad_guess in out_of_the_money:
-        try:
-            result = Result.objects.get(event=event, competitor=bad_guess)
-        except Result.DoesNotExist:
-            place = '?'
-        else:
-            place = result.place
+    for bad_guess in no_points_list:
+        result = Result.objects.get(event=event, competitor=bad_guess)
+        place = result.place
         guessers = Guess.objects.filter(event=event, competitor=bad_guess)
         bad_guess_list.append({'competitor': bad_guess, 'place': place, 'guessers': [g.user for g in guessers ]})
+
+    for bad_guess in no_result_list:
+        guessers = Guess.objects.filter(event=event, competitor=bad_guess)
+        bad_guess_list.append({'competitor': bad_guess, 'place': '?', 'guessers': [g.user for g in guessers ]})
         
     c = RequestContext(request, {
         'series': event.series,
