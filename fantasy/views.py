@@ -568,7 +568,7 @@ def event_result(request, id):
     series = event.series
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
-    out_of_the_money = Competitor.objects.filter(Q(guess__event=event) & ~Q(result__place__in=series.scoring_system.results())).distinct()
+    out_of_the_money = Competitor.objects.filter((Q(guess__event=event) | Q(result__event=event)) & ~Q(result__place__in=series.scoring_system.results())).distinct()
     bad_guess_list = []
     for bad_guess in out_of_the_money:
         try:
