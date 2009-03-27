@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-{{ system_name }} member? Please log in:
+Hi! {{ system_name }} member? Please log in:
 <br />
 <br />
 {% if form.errors %}
@@ -19,12 +19,15 @@
     <td>{{ form.password }}</td>
 </tr>
 </table>
-
+<br />
 <input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <br />
 <br />
-Need a cracklyfinger.com username?<br />
+Need a cracklyfinger.com username?<br /><br />
 <a href="{% url registration_register %}">Sign up</a> (it's fast and free!)
+<br />
+<br />
+(you must have a {{ system_name }} username to use Fantasy Races)
 {% endblock %}
