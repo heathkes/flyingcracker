@@ -6,6 +6,7 @@
 <br />
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
+<p>(Note: If you are not registered at {{ system_name }} you should <a href="{% url registration_register %}">Sign up</a>.)
 {% endif %}
 
 <form method="post" action=".">
