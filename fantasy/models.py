@@ -46,6 +46,9 @@ class Series(models.Model):
     def is_admin(self, scup):
         return scup == self.owner
     
+    def is_hidden(self):
+        return self.status == self.HIDDEN_STATUS
+    
     def __unicode__(self):
         return u'%s' % self.name
     
