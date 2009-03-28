@@ -496,12 +496,11 @@ def event_detail(request, id):
     series = event.series
     competitor = Competitor(series=series)
     
-    from datetime import datetime
-    start_time = datetime(event.date.year, event.date.month, event.date.day, event.start_time.hour, event.start_time.minute)
     #
     #  If Event start time has passed don't allow guessing
     #
-    if start_time < datetime.utcnow():
+    if event.start_time_elapsed():
+        # if request.method == 'POST': redirect to some "sorry, you submitted your guess after the race start time (HH:MM UTC)." page.
         return event_result(request, id)
 
     #
@@ -566,6 +565,11 @@ def event_result(request, id):
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
+
+    if not event.start_time_elapsed():
+    # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
     no_points_list = Competitor.objects.filter(Q(result__event=event) & ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
@@ -607,10 +611,10 @@ def result_edit(request, id):
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    if not series.is_admin(scup) and event.result_locked:
-        # cannot edit Series if you're not an admin and users not allowed to enter competitors
+    if (not series.is_admin(scup) and event.result_locked) or \
+       not event.start_time_elapsed():
         return HttpResponseRedirect(reverse('fantasy-root'))
-
+    
     ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
                                     max_num=series.scoring_system.num_places)
 

@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models import permalink
-from datetime import date
+from datetime import date, datetime
 from django.utils.translation import ugettext_lazy as _
 from scoresys.models import ScoringSystem
 from serviceclient.models import ServiceClientUserProfile as SCUP
@@ -74,6 +74,10 @@ class Event(models.Model):
         ordering = ['date']
         unique_together = ('name', 'series')
 
+    def start_time_elapsed(self):
+        start_time = datetime(self.date.year, self.date.month, self.date.day, self.start_time.hour, self.start_time.minute)
+        return start_time < datetime.utcnow()
+            
     def __unicode__(self):
         return u'%s' % self.name
     

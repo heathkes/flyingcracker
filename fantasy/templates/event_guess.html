@@ -50,7 +50,7 @@ or
     </form>
 </div>
 <div  class="fantasy-list-container">
-    {% if is_admin or not event.result_locked %}
+    {% if is_admin or event.start_time_elapsed %}
 <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
     {% endif %}
 </div>
