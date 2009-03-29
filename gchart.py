@@ -187,14 +187,24 @@ def test():
     from fc3.utils import ElapsedTime
     from fc3.weatherstation.models import Weather
 
-    date = datetime.datetime(2008, 3, 31)
+    def get_and_process(et, date):
+        qs = Weather.objects.filter(timestamp__year=date.year,
+                                    timestamp__month=date.month,
+                                    timestamp__day=date.day).order_by('timestamp')
+        if qs:
+            et.mark_time('obtained qs for %s' % str(date))
+            records = hourly_data(qs, date)
+            et.mark_time('processed hourly_data(records)')
+        
+    date = datetime.datetime.now()
     et = ElapsedTime()
-    qs = Weather.objects.filter(timestamp__year=date.year,
-                                timestamp__month=date.month,
-                                timestamp__day=date.day).order_by('timestamp')
-    et.mark_time('obtained qs')
-    records = hourly_data(qs, date)
-    et.mark_time('processed records')
+    
+    get_and_process(et, date)
+    date -= datetime.timedelta(days=1)
+    get_and_process(et, date)
+    date -= datetime.timedelta(days=1)
+    get_and_process(et, date)
+    
     for e in et.list():
         print e.label, e.elapsed
 
