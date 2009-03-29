@@ -40,7 +40,8 @@
     {% endif %}
 </div>
 {% if bad_guess_list %}
-<h2>Out of the points</h2>
+
+<h2>{% if result_list %}Out of the points{% else %}Guesses{% endif %}</h2>
 <div id="result-list-container" class="fantasy-list-container">
     <table id="guesser-list-table" class="fantasy-list-table">
         <thead>
