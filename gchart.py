@@ -183,7 +183,7 @@ def float_ceil(vals, prev):
     top = max(max(vals), prev)
     return math.ceil(float(top)*10.0)/10.0  # round up to nearest tenth
 
-def test():
+def test(date=datetime.datetime.now()):
     from fc3.utils import ElapsedTime
     from fc3.weatherstation.models import Weather
 
@@ -196,7 +196,6 @@ def test():
             records = hourly_data(qs, date)
             et.mark_time('processed hourly_data(records)')
         
-    date = datetime.datetime.now()
     et = ElapsedTime(totals=True)
     
     get_and_process(et, date)
