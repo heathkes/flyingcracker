@@ -9,9 +9,13 @@ class ElapseMark():
         
 class ElapsedTime():
 
-    def __init__(self):
-        self.last = datetime.now()
+    def __init__(self, totals=False):
+        self.totals = totals
+        self.start = datetime.now()
+        self.last = self.start
         self.mark = []
+        if self.totals:
+            self.mark.append(ElapseMark('started:', self.start))
 
     def mark_time(self, label):
         now = datetime.now()
@@ -20,6 +24,9 @@ class ElapsedTime():
         self.mark.append(ElapseMark(label, elapsed))
         
     def list(self):
+        if self.totals:
+            self.mark.append(ElapseMark('ended:', self.last))
+            self.mark.append(ElapseMark('total:', self.last-self.start))
         return self.mark
     
 if __name__ == '__main__':

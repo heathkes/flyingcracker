@@ -197,7 +197,7 @@ def test():
             et.mark_time('processed hourly_data(records)')
         
     date = datetime.datetime.now()
-    et = ElapsedTime()
+    et = ElapsedTime(totals=True)
     
     get_and_process(et, date)
     date -= datetime.timedelta(days=1)
