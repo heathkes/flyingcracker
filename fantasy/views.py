@@ -572,8 +572,9 @@ def event_result(request, id):
 
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
-    no_points_list = Competitor.objects.filter(Q(result__event=event) & ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
-    no_result_list = Competitor.objects.filter(guess__event=event, result=None)
+    no_points_list = Competitor.objects.filter(Q(result__event=event) &
+                                               ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
+    no_result_list = Competitor.objects.filter(guess__event=event, result=None).distinct()
     
     bad_guess_list = []
     for bad_guess in no_points_list:
