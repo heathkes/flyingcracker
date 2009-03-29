@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.flatpages',
     'mobileadmin',
+    'django_extensions',
     'registration',
     'serviceclient',
     'scoresys',

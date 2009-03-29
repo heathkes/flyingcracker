@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-{{ system_name|capfirst }} member? Please log in:
+Please log in to {{ system_name }}:
 <br />
 <br />
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-<p>(Note: If you are not registered at {{ system_name }} you should <a href="{% url registration_register %}">Sign up</a>.)
+<p>Your username and password didn't match. Please try again.<br />
+(Note: If you are not registered at {{ system_name }} you should <a href="{% url registration_register %}">Sign up</a>.)
 {% endif %}
 
 <form method="post" action=".">
@@ -25,8 +25,7 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <br />
-<br />
-Need a {{ system_name }} username?<br /><br />
+Not a member of {{ system_name }}?<br /><br />
 <a href="{% url registration_register %}">Sign up</a> (it's fast and free!)
 <br />
 <br />
