@@ -25,6 +25,8 @@ class CompetitorForm(forms.ModelForm):
     def clean(self):
         name = self.cleaned_data.get('name')
         series = self.cleaned_data.get('series')
+        if not name:
+            raise forms.ValidationError, u'Please enter a Competitor name in the field provided'
         if self.instance.pk:
             existing = Competitor.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
             if existing:
