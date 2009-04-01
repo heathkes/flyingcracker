@@ -64,8 +64,8 @@ class Event(models.Model):
     '''
     name            = models.CharField('Event name', max_length=100)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    date            = models.DateField()
-    start_time      = models.TimeField(help_text='in UTC (Greenwich time)')
+    date            = models.DateField('Guess cutoff date')
+    start_time      = models.TimeField('Guess cutoff time', help_text='in UTC (Greenwich time)')
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
     result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
