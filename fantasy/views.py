@@ -78,18 +78,19 @@ def series_detail(request, id):
     qs = Event.objects.filter(series=series)
     events = []
     for event in qs:
-        qs = Result.objects.filter(event=event, place=1)
-        if not qs:
-            winner = '?'
-        else:
-            winner = ', '.join([str(result.competitor) for result in qs])
-            
-        qs = Guess.objects.filter(event=event, user=scup)
-        if not qs:
+        picks = Competitor.objects.filter(guess__event=event, guess__user=scup)
+        if not picks:
             guesses = None
         else:
-            guesses = [str(guess.competitor) for guess in qs]
-        events.append({'event': event, 'winner': winner, 'guesses': guesses})
+            guesses = []
+            for pick in picks:
+                try:
+                    result = Result.objects.get(event=event, competitor=pick)
+                except Result.DoesNotExist:
+                    guesses.append(str(pick))
+                else:
+                    guesses.append(str(pick) + ' (%s)' % result.place)
+        events.append({'event': event, 'guesses': guesses})
         
     c = RequestContext(request, {
         'series': series,
