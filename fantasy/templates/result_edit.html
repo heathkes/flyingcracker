@@ -5,8 +5,11 @@
     <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
-<div class="fantasy-form-help">Pick a {{ series.competitor_label }} and enter their place for each result.<br />
-Clear {{ series.competitor_label|capfirst }} name to delete a result.</div>
+<div class="fantasy-form-help">
+Pick a {{ series.competitor_label }} and enter their place for each result.<br />
+Clear {{ series.competitor_label|capfirst }} name to delete a result.<br />
+Enter as many or as few results as you wish.
+</div>
 <div class="fantasy-form-container">
     <form method="POST" action="">
     {% if formset %}

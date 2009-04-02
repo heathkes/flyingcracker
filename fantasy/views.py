@@ -616,18 +616,21 @@ def result_edit(request, id):
        not event.start_time_elapsed():
         return HttpResponseRedirect(reverse('fantasy-root'))
     
-    ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
-                                    max_num=series.scoring_system.num_places)
-
+    all_competitors = Competitor.objects.filter(series=series)
     competitor_choices = [('', '------')]
-    competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
+    competitor_choices.extend([(a.pk, str(a)) for a in all_competitors])
     
     curr_results = Result.objects.filter(event=event)
+    
+    places = len(all_competitors)
+    ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
+                            max_num=places)
+
     if not curr_results:
-        results = [{'place': i} for i in range(1, series.scoring_system.num_places+1)]
+        results = [{'place': i} for i in range(1, places+1)]
     else:
         results = [{'place': r.place, 'competitor': r.competitor.pk} for r in curr_results]
-        results.extend([{'place': ''} for i in range(0, series.scoring_system.num_places - len(curr_results))])
+        results.extend([{'place': ''} for i in range(0, places - len(curr_results))])
         
     if request.method == 'POST':
         formset = ResultFormset(request.POST, initial=results, competitors=competitor_choices)
