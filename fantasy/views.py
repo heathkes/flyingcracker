@@ -576,9 +576,14 @@ def event_result(request, id):
 
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
+    # list of competitors with a result in this event
+    # where their place yields no points.
     no_points_list = Competitor.objects.filter(Q(result__event=event) &
                                                ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
-    no_result_list = Competitor.objects.filter(guess__event=event, result=None).distinct()
+    # list of competitors guessed for this event
+    # who have no result FOR THE EVENT
+    all_guesses_qs = Competitor.objects.filter(guess__event=event).distinct
+    no_result_list = all_guesses_qs.exclude(result__event=event)
     
     bad_guess_list = []
     for bad_guess in no_points_list:

@@ -100,7 +100,7 @@ class Competitor(models.Model):
 
 class Result(models.Model):
     competitor  = models.ForeignKey(Competitor)
-    event        = models.ForeignKey(Event)
+    event       = models.ForeignKey(Event)
     place       = models.PositiveIntegerField()
     
     class Meta:
