@@ -519,6 +519,8 @@ def event_detail(request, id):
     curr_guesses = Guess.objects.filter(event=event, user=scup)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
 
+    guessers = SCUP.objects.filter(guess__event=event).distinct()
+
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(data=request.POST, instance=competitor)
@@ -551,6 +553,7 @@ def event_detail(request, id):
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
         'is_admin': series.is_admin(scup),
+        'guessers': guessers,
     })
     return render_to_response('event_guess.html', c)
 
