@@ -108,7 +108,7 @@ class Result(models.Model):
         unique_together = ('competitor','event')
     
     def __unicode__(self):
-        return u'%s' % self.competitor
+        return u'%s: %s: %s' % (self.event, str(self.place), self.competitor)
 
     def guessers(self):
         guessers = Guess.objects.filter(event=self.event, competitor=self.competitor)
@@ -123,5 +123,5 @@ class Guess(models.Model):
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
-        return u'%s' % self.competitor
+        return u'%s: %s by %s' % (self.event, self.competitor, self.user)
 
