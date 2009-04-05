@@ -399,9 +399,14 @@ def weather_on_date(date):
     Return all Weather records for a specific date.
     
     '''
-    return Weather.objects.filter(timestamp__year=date.year,
-                                  timestamp__month=date.month,
-                                  timestamp__day=date.day).order_by('timestamp')
+    end = date + datetime.timedelta(hours=23, minutes=59, seconds=59, microseconds=99999)
+
+    return Weather.objects.filter(timestamp__range=(date, end))
+
+    #return Weather.objects.filter(
+                                  #timestamp__month=date.month,
+                                  #timestamp__year=date.year,
+                                  #timestamp__day=date.day).order_by('timestamp')
 
 def request_is_local(request):
     if request:
