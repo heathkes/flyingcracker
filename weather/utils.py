@@ -399,9 +399,11 @@ def weather_on_date(date):
     Return all Weather records for a specific date.
     
     '''
-    end = date + datetime.timedelta(hours=23, minutes=59, seconds=59, microseconds=99999)
+    if type(date) == datetime.datetime:
+        date = datetime.date(date.year, date.month, date.day)
 
-    return Weather.objects.filter(timestamp__range=(date, end))
+    return Weather.objects.filter(timestamp__range=(datetime.datetime.combine(date, datetime.time.min),
+                                                    datetime.datetime.combine(date, datetime.time.max)))
 
     #return Weather.objects.filter(
                                   #timestamp__month=date.month,
