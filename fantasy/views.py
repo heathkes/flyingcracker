@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, F
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup, get_scup
@@ -117,15 +117,14 @@ def series_points_list(series):
     points_list = []
     users = SCUP.objects.filter(guess__event__series=series).distinct()
     for u in users:
-        guesses = Guess.objects.filter(event__series=series, event__result_locked=True, user=u)
+        
+        result_qs = Result.objects.filter(event__result_locked=True,
+                                          event__series=series,
+                                          event__guess__user=u,
+                                          event__guess__competitor=F('competitor'))
         points = 0
-        for g in guesses:
-            try:
-                r = Result.objects.get(event=g.event, competitor=g.competitor)
-                place = r.place
-            except:
-                place = 0
-            points += series.scoring_system.points(place)
+        for r in result_qs:
+            points += series.scoring_system.points(r.place)
         points_list.append({'name': str(u.user.username), 'points': points})
         
     import operator
