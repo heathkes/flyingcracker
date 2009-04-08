@@ -129,7 +129,7 @@ def series_points_list(series):
         for r in result_qs:
             points += series.scoring_system.points(r.place)
             # number of times user's guess resulted in points for each place
-            if r.place in scoresys_results:
+            if str(r.place) in scoresys_results:
                 place_totals[str(r.place)] += 1
             # total points for each event
             if r.event in event_points:
