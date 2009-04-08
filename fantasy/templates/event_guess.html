@@ -6,6 +6,7 @@
     <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
+{% if user.is_authenticated %}
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 {% if add_competitor_ok %}
@@ -50,6 +51,11 @@ To add a new {{ series.competitor_label }} enter the name below and click the "A
     
     </form>
 </div>
+{% else %}
+<div class="fantasy-form-container">
+Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.
+</div>
+{% endif %}
 <div  class="fantasy-list-container">
     {% if guessers %}
     <h2>Fans with picks in this {{ series.event_label }}</h2>

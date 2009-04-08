@@ -7,15 +7,19 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
-from serviceclient.decorators import set_scup
+from serviceclient.decorators import set_scup, get_scup
 
-@login_required
-@set_scup
+
 def root(request):
-    scup = request.session.get('scup')
-    service_client = scup.service_client
+    if request.user.is_authenticated():
+        scup = get_scup(request)
+        service_client = scup.service_client
+        qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
+    else:
+        scup = None
+        service_client = None
+        qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS)).distinct()
     
-    qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
     # BUGBUG
     # filter to:
     #   series for which I am admin
@@ -64,33 +68,38 @@ def series_edit(request, id=None):
     })
     return render_to_response('series_edit.html', c)
 
-@login_required
-@set_scup
 def series_detail(request, id):
     '''
     A list of events for the series, with winner if applicable, and user's current guess if applicable.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
+    if request.user.is_authenticated():
+        scup = get_scup(request)
+        service_client = scup.service_client
+    else:
+        scup = None
+        service_client = None
     
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
     events = []
     for event in qs:
-        picks = Competitor.objects.filter(guess__event=event, guess__user=scup)
-        if not picks:
-            guesses = None
+        if scup:
+            picks = Competitor.objects.filter(guess__event=event, guess__user=scup)
+            if not picks:
+                guesses = None
+            else:
+                guesses = []
+                for pick in picks:
+                    try:
+                        result = Result.objects.get(event=event, competitor=pick)
+                    except Result.DoesNotExist:
+                        guesses.append(str(pick))
+                    else:
+                        guesses.append(str(pick) + ' (%s)' % result.place)
+            events.append({'event': event, 'guesses': guesses})
         else:
-            guesses = []
-            for pick in picks:
-                try:
-                    result = Result.objects.get(event=event, competitor=pick)
-                except Result.DoesNotExist:
-                    guesses.append(str(pick))
-                else:
-                    guesses.append(str(pick) + ' (%s)' % result.place)
-        events.append({'event': event, 'guesses': guesses})
+            events.append({'event': event, 'guesses': None})
         
     c = RequestContext(request, {
         'series': series,
@@ -127,15 +136,17 @@ def series_points_list(series):
         points_list = []
     return points_list
     
-@login_required
-@set_scup
 def leaderboard(request, id):
     '''
     A list of user scores for events in the series.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
+    if request.user.is_authenticated():
+        scup = get_scup(request)
+        service_client = scup.service_client
+    else:
+        scup = None
+        service_client = None
 
     series = get_object_or_404(Series, pk=id)
     user_list = SCUP.objects.filter(guess__event__series=series).distinct()
@@ -478,8 +489,6 @@ def event_delete(request, id):
         event.delete()
         return HttpResponseRedirect(series.get_absolute_url)
 
-@login_required
-@set_scup
 def event_detail(request, id):
     '''
     Shows either the results of a event
@@ -490,9 +499,13 @@ def event_detail(request, id):
     '''
     from fc3.fantasy.forms import CompetitorForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
+    if request.user.is_authenticated():
+        scup = get_scup(request)
+        service_client = scup.service_client
+    else:
+        scup = None
+        service_client = None
+
     event = get_object_or_404(Event, pk=id)
     series = event.series
     competitor = Competitor(series=series)
@@ -557,15 +570,17 @@ def event_detail(request, id):
     })
     return render_to_response('event_guess.html', c)
 
-@login_required
-@set_scup
 def event_result(request, id):
     '''
     Shows the results of a event.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
+    if request.user.is_authenticated():
+        scup = get_scup(request)
+        service_client = scup.service_client
+    else:
+        scup = None
+        service_client = None
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
