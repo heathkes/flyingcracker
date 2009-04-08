@@ -123,12 +123,14 @@ def series_points_list(series):
                                           event__guess__user=u,
                                           event__guess__competitor=F('competitor'))
         points = 0
-        place_totals = dict.fromkeys(series.scoring_system.results(), 0)
+        scoresys_results = series.scoring_system.results()
+        place_totals = dict.fromkeys(scoresys_results, 0)
         event_points = {}
         for r in result_qs:
             points += series.scoring_system.points(r.place)
             # number of times user's guess resulted in points for each place
-            place_totals[str(r.place)] += 1
+            if r.place in scoresys_results:
+                place_totals[str(r.place)] += 1
             # total points for each event
             if r.event in event_points:
                 event_points[r.event] += points
