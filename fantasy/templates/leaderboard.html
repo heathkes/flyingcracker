@@ -11,8 +11,16 @@
     <table id="leaderboard-table" class="fantasy-list-table">
         <thead>
             <tr>
+                <th></th>
+                <th></th>
+                <th colspan={{ scoresys_results|length }}># picks for each place</th>
+            </tr>
+            <tr>
                 <th>Fan</th>
                 <th>Points</th>
+{% for place in scoresys_results %}
+                <th>{{ place }}</th>
+{% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -20,6 +28,9 @@
             <tr>
                 <td>{{ p.name }}</td>
                 <td>{{ p.points }}</td>
+{% for p in p.place_totals %}
+                <td>{{ p.val }}</td>
+{% endfor %}
             </tr>
 {% endfor %}
         </tbody>

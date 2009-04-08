@@ -123,9 +123,23 @@ def series_points_list(series):
                                           event__guess__user=u,
                                           event__guess__competitor=F('competitor'))
         points = 0
+        place_totals = dict.fromkeys(series.scoring_system.results(), 0)
+        event_points = {}
         for r in result_qs:
             points += series.scoring_system.points(r.place)
-        points_list.append({'name': str(u.user.username), 'points': points})
+            # number of times user's guess resulted in points for each place
+            place_totals[str(r.place)] += 1
+            # total points for each event
+            if r.event in event_points:
+                event_points[r.event] += points
+            else:
+                event_points[r.event] = points
+        place_keys = place_totals.keys()
+        place_keys.sort()
+        points_list.append({'name': str(u.user.username),
+                            'points': points,
+                            'place_totals': [{'key':key, 'val':place_totals[key]} for key in place_keys],
+                            'event_points': event_points})
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)
@@ -149,9 +163,12 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = SCUP.objects.filter(guess__event__series=series).distinct()
+    scoresys_results = series.scoring_system.results()
+    scoresys_results.sort()
     c = RequestContext(request, {
         'series': series,
         'points_list': series_points_list(series),
+        'scoresys_results': scoresys_results,
         'user_list': user_list,
         'is_admin': series.is_admin(scup),
     })
