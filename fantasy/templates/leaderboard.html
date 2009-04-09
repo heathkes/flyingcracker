@@ -1,4 +1,5 @@
 {% extends "fantasy.html" %}
+{% load humanize %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -46,7 +47,7 @@
             <tr>
                 <th>Fan</th>
 {% for place in scoresys_results %}
-                <th>{{ place }}</th>
+                <th>{{ place|ordinal }}</th>
 {% endfor %}
             </tr>
         </thead>
@@ -55,7 +56,7 @@
             <tr>
                 <td>{{ p.name }}</td>
 {% for p in p.place_totals %}
-                <td>{{ p.val }}</td>
+                <td class="event-points">{{ p.val }}</td>
 {% endfor %}
             </tr>
 {% endfor %}
