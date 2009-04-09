@@ -114,7 +114,28 @@ def series_points_list(series):
     Returns a list of usernames and their accumulated points in a Series.
     
     '''
+    import copy
+    
     points_list = []
+    
+    scoresys_results = series.scoring_system.results()
+    place_blank = dict.fromkeys(scoresys_results, 0)
+    
+    event_blank = {}
+    # create a list of dictionaries of all events, ordered by date
+    # where the key is the event itself and the value is either
+    # zero (for events that have occurred) or some other character.
+    events = Event.objects.filter(series=series)
+    for event in events:
+        if event.start_time_elapsed():
+            event_blank[event] = 0
+        else:
+            event_blank[event] = '-'
+            
+    place_keys = place_blank.keys()
+    place_keys.sort()
+    event_keys = events # Event queryset should already be properly sorted
+            
     users = SCUP.objects.filter(guess__event__series=series).distinct()
     for u in users:
         
@@ -123,25 +144,24 @@ def series_points_list(series):
                                           event__guess__user=u,
                                           event__guess__competitor=F('competitor'))
         points = 0
-        scoresys_results = series.scoring_system.results()
-        place_totals = dict.fromkeys(scoresys_results, 0)
-        event_points = {}
+        place_totals = copy.copy(place_blank)
+        event_points = copy.copy(event_blank)
         for r in result_qs:
-            points += series.scoring_system.points(r.place)
+            result_points = series.scoring_system.points(r.place)
+            points += result_points
+            
             # number of times user's guess resulted in points for each place
             if str(r.place) in scoresys_results:
                 place_totals[str(r.place)] += 1
+                
             # total points for each event
-            if r.event in event_points:
-                event_points[r.event] += points
-            else:
-                event_points[r.event] = points
-        place_keys = place_totals.keys()
-        place_keys.sort()
+            event_points[r.event] += result_points
+            
         points_list.append({'name': str(u.user.username),
                             'points': points,
                             'place_totals': [{'key':key, 'val':place_totals[key]} for key in place_keys],
-                            'event_points': event_points})
+                            'event_points': [{'key':key, 'val':event_points[key]} for key in event_keys]}
+                                             )
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)

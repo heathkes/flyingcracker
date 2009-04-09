@@ -8,16 +8,43 @@
 <h2>Leaderboard</h2>
 <div id="leaderboard-container" class="fantasy-list-container">
 {% if points_list %}
-    <table id="leaderboard-table" class="fantasy-list-table">
+    
+    <table id="leaderboard-events-table" class="fantasy-list-table">
         <thead>
             <tr>
                 <th></th>
+                <th></th>
+                <th colspan={{ points_list.0.event_points|length }}>{{ series.event_label }} #</th>
+            </tr>
+            <tr>
+                <th>Fan</th>
+                <th>Points</th>
+{% for p in points_list.0.event_points %}
+                <th><a href="{{ p.key.get_absolute_url }}"><span class="event-header">{{ forloop.counter }}</span></a></th>
+{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+{% for p in points_list %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.points }}</td>
+{% for p in p.event_points %}
+                <td>{{ p.val }}</td>
+{% endfor %}
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+    
+    <table id="leaderboard-places-table" class="fantasy-list-table">
+        <thead>
+            <tr>
                 <th></th>
                 <th colspan={{ scoresys_results|length }}># picks for each place</th>
             </tr>
             <tr>
                 <th>Fan</th>
-                <th>Points</th>
 {% for place in scoresys_results %}
                 <th>{{ place }}</th>
 {% endfor %}
@@ -27,7 +54,6 @@
 {% for p in points_list %}
             <tr>
                 <td>{{ p.name }}</td>
-                <td>{{ p.points }}</td>
 {% for p in p.place_totals %}
                 <td>{{ p.val }}</td>
 {% endfor %}
