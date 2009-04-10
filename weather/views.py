@@ -224,7 +224,10 @@ def unit_change(request):
 
 from fc3.weather.models import ChartUrl
 
-def get_chart(date, data_type, size, plots, unit):
+def get_chart(date, data_type, size, plots, unit, force_create=False):
+    if force_create:
+        return utils.create_chart_url(date, data_type, size, plots, unit)
+    
     now = datetime.now()
     try:
         chart = ChartUrl.objects.get(date=date, data_type=data_type, size=size, plots=plots, unit=unit)
@@ -490,10 +493,13 @@ def chart(request):
     `item` - sensor type: temp, pressure, humidity
     `type` - chart type: multiday
     `units` - Units for the requested data item. Temp: 'F', 'C'. Pressure: 'in', 'mb'.
+    `force` - indicates desire to force creation of a URL and not use saved URL
     
     Returns a URL for a chart of the specified type.
     
     '''
+    force_create = request.GET.get('force', False)
+    
     item_list = ['temp', 'pressure', 'humidity', 'wind']
     
     item = request.GET.get('item')
@@ -515,26 +521,26 @@ def chart(request):
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
-        chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     elif item == 'pressure':
         if units not in utils.baro_units:
             return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.baro_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
-        chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     elif item == 'humidity':
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
-        chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%')
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%', force_create=force_create)
     elif item == 'wind':
         if units not in utils.speed_units:
             return HttpResponse(content='Unsupported speed units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.speed_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
         
-        chart = get_chart(utils.get_today(request), ChartUrl.DATA_WIND, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units)
+        chart = get_chart(utils.get_today(request), ChartUrl.DATA_WIND, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     else:
         chart = 'none'
     return HttpResponse(content=chart)

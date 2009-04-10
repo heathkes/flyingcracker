@@ -403,7 +403,7 @@ def weather_on_date(date):
         date = datetime.date(date.year, date.month, date.day)
 
     return Weather.objects.filter(timestamp__range=(datetime.datetime.combine(date, datetime.time.min),
-                                                    datetime.datetime.combine(date, datetime.time.max)))
+                                                    datetime.datetime.combine(date, datetime.time.max))).order_by('timestamp')
 
     #return Weather.objects.filter(
                                   #timestamp__month=date.month,
