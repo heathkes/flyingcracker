@@ -17,6 +17,7 @@ import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 from fc3.utils import ElapsedTime
 from fc3.weatherstation.tz import USTimeZone
+from dateutil.tz import tzlocal
 
 def weather(request):
     et = ElapsedTime()
