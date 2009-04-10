@@ -16,6 +16,7 @@ from cbtv import CBTV
 import fc3.weather.utils as utils
 from fc3.weather.models import ChartUrl
 from fc3.utils import ElapsedTime
+from fc3.weatherstation.tz import USTimeZone
 
 def weather(request):
     et = ElapsedTime()
@@ -55,10 +56,22 @@ def weather(request):
         morning = False
 
     et.mark_time('initial')
+
+    mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+    now = datetime.now(tzlocal()).astimezone(mountain_tz)
     
     cbac = CBAC()
+    # Don't display CBAC stuff if older than 36 hours.
+    # In this case they are probably closed for the season.
+    if (now - cbac.timestamp) > timedelta(hours=36):
+        cbac = None
+
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
     cbtv = CBTV()
+    # Don't display CBTV stuff if older than 36 hours.
+    # In this case they are probably down.
+    if (now - cbtv.timestamp) > timedelta(hours=36):
+        cbtv = None
 
     et.mark_time('forecasts')
     
