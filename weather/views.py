@@ -64,15 +64,17 @@ def weather(request):
     cbac = CBAC()
     # Don't display CBAC stuff if older than 36 hours.
     # In this case they are probably closed for the season.
-    if cbac and (now - cbac.timestamp) > timedelta(hours=36):
-        cbac = None
+    if cbac:
+        if not cbac.timestamp or (now - cbac.timestamp) > timedelta(hours=36):
+            cbac = None
 
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
     cbtv = CBTV()
     # Don't display CBTV stuff if older than 36 hours.
     # In this case they are probably down.
-    if cbtv and (now - cbtv.timestamp) > timedelta(hours=36):
-        cbtv = None
+    if cbtv:
+        if not cbtv.timestamp or (now - cbtv.timestamp) > timedelta(hours=36):
+            cbtv = None
 
     et.mark_time('forecasts')
     
