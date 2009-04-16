@@ -52,6 +52,7 @@ TEMPLATE_LOADERS = (
 TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.miniblog',
                                'fc3.context_processors.system_version',
+                               'fc3.context_processors.login_url_with_redirect',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',
