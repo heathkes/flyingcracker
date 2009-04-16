@@ -88,7 +88,7 @@
             
                 <a href="{% url auth_logout %}">Log out</a>
             {% else %}
-                <a href="{% url auth_login %}?next={% url fc-home %}">Log in</a> or <a href="{% url registration_register %}">Sign up</a>
+                <a href="{{ login_url }}">Log in</a> or <a href="{% url registration_register %}">Sign up</a>
             {% endif %}
             {% endblock user %}
         </div> <!-- user-tools -->

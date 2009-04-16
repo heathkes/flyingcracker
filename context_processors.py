@@ -25,3 +25,13 @@ def system_version(request):
     system['system_name'] = settings.SYSTEM_NAME
     system['system_version'] = get_version()
     return system
+
+
+def login_url_with_redirect(request):
+    from django.utils.http import urlquote
+    from django.contrib.auth import REDIRECT_FIELD_NAME
+    
+    login_url = settings.LOGIN_URL
+    path = urlquote(request.get_full_path())
+    url = '%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path)
+    return {'login_url': url}
