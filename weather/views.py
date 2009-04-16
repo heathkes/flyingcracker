@@ -472,6 +472,29 @@ def output_data(request):
                                     ])
                 target += interval
             return response
+        elif type == 'hourly':
+            from gchart import periodic_samples
+            from utils import weather_on_date
+
+            output = ['date']
+            output.extend([time(n).strftime("%H:%M") for n in range(0,24)])
+            writer.writerow(output)
+            
+            while target <= end:
+                qs = weather_on_date(target)
+                start = datetime(target.year, target.month, target.day)
+                day_recs = periodic_samples(qs, start, timedelta(minutes=5), timedelta(hours=1), 24)
+                def temp_string_or_blank(record):
+                    if not record:
+                        return ''
+                    else:
+                        return str(record.temp)
+                temps = map(temp_string_or_blank, day_recs)
+                output = [str(target)]
+                output.extend(temps)
+                writer.writerow(output)
+                target += interval
+            return response
         else:
             return HttpResponse(content='Unsupported report type: "%s". Valid report types: "average".' % str(type))
     elif item == 'wind':
