@@ -61,7 +61,7 @@ def weather(request):
     mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
     now = datetime.now(tzlocal()).astimezone(mountain_tz)
     
-    cbac = CBAC()
+    cbac = None # = CBAC() # comment out for summer.
     # Don't display CBAC stuff if older than 36 hours.
     # In this case they are probably closed for the season.
     if cbac:
@@ -394,7 +394,7 @@ def output_data(request):
     '''
     Expects GET parameters:
     `item` - sensor type: temp, wind, barometer, etc.
-    `type` - type of data collection: average, highlow, etc.
+    `type` - type of data collection: average, highlow, hourly, etc.
     `start` - date (and optional time) for the start of data collection
     `end` - date (and optional time) for the end of data collection
     
