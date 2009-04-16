@@ -473,7 +473,7 @@ def output_data(request):
                 target += interval
             return response
         elif type == 'hourly':
-            from gchart import periodic_samples
+            from fc3.gchart import periodic_samples
             from utils import weather_on_date
 
             output = ['date']
