@@ -629,22 +629,16 @@ def event_result(request, id):
 
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
-    # list of competitors with a result in this event
-    # where their place yields no points.
-    no_points_list = Competitor.objects.filter(Q(result__event=event) &
-                                               ~Q(result__place__in=series.scoring_system.results())).order_by('result__place')
-    # list of competitors guessed for this event
-    # who have no result FOR THE EVENT
+    bad_guess_list = []
+    # list of results for this event where the place yielded no points.
+    no_points_list = Result.objects.filter(~Q(place__in=series.scoring_system.results()), event=event).order_by('place')
+    for result in no_points_list:
+        guessers = Guess.objects.filter(event=event, competitor=result.competitor)
+        bad_guess_list.append({'competitor': result.competitor, 'place': result.place, 'guessers': [g.user for g in guessers ]})
+
+    # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__event=event).distinct()
     no_result_list = all_guesses_qs.exclude(result__event=event)
-    
-    bad_guess_list = []
-    for bad_guess in no_points_list:
-        result = Result.objects.get(event=event, competitor=bad_guess)
-        place = result.place
-        guessers = Guess.objects.filter(event=event, competitor=bad_guess)
-        bad_guess_list.append({'competitor': bad_guess, 'place': place, 'guessers': [g.user for g in guessers ]})
-
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(event=event, competitor=bad_guess)
         bad_guess_list.append({'competitor': bad_guess, 'place': '?', 'guessers': [g.user for g in guessers ]})
