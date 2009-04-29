@@ -642,10 +642,29 @@ def event_result(request, id):
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(event=event, competitor=bad_guess)
         bad_guess_list.append({'competitor': bad_guess, 'place': '?', 'guessers': [g.user for g in guessers ]})
+
+    event_points_list = []
+    users = SCUP.objects.filter(guess__event__series=series).distinct()
+    for u in users:
+        all_result_qs = Result.objects.filter(event=event,
+                                          event__guess__user=u,
+                                          event__guess__competitor=F('competitor'))
+        points = 0
+        for r in all_result_qs:
+            result_points = series.scoring_system.points(r.place)
+            points += result_points
+            
+        event_points_list.append({'name': str(u.user.username),
+                            'points': points,
+                                             })
         
+    import operator
+    event_points_list.sort(key=operator.itemgetter('points'), reverse=True)
+
     c = RequestContext(request, {
         'series': event.series,
         'event': event,
+        'event_points_list': event_points_list,
         'result_list': result_qs,
         'points_list': series_points_list(series)[:10],
         'bad_guess_list': bad_guess_list,

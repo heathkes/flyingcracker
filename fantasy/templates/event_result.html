@@ -8,8 +8,31 @@
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 
-<h2>Result</h2>
-{% if result_list and not event.result_locked %}(pending Series administrator approval){% endif %}
+<h2>Fantasy Points</h2>
+{% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
+<div id="result-list-container" class="fantasy-list-container">
+{% if event_points_list %}
+    <table id="event-points-list-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for r in event_points_list %}
+            <tr>
+                <td class="center">{{ r.name }}</td>
+                <td class="center">{{ r.points }}</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+</div>
+
+<h2>{{ series.event_label|capfirst }} Result</h2>
+{% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
 <div id="result-list-container" class="fantasy-list-container">
 {% if result_list %}
     <table id="result-list-table" class="fantasy-list-table">
