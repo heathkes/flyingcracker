@@ -66,11 +66,12 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
     </ul>
     {% endif %}
 {% if is_admin %}
-    <a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a>
+    <br />
+    <a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a><br />
 {% endif %}
     {% if is_admin or event.start_time_elapsed %}
     <br />
-<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a><br />
     {% endif %}
 </div>
 {% endblock %}
