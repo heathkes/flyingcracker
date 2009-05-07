@@ -15,9 +15,11 @@
             <tr>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan={{ points_list.0.event_points|length }}>{{ series.event_label }} points</th>
             </tr>
             <tr>
+                <th></th>
                 <th>Fan</th>
                 <th>Total<br />Points</th>
 {% for p in points_list.0.event_points %}
@@ -28,6 +30,7 @@
         <tbody>
 {% for p in points_list %}
             <tr>
+                <td>{{ forloop.counter }}.</td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.points }}</td>
 {% for p in p.event_points %}
