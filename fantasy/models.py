@@ -21,10 +21,12 @@ class Series(models.Model):
     competitor_label        = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, default='Driver')
     event_label             = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
     num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
+#    guess_once_per_series   = models.BooleanField('Pick competitors once for entire series', default=False)
     invite_only             = models.BooleanField('Users must be invited', default=False)
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
-    scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    scoring_system         = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    #scoring_systems         = models.ManyToManyField(ScoringSystem, blank=True, null=True)
     HIDDEN_STATUS = 'H'
     ACTIVE_STATUS = 'A'
     COMPLETE_STATUS = 'C'
@@ -64,19 +66,19 @@ class Event(models.Model):
     '''
     name            = models.CharField('Event name', max_length=100)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    date            = models.DateField('Guess cutoff date')
-    start_time      = models.TimeField('Guess cutoff time', help_text='in UTC (Greenwich time)')
+    start_date      = models.DateField('Event start date')
+    start_time      = models.TimeField('Event start time', help_text='in UTC (Greenwich time)')
+    guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
     result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
     
     class Meta:
-        ordering = ['date']
+        ordering = ['start_date']
         unique_together = ('name', 'series')
 
-    def start_time_elapsed(self):
-        start_time = datetime(self.date.year, self.date.month, self.date.day, self.start_time.hour, self.start_time.minute)
-        return start_time < datetime.utcnow()
+    def guess_deadline_elapsed(self):
+        return self.guess_deadline < datetime.utcnow()
             
     def __unicode__(self):
         return u'%s' % self.name

@@ -127,7 +127,7 @@ def series_points_list(series):
     # zero (for events that have occurred) or some other character.
     events = Event.objects.filter(series=series)
     for event in events:
-        if event.start_time_elapsed():
+        if event.guess_deadline_elapsed():
             event_blank[event] = 0
         else:
             event_blank[event] = '-'
@@ -551,7 +551,7 @@ def event_detail(request, id):
     #
     #  If Event start time has passed don't allow guessing
     #
-    if event.start_time_elapsed():
+    if event.guess_deadline_elapsed():
         # if request.method == 'POST': redirect to some "sorry, you submitted your guess after the race start time (HH:MM UTC)." page.
         return event_result(request, id)
 
@@ -623,7 +623,7 @@ def event_result(request, id):
     event = get_object_or_404(Event, pk=id)
     series = event.series
 
-    if not event.start_time_elapsed():
+    if not event.guess_deadline_elapsed():
     # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -688,7 +688,7 @@ def result_edit(request, id):
     event = get_object_or_404(Event, pk=id)
     series = event.series
     if (not series.is_admin(scup) and event.result_locked) or \
-       not event.start_time_elapsed():
+       not event.guess_deadline_elapsed():
         return HttpResponseRedirect(reverse('fantasy-root'))
     
     all_competitors = Competitor.objects.filter(series=series)
