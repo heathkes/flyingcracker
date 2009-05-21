@@ -86,7 +86,7 @@ def series_detail(request, id):
     row_class = 'race-complete'
     for event in qs:
         results = Result.objects.filter(event=event)
-        if event.start_time_elapsed() and results:
+        if event.start_time_elapsed() and results and event.result_locked:
             row_class = 'race-complete'
         else:
             if event.guess_deadline_elapsed():
