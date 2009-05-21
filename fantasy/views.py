@@ -83,7 +83,17 @@ def series_detail(request, id):
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
     events = []
+    row_class = 'race-complete'
     for event in qs:
+        results = Result.objects.filter(event=event)
+        if event.start_time_elapsed() and results:
+            row_class = 'race-complete'
+        else:
+            if event.guess_deadline_elapsed():
+                row_class = 'guess-deadline'
+            else:
+                row_class = 'race-future'
+            
         if scup:
             picks = Competitor.objects.filter(guess__event=event, guess__user=scup)
             if not picks:
@@ -97,9 +107,9 @@ def series_detail(request, id):
                         guesses.append(str(pick))
                     else:
                         guesses.append(str(pick) + ' (%s)' % result.place)
-            events.append({'event': event, 'guesses': guesses})
+            events.append({'event': event, 'guesses': guesses, 'row_class': row_class})
         else:
-            events.append({'event': event, 'guesses': None})
+            events.append({'event': event, 'guesses': None, 'row_class': row_class})
         
     c = RequestContext(request, {
         'series': series,

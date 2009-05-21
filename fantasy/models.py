@@ -79,7 +79,10 @@ class Event(models.Model):
 
     def guess_deadline_elapsed(self):
         return self.guess_deadline < datetime.utcnow()
-            
+
+    def start_time_elapsed(self):
+        return datetime.combine(self.start_date, self.start_time) < datetime.utcnow()
+
     def __unicode__(self):
         return u'%s' % self.name
     

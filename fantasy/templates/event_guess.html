@@ -7,6 +7,11 @@
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 {% if user.is_authenticated %}
+{% if not event.guess_deadline_elapsed %}
+<div class="fantasy-guess-deadline">
+Guess Deadline: {{ event.guess_deadline|date:"D F d" }} {{ event.guess_deadline|time:"f a" }} UTC
+</div>
+{% endif %}
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 {% if add_competitor_ok %}

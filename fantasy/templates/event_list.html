@@ -23,7 +23,7 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
         </thead>
         <tbody>
 {% for r in event_list %}
-            <tr>
+            <tr class="{{ r.row_class }}">
                 <td>{{ forloop.counter }}.</td>
                 <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a></td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
