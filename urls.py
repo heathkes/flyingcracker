@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     # Admin URLs
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
     (r'^admin/(.*)',                        admin.site.root),
+    (r'^comments/',                         include('django.contrib.comments.urls')),
     
     # Application URLs
 #    (r'^comments/',                         include('django.contrib.comments.urls.comments')),

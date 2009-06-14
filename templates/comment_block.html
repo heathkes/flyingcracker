@@ -1,0 +1,16 @@
+{% load comments %}
+
+<div id="comments-container">
+{% get_comment_list for comment_obj as comment_list %}
+{% if comment_list %}
+<h2>Comments</h2>
+<div class="comment-list">
+{% for comment in comment_list %}
+    {% include "comment_item.html" %}
+{% endfor %}
+</div>
+{% endif %}
+<h3>Add Comment</h3>
+{% get_comment_form for comment_obj as form %}
+{% include "comment_form.html" %}
+</div>

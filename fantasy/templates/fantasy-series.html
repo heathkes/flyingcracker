@@ -6,6 +6,11 @@
         {% block fantasy-main %}
         {% endblock %}
         </div>
+        <div id="comment-block">
+        {% with series as comment_obj %}
+        {% include "comment_block.html" %}
+        {% endwith %}
+        </div>
     </div>
     <div id="fantasy-nav-container" class="yui-u">
         <div class="main">

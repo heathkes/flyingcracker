@@ -1035,3 +1035,34 @@ th.flowHead{
 }
 td.event-points {
 	text-align: center;
+}
+.comment-list {
+	background-color: white;
+	width: 575px;
+	padding: 1em;
+	margin-bottom: 1em;
+	border: #7F9DB9 1px solid;
+}
+.comment-item {
+	padding: 1em 0 0;
+}
+.comment-user {
+	font-weight: bold;
+}
+.comment-posted {
+	margin: 1em 0 0;
+	font-size: 85%;
+}
+hr.comment-separator {
+	color: lightgrey;
+}
+#comment-block {
+	background-color: #D3D3D3;
+	margin: 1em 0 0 1em;
+	padding-left: 1em;
+	border: #7F9DB9 1px solid;
+}
+#comments-container {
+	padding-top: 1em;
+	padding-right: 1em;
+}

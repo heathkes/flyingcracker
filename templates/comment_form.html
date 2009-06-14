@@ -1,0 +1,18 @@
+{% load comments %}
+<form action="{% comment_form_target %}" method="POST">
+  {{ form.content_type }}
+  {{ form.object_pk }}
+  {{ form.timestamp }}
+  {{ form.security_hash }}
+  <p>
+    {{ form.comment }}
+  </p>
+  <p style="display:none;">
+    <label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label>{{ form.honeypot }}
+  </p>
+  <p class="submit">
+    <input type="submit" name="post" class="submit-post" value="Post" />
+    <input type="submit" name="preview" class="submit-preview" value="Preview" />
+  </p>
+  <input type="hidden" name="next" value="{{ comment_obj.get_absolute_url }}" />
+</form>
