@@ -22,9 +22,6 @@ from dateutil.tz import tzlocal
 def weather(request):
     et = ElapsedTime()
 
-    # get latest weather reading
-    current = Weather.objects.latest('timestamp')
-    
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles == None:
         show_titles = "hidden"
@@ -39,7 +36,71 @@ def weather(request):
         unit_state = "false"
     else:
         unit_state = "true"
-        
+
+    # Get time in MT for forecast timestamp comparison
+    mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+    now = datetime.now(tzlocal()).astimezone(mountain_tz)
+    
+    cbac = None # = CBAC() # comment out for summer.
+    # Don't display CBAC stuff if older than 36 hours.
+    # In this case they are probably closed for the season.
+    if cbac:
+        if not cbac.timestamp or (now - cbac.timestamp) > timedelta(hours=36):
+            cbac = None
+
+    noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
+    cbtv = CBTV()
+    # Don't display CBTV stuff if older than 36 hours.
+    # In this case they are probably down.
+    if cbtv:
+        if not cbtv.timestamp or (now - cbtv.timestamp) > timedelta(hours=36):
+            cbtv = None
+
+    et.mark_time('forecasts')
+
+    current_dict, current = get_current_weather(request)
+    current_dict.update({
+                'current': current,
+                'show_titles': show_titles,
+                'title_state': title_state,
+                'show_units': show_units,
+                'unit_state': unit_state,
+                'cbac': cbac,
+                'noaa': noaa,
+                'cbtv': cbtv,
+                'elapsed': et.list(),
+                })
+    c = RequestContext(request, current_dict)
+    agent = request.META.get('HTTP_USER_AGENT')
+    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        if request.GET.has_key('iui'):
+            return render_to_response('weather/iphone/weather-iui.html', c)
+        else:
+            return render_to_response('weather/iphone/weather.html', c)
+    else:
+        return render_to_response('weather/current.html', c)
+
+def weather_old(request):
+    et = ElapsedTime()
+
+    show_titles = request.COOKIES.get("curr_weather_show_titles")
+    if show_titles == None:
+        show_titles = "hidden"
+    if show_titles == "hidden":
+        title_state = "false"
+    else:
+        title_state = "true"
+    show_units = request.COOKIES.get("curr_weather_show_units")
+    if show_units == None:
+        show_units = "none"
+    if show_units == "none":
+        unit_state = "false"
+    else:
+        unit_state = "true"
+
+    # get latest weather reading
+    current = Weather.objects.latest('timestamp')
+
     # set wind background compass and wind speed
     if int(float(current.wind_speed)) < 1:
         wind = 0
@@ -138,87 +199,102 @@ def weather(request):
 
 
 def current(request):
-    from django.template.defaultfilters import date as date_filter
-
     xhr = request.GET.has_key('xhr')
     if xhr:
-        # get latest weather reading
-        current = Weather.objects.latest('timestamp')
-        
-        timestamp = date_filter(current.timestamp, "H:i \M\T D M j,Y")
-
-        temp_list = utils.calc_temp_strings(current.temp)
-        baro_list = utils.calc_baro_strings(current.barometer)
-        trend_list = utils.calc_trend_strings(current.baro_trend)
-        
-        if int(float(current.wind_speed)) < 1:
-            wind = 0
-            wind_dir = None
-        else:
-            wind = current.wind_speed
-            wind_dir = "wind-%s.png" % utils.wind_dir_to_english(wind)
-            wind_dir = wind_dir.lower()
-        wind_list = utils.calc_speeds(wind)
-        
-        temp_unit = request.COOKIES.get("temp_unit")
-        if temp_unit is None:
-            temp_unit = utils.TEMP_F
-            
-        baro_unit = request.COOKIES.get("baro_unit")
-        if baro_unit is None:
-            baro_unit = utils.PRESS_IN
-            
-        if wind == 0:
-            speed_unit = ""
-            wind_units = [""]
-        else:
-            speed_unit = request.COOKIES.get("speed_unit")
-            wind_units = utils.speed_units
-            if speed_unit is None:
-                speed_unit = utils.SPEED_MPH
-        
-        windchill_list = utils.calc_temp_strings(current.windchill)
-        
-        today = utils.get_today_timestamp(request)
-        if today.hour < 12:
-            morning = True
-        else:
-            morning = False
-
-        t_chart = []
-        b_chart = []
-        agent = request.META.get('HTTP_USER_AGENT')
-        if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-            for unit in utils.temp_units:
-                t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-            for unit in utils.baro_units:
-                b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        else:
-            for unit in utils.temp_units:
-                t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-            for unit in utils.baro_units:
-                b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        
-        response_dict = {}
-        response_dict.update({'timestamp': timestamp})
-        response_dict.update({'temp_units': utils.temp_units})
-        response_dict.update({'baro_units': utils.baro_units})
-        response_dict.update({'speed_units': wind_units})
-        response_dict.update({'temp_unit': temp_unit})
-        response_dict.update({'baro_unit': baro_unit})
-        response_dict.update({'speed_unit': speed_unit})
-        response_dict.update({'temp': temp_list})
-        response_dict.update({'baro': baro_list})
-        response_dict.update({'trend': trend_list})
-        response_dict.update({'wind': wind_list})
-        response_dict.update({'wind_dir': wind_dir})
-        response_dict.update({'windchill': windchill_list})
-        response_dict.update({'humidity': current.humidity})
-        response_dict.update({'temp_chart': t_chart})
-        response_dict.update({'baro_chart': b_chart})
-        response_dict.update({'morning': morning})
+        response_dict = get_current_weather(request)
         response = JsonResponse(response_dict)
         return response
+
+def get_current_weather(request):
+    from django.template.defaultfilters import date as date_filter
+    
+    # get latest weather reading
+    current = Weather.objects.latest('timestamp')
+    
+    timestamp = date_filter(current.timestamp, "H:i \M\T D M j,Y")
+
+    temp_unit = request.COOKIES.get("temp_unit")
+    if temp_unit is None:
+        temp_unit = utils.TEMP_F
+        
+    baro_unit = request.COOKIES.get("baro_unit")
+    if baro_unit is None:
+        baro_unit = utils.PRESS_IN
+    
+    if int(float(current.wind_speed)) < 1:
+        wind = 0
+        wind_dir = None
+    else:
+        wind = current.wind_speed
+        wind_dir = "wind-%s.png" % utils.wind_dir_to_english(wind)
+        wind_dir = wind_dir.lower()
+    wind_list = utils.calc_speeds(wind)
+        
+    if wind == 0:
+        speed_unit = ""
+        wind_units = [""]
+    else:
+        speed_unit = request.COOKIES.get("speed_unit")
+        wind_units = utils.speed_units
+        if speed_unit is None:
+            speed_unit = utils.SPEED_MPH
+    
+    wind_val = wind_list[wind_units.index(speed_unit)]
+    
+    windchill_list = utils.calc_temp_strings(current.windchill)
+    windchill_val = windchill_list[wind_units.index(speed_unit)]
+    
+    temp_list = utils.calc_temp_strings(current.temp)
+    temp_val = temp_list[utils.temp_units.index(temp_unit)]
+    baro_list = utils.calc_baro_strings(current.barometer)
+    baro_val = baro_list[utils.baro_units.index(baro_unit)]
+    trend_list = utils.calc_trend_strings(current.baro_trend)
+    trend_val = trend_list[utils.baro_units.index(baro_unit)]
+    
+    today = utils.get_today_timestamp(request)
+    if today.hour < 12:
+        morning = True
+    else:
+        morning = False
+
+    t_chart = []
+    b_chart = []
+    agent = request.META.get('HTTP_USER_AGENT')
+    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+        for unit in utils.temp_units:
+            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+        for unit in utils.baro_units:
+            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+    else:
+        for unit in utils.temp_units:
+            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+        for unit in utils.baro_units:
+            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
+    
+    response_dict = {'timestamp': timestamp,
+                     'temp_units': utils.temp_units,
+                     'baro_units': utils.baro_units,
+                     'speed_units': wind_units,
+                     'temp_val': temp_val,
+                     'baro_val': baro_val,
+                     'trend_val': trend_val,
+                     'temp_unit': temp_unit,
+                     'baro_unit': baro_unit,
+                     'speed_unit': speed_unit,
+                     'temp': temp_list,
+                     'baro': baro_list,
+                     'trend': trend_list,
+                     'wind': wind_list,
+                     'wind_val': wind_val,
+                     'wind_dir': wind_dir,
+                     'windchill': windchill_list,
+                     'windchill_val': windchill_val,
+                     'humidity': current.humidity,
+                     'temp_chart': t_chart,
+                     'baro_chart': b_chart,
+                     'morning': morning,
+                    }
+    return response_dict, current
 
 def unit_change(request):
     '''

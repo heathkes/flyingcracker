@@ -23,22 +23,22 @@
                 <div id="curr_weather">
                     <div id="curr-temp-block" style="background: url({{ temp_chart|safe }}) no-repeat top">
                         <div id="curr_temp" class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
-                            <span class="temp_value">{{ current.temp|stringformat:"d" }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                            <span class="temp_value">{{ temp_val }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                         </div>
                     </div>
                     <div id="curr-barometer-block" style="background: url({{ baro_chart|safe }}) no-repeat top">
                         <div class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
                             <div id="curr_baro">
-                                <span class="baro_value">{{ current.barometer }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                                <span class="baro_value">{{ baro_val }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
                             </div>
                             <div class="weather_title">
                                     <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
                             </div>
                             <div id="curr_trend">
-                                <span class="baro_value">{{ trend }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}"></span>
+                                <span class="baro_value">{{ trend_val }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
                             </div>
                             <div class="weather_title">
                                     <span class="curr_title" style="visibility: {{ show_titles }}">3-hour &#916;</span>
@@ -47,20 +47,20 @@
                     </div>
                     <div class="yui-gb">
                         <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
-                            <span class="speed_value">{{ wind_speed }}</span>
-                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}"></span></div>
+                            <span class="speed_value">{{ wind_val }}</span>
+                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
                         </div>
                         <div id="curr_windchill" class="yui-u">
                             {% ifnotequal current.temp current.windchill %}
-                            <span class="temp_value">{{ current.windchill|stringformat:"d" }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}"></span>
+                            <span class="temp_value">{{ windchill_val }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                             <div>
                                 <span style="font-size: 50%">windchill</span>
                             </div>
                             {% endifnotequal %}
                         </div>
                         <div id="curr_humidity" class="yui-u">
-                            <span id="humidity_value" class="humidity_value">{{ current.humidity }}%</span>
+                            <span id="humidity_value" class="humidity_value">{{ humidity }}%</span>
                             <div>
                                 <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
                             </div>

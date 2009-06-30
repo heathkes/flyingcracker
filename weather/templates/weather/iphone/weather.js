@@ -86,7 +86,7 @@ var current_weather = {
         weather_loading_init();
         
         current_weather.current = null;     // this holds all current weather data
-        current_weather.retrieve_current(); // ask for the latest data
+        // current_weather.retrieve_current(); // ask for the latest data
         
         // Grab an elements we'll need so we can fade it later.
         current_weather.weather_div = document.getElementById('curr_weather');
