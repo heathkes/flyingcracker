@@ -270,7 +270,8 @@ def get_current_weather(request):
             t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
         for unit in utils.baro_units:
             b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-    
+    temp_chart_val = t_chart[utils.temp_units.index(temp_unit)]
+    baro_chart_val = b_chart[utils.baro_units.index(baro_unit)]
     response_dict = {'timestamp': timestamp,
                      'temp_units': utils.temp_units,
                      'baro_units': utils.baro_units,
@@ -292,6 +293,8 @@ def get_current_weather(request):
                      'humidity': current.humidity,
                      'temp_chart': t_chart,
                      'baro_chart': b_chart,
+                     'temp_chart_val': temp_chart_val,
+                     'baro_chart_val': baro_chart_val,
                      'morning': morning,
                     }
     return response_dict, current
