@@ -201,7 +201,7 @@ def weather_old(request):
 def current(request):
     xhr = request.GET.has_key('xhr')
     if xhr:
-        response_dict = get_current_weather(request)
+        response_dict, current = get_current_weather(request)
         response = JsonResponse(response_dict)
         return response
 
