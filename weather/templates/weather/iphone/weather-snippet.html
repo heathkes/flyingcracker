@@ -5,7 +5,7 @@
         <div id="curr_weather">
             <div class="yui-b" id="curr-temp-block" style="background: url({{ temp_chart_val|safe }}) no-repeat top">
                 <div id="curr_temp" class="yui-b {% if morning %}chart_am{% else %}chart_pm{% endif %}">
-                    <span class="temp_value">{{ temp_val }}</span>
+                    <span class="temp_value">{{ temp_val }}&#186;</span>
                     <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 </div>
                 <div id="curr_windchill" class="yui-u">
                     {% ifnotequal temp_val windchill_val %}
-                    <span class="temp_value">{{ windchill_val }}</span>
+                    <span class="temp_value">{{ windchill_val }}&#186;</span>
                     <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                     <div>
                         <span style="font-size: 50%">windchill</span>
@@ -42,7 +42,7 @@
                     {% endifnotequal %}
                 </div>
                 <div id="curr_humidity" class="yui-u">
-                    <span id="humidity_value" class="humidity_value">{{ humidity }}</span>
+                    <span id="humidity_value" class="humidity_value">{{ humidity }}%</span>
                     <div>
                         <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
                     </div>
