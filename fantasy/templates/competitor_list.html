@@ -6,7 +6,7 @@
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">The following {{ series.competitor_label }}s are available for this series.<br />
-To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.</div>
+To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button, or <a href="{% url fantasy-competitor-import series.pk %}">Import {{ series.competitor_label }}s</a> from other Series.</div>
 {% if is_admin %}
 <div class="fantasy-form-container">
 To add a new {{ series.competitor_label }} enter the name below and click the "Add {{ series.competitor_label }}" button.
@@ -16,9 +16,6 @@ To add a new {{ series.competitor_label }} enter the name below and click the "A
         </table>
         <input type="submit" value="Add {{ series.competitor_label }}" />
     </form>
-</div>
-<div class="fantasy-list-container">
-    <a href="{% url fantasy-competitor-import series.pk %}">Import {{ series.competitor_label }}s</a> (from other series)
 </div>
 {% endif %}
 <div id="competitor-list-container" class="fantasy-list-container">
