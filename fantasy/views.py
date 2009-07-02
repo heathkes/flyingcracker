@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db.models import Q, F
+from django.contrib.contenttypes.models import ContentType
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup, get_scup
-
 
 def root(request):
     if request.user.is_authenticated():
@@ -95,7 +95,8 @@ def series_detail(request, id):
                 row_class = 'race-future'
             
         if scup:
-            picks = Competitor.objects.filter(guess__event=event, guess__user=scup)
+            ctype, obj_id = event.guess_generics()
+            picks = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id, guess__user=scup)
             if not picks:
                 guesses = None
             else:
@@ -118,7 +119,7 @@ def series_detail(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_list.html', c)
-
+    
 def series_points_list(series):
     '''
     Returns a list of usernames and their accumulated points in a Series.
@@ -141,23 +142,29 @@ def series_points_list(series):
             event_blank[event] = 0
         else:
             event_blank[event] = '-'
-            
+        
     place_keys = place_blank.keys()
     place_keys.sort()
     event_keys = events # Event queryset should already be properly sorted
-            
-    users = SCUP.objects.filter(guess__event__series=series).distinct()
-    for u in users:
+
+    user_list = series.guesser_list()
+    for u in user_list:
         
-        result_qs = Result.objects.filter(event__result_locked=True,
-                                          event__series=series,
-                                          event__guess__user=u,
-                                          event__guess__competitor=F('competitor'))
+        if series.guess_once_per_series:
+            result_qs = Result.objects.filter(event__result_locked=True,
+                                              event__series=series,
+                                              event__series__guesses__user=u,
+                                              event__series__guesses__competitor=F('competitor'))
+        else:
+            result_qs = Result.objects.filter(event__result_locked=True,
+                                              event__series=series,
+                                              event__guesses__user=u,
+                                              event__guesses__competitor=F('competitor'))
         points = 0
         place_totals = copy.copy(place_blank)
         event_points = copy.copy(event_blank)
         for r in result_qs:
-            result_points = series.scoring_system.points(r.place)
+            result_points = series.scoring_system.points(str(r.place))
             points += result_points
             
             # number of times user's guess resulted in points for each place
@@ -194,9 +201,8 @@ def leaderboard(request, id):
         service_client = None
 
     series = get_object_or_404(Series, pk=id)
-    user_list = SCUP.objects.filter(guess__event__series=series).distinct()
-    scoresys_results = series.scoring_system.results()
-    scoresys_results.sort()
+    user_list = series.guesser_list()
+    scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
         'points_list': series_points_list(series),
@@ -435,7 +441,7 @@ def competitor_import(request, id):
 
 @login_required
 @set_scup
-def event_add(request, id):
+def event_add(request, series_id):
     '''
     Add a new event to the specified Series.
     
@@ -445,7 +451,7 @@ def event_add(request, id):
     scup = request.session.get('scup')
     service_client = scup.service_client
 
-    series = get_object_or_404(Series, pk=id)
+    series = get_object_or_404(Series, pk=series_id)
     if not series.is_admin(scup):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
@@ -541,8 +547,8 @@ def event_detail(request, id):
     '''
     Shows either the results of a event
     or
-    Allows user to select an Competitor he thinks will win the event
-    or possibly enter a new Competitor.
+    Allows user to select one or more Competitors he thinks will
+    perform well, or possibly enter a new Competitor.
     
     '''
     from fc3.fantasy.forms import CompetitorForm
@@ -556,6 +562,7 @@ def event_detail(request, id):
 
     event = get_object_or_404(Event, pk=id)
     series = event.series
+    # Create un-saved instance for adding a new Competitor
     competitor = Competitor(series=series)
     
     #
@@ -572,20 +579,23 @@ def event_detail(request, id):
     from django.forms.formsets import formset_factory
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
-                                    max_num=series.num_guesses, extra=series.num_guesses)
+                                    max_num=series.num_guesses,
+                                    extra=series.num_guesses)
 
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
     
-    curr_guesses = Guess.objects.filter(event=event, user=scup)
+    ctype, obj_id = event.guess_generics()
+    curr_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=scup)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
-
-    guessers = SCUP.objects.filter(guess__event=event).distinct()
 
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(data=request.POST, instance=competitor)
         
+        # BUGBUG 7/2/09
+        # Replace this method of determining which button was pressed.
+        # Use code from eTrack entry_edit(), hidden field, javascript.
         if request.POST.get('guess', None) != u'Submit Picks':
             if competitor_form.is_valid():
                 competitor = competitor_form.save(commit=False)
@@ -597,7 +607,8 @@ def event_detail(request, id):
                 curr_guesses.delete()   # delete all existing guesses for this event
                 for guess in formset.cleaned_data:
                     if guess.get('competitor', None):
-                        g = Guess(event=event,
+                        g = Guess(content_type=ctype,
+                                  object_id=obj_id,
                                   user=scup,
                                   competitor=Competitor.objects.get(pk=guess['competitor']))
                         g.save()
@@ -605,6 +616,8 @@ def event_detail(request, id):
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(instance=competitor)
+
+    guessers = event.guesser_list()
 
     c = RequestContext(request, {
         'series': event.series,
@@ -639,29 +652,37 @@ def event_result(request, id):
 
     result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
 
+    # Get the content_type and object_id for referencing guesses made for this Event.
+    ctype, obj_id = event.guess_generics()
+
     bad_guess_list = []
     # list of results for this event where the place yielded no points.
     no_points_list = Result.objects.filter(~Q(place__in=series.scoring_system.results()), event=event).order_by('place')
     for result in no_points_list:
-        guessers = Guess.objects.filter(event=event, competitor=result.competitor)
+        guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
         bad_guess_list.append({'competitor': result.competitor, 'place': result.place, 'guessers': [g.user for g in guessers ]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
-    all_guesses_qs = Competitor.objects.filter(guess__event=event).distinct()
+    all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
     no_result_list = all_guesses_qs.exclude(result__event=event)
     for bad_guess in no_result_list:
-        guessers = Guess.objects.filter(event=event, competitor=bad_guess)
+        guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
         bad_guess_list.append({'competitor': bad_guess, 'place': '?', 'guessers': [g.user for g in guessers ]})
 
     event_points_list = []
-    users = SCUP.objects.filter(guess__event__series=series).distinct()
-    for u in users:
-        all_result_qs = Result.objects.filter(event=event,
-                                          event__guess__user=u,
-                                          event__guess__competitor=F('competitor'))
+    user_list = series.guesser_list()
+    for u in user_list:
+        if series.guess_once_per_series:
+            all_result_qs = Result.objects.filter(event=event,
+                                              event__series__guesses__user=u,
+                                              event__series__guesses__competitor=F('competitor'))
+        else:
+            all_result_qs = Result.objects.filter(event__result_locked=True,
+                                              event__guesses__user=u,
+                                              event__guesses__competitor=F('competitor'))
         points = 0
         for r in all_result_qs:
-            result_points = series.scoring_system.points(r.place)
+            result_points = series.scoring_system.points(str(r.place))
             points += result_points
             
         event_points_list.append({'name': str(u.user.username),

@@ -15,7 +15,7 @@ urlpatterns = patterns('fc3.fantasy.views',
     url(r'^competitor/(?P<id>[0-9]+)/edit/$',          'competitor_edit', name='fantasy-competitor-edit'),
     url(r'^competitor/(?P<id>[0-9]+)/delete/$',        'competitor_delete', name='fantasy-competitor-delete'),
 
-    url(r'^series/(?P<id>[0-9]+)/event/add/$',       'event_add', name='fantasy-event-add'),
+    url(r'^series/(?P<series_id>[0-9]+)/event/add/$','event_add', name='fantasy-event-add'),
     url(r'^event/(?P<id>[0-9]+)/$',                  'event_detail', name='fantasy-event-detail'),
     url(r'^event/(?P<id>[0-9]+)/edit/$',             'event_edit', name='fantasy-event-edit'),
     url(r'^event/(?P<id>[0-9]+)/delete/$',           'event_delete', name='fantasy-event-delete'),

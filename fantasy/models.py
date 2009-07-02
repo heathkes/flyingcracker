@@ -21,11 +21,11 @@ class Series(models.Model):
     competitor_label        = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, default='Driver')
     event_label             = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
     num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
-#    guess_once_per_series   = models.BooleanField('Pick competitors once for entire series', default=False)
+    guess_once_per_series   = models.BooleanField('Pick competitors once for entire series', default=False)
     invite_only             = models.BooleanField('Users must be invited', default=False)
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
-    scoring_system         = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
     #scoring_systems         = models.ManyToManyField(ScoringSystem, blank=True, null=True)
     HIDDEN_STATUS = 'H'
     ACTIVE_STATUS = 'A'
@@ -40,11 +40,30 @@ class Series(models.Model):
     # user_group = models.ForeignKey(UserGroup)
     # and the creator should be an ADMIN_TYPE in that group.
     owner                   = models.ForeignKey(SCUP)
+    guesses                 = generic.GenericRelation('Guess')
 
     class Meta:
         verbose_name_plural = 'series'
         ordering = ('name',)
-    
+
+    def guesser_list(self):
+        if self.guess_once_per_series:
+            guessers = [g.user for g in self.guesses.all()]
+        else:
+            events = Event.objects.filter(series=self)
+            guessers = []
+            for event in events:
+                guessers.extend([g.user for g in event.guesses.all()])
+        # make our list of guessers contain only unique entries
+        return list(set(guessers))
+
+    def guess_deadline_elapsed(self):
+        return self.guess_cutoff() < datetime.utcnow()
+
+    def guess_cutoff(self):
+        qs = Event.objects.filter(series=self).order_by('guess_deadline')
+        return qs[0].guess_deadline
+        
     def is_admin(self, scup):
         return scup == self.owner
     
@@ -68,20 +87,51 @@ class Event(models.Model):
     description     = models.CharField(max_length=100, blank=True, null=True)
     start_date      = models.DateField('Event start date')
     start_time      = models.TimeField('Event start time', help_text='in UTC (Greenwich time)')
-    guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
+    guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
     result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
+    guesses         = generic.GenericRelation('Guess')
     
     class Meta:
         ordering = ['start_date']
         unique_together = ('name', 'series')
 
+    def guess_cutoff(self):
+        '''
+        For display only.
+        
+        '''
+        if self.guess_deadline:
+            return self.guess_deadline
+        else:
+            return self.series.guess_cutoff()
+
     def guess_deadline_elapsed(self):
-        return self.guess_deadline < datetime.utcnow()
+        if self.guess_deadline:
+            return self.guess_deadline < datetime.utcnow()
+        else:
+            return self.series.guess_deadline_elapsed()
 
     def start_time_elapsed(self):
         return datetime.combine(self.start_date, self.start_time) < datetime.utcnow()
+
+    def guess_generics(self):
+        if self.series.guess_once_per_series:
+            ctype = ContentType.objects.get_for_model(Series)
+            obj_id = self.series.pk
+        else:
+            ctype = ContentType.objects.get_for_model(Event)
+            obj_id = self.pk
+        return ctype, obj_id
+
+    def guesser_list(self):
+        if self.series.guess_once_per_series:
+            return self.series.guesser_list()
+        else:
+            guessers = [g.user for g in self.guesses.all()]
+        # make our list of guessers contain only unique entries
+        return list(set(guessers))
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -116,17 +166,20 @@ class Result(models.Model):
         return u'%s: %s: %s' % (self.event, str(self.place), self.competitor)
 
     def guessers(self):
-        guessers = Guess.objects.filter(event=self.event, competitor=self.competitor)
+        ctype, obj_id = self.event.guess_generics()
+        guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=self.competitor)
         return [g.user for g in guessers]
 
 class Guess(models.Model):
-    user        = models.ForeignKey(SCUP)
-    competitor  = models.ForeignKey(Competitor)
-    event        = models.ForeignKey(Event)
+    user            = models.ForeignKey(SCUP)
+    competitor      = models.ForeignKey(Competitor)
+    content_type    = models.ForeignKey(ContentType)
+    object_id       = models.PositiveIntegerField()
+    guess_for       = generic.GenericForeignKey()
 
     class Meta:
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
-        return u'%s: %s by %s' % (self.event, self.competitor, self.user)
+        return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
 

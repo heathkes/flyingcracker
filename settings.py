@@ -95,6 +95,7 @@ INSTALLED_APPS = (
     'registration',
     'serviceclient',
     'scoresys',
+    'south',
     'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',

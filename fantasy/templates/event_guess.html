@@ -9,7 +9,7 @@
 {% if user.is_authenticated %}
 {% if not event.guess_deadline_elapsed %}
 <div class="fantasy-guess-deadline">
-Guess Deadline: {{ event.guess_deadline|date:"D F d" }} {{ event.guess_deadline|time:"f a" }} UTC
+Guess Deadline: {{ event.guess_cutoff|date:"D F d" }} {{ event.guess_cutoff|time:"f a" }} UTC
 </div>
 {% endif %}
 <div class="fantasy-form-help">
