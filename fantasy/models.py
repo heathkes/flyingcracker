@@ -65,7 +65,11 @@ class Series(models.Model):
         return qs[0].guess_deadline
         
     def is_admin(self, scup):
-        return scup == self.owner or scup.user.is_superuser
+        if not scup:
+            return False
+        else:
+            return scup == self.owner or scup.user.is_staff
+        
     
     def is_hidden(self):
         return self.status == self.HIDDEN_STATUS
