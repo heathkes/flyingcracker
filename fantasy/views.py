@@ -14,7 +14,10 @@ def root(request):
     if request.user.is_authenticated():
         scup = get_scup(request)
         service_client = scup.service_client
-        qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
+        if scup.user.is_superuser:
+            qs = Series.objects.all()
+        else:
+            qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
     else:
         scup = None
         service_client = None
