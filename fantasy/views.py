@@ -105,12 +105,12 @@ def series_detail(request, id):
             else:
                 guesses = []
                 for pick in picks:
-                    try:
-                        result = Result.objects.get(event=event, competitor=pick)
-                    except Result.DoesNotExist:
+                    result_qs = Result.objects.filter(event=event, competitor=pick)
+                    if not result_qs:
                         guesses.append(pick)
                     else:
-                        guesses.append(u'(%s) ' % result.result + unicode(pick))
+                        result_text = ' & '.join([r.result for r in result_qs])
+                        guesses.append(u'(%s) ' % result_text + unicode(pick))
             events.append({'event': event, 'guesses': guesses, 'row_class': row_class})
         else:
             events.append({'event': event, 'guesses': None, 'row_class': row_class})
