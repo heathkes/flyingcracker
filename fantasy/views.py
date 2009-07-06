@@ -655,7 +655,8 @@ def event_result(request, id):
         return HttpResponseRedirect(reverse('fantasy-root'))
 
     result_qs = Result.objects.filter(event=event, result__in=series.scoring_system.results())
-
+    ordered_results = series.scoring_system.sort_by_result(list(result_qs), 'result')
+    
     # Get the content_type and object_id for referencing guesses made for this Event.
     ctype, obj_id = event.guess_generics()
 
@@ -664,14 +665,14 @@ def event_result(request, id):
     no_points_list = Result.objects.filter(~Q(result__in=series.scoring_system.results()), event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
-        bad_guess_list.append({'competitor': result.competitor, 'place': result.result, 'guessers': [g.user for g in guessers ]})
+        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user for g in guessers ]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
     no_result_list = all_guesses_qs.exclude(result__event=event)
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
-        bad_guess_list.append({'competitor': bad_guess, 'place': '?', 'guessers': [g.user for g in guessers ]})
+        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers ]})
 
     event_points_list = []
     user_list = series.guesser_list()
@@ -700,7 +701,7 @@ def event_result(request, id):
         'series': event.series,
         'event': event,
         'event_points_list': event_points_list,
-        'result_list': result_qs,
+        'result_list': ordered_results,
         'points_list': series_points_list(series)[:10],
         'bad_guess_list': bad_guess_list,
         'is_admin': series.is_admin(scup),
@@ -730,28 +731,30 @@ def result_edit(request, id):
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a)) for a in all_competitors])
     
-    curr_results = Result.objects.filter(event=event)
+    event_results = Result.objects.filter(event=event)
+    ordered_results = series.scoring_system.sort_by_result(list(event_results), 'result')
     
     all_result_list = series.scoring_system.results()
-    ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
-                            max_num=len(all_result_list))
 
     # Create a list of results for this Event
-    if not curr_results:
+    if not ordered_results:
         results = [{'result': s} for s in all_result_list]
     else:
-        results = [{'result': r.result, 'competitor': r.competitor.pk} for r in curr_results]
-        curr_result_list = [r.result for r in curr_results]
+        results = [{'result': r.result, 'competitor': r.competitor.pk} for r in ordered_results]
+        curr_result_list = [r.result for r in ordered_results]
         unassigned_results = list(set(all_result_list) - set(curr_result_list))
-        unassigned_results.sort()
+        unassigned_results = series.scoring_system.sort_by_result(unassigned_results)
         results.extend([{'result': s} for s in unassigned_results])
-        
+
+    ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
+                            max_num=len(ordered_results)+len(unassigned_results)+1)
+
     if request.method == 'POST':
         formset = ResultFormset(request.POST, initial=results, competitors=competitor_choices)
         options_form = EventOptionsForm(data=request.POST, instance=event)
         if formset.is_valid() and options_form.is_valid():
             event = options_form.save()
-            curr_results.delete()   # delete all existing results for this event
+            event_results.delete()   # delete all existing results for this event
             for result in formset.cleaned_data:
                 if result['result'] and result['competitor']:
                     r = Result(event=event,
