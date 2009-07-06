@@ -160,14 +160,15 @@ class Competitor(models.Model):
 class Result(models.Model):
     competitor  = models.ForeignKey(Competitor)
     event       = models.ForeignKey(Event)
-    place       = models.PositiveIntegerField()
+    result      = models.CharField(max_length=50)
+    entered_by  = models.ForeignKey(SCUP, blank=True, null=True)
     
     class Meta:
-        ordering = ['place']
-        unique_together = ('competitor','event')
+        ordering = ['result']
+        unique_together = ('competitor','event', 'result')
     
     def __unicode__(self):
-        return u'%s: %s: %s' % (self.event, str(self.place), self.competitor)
+        return u'%s: %s: %s' % (self.event, self.result, self.competitor)
 
     def guessers(self):
         ctype, obj_id = self.event.guess_generics()

@@ -92,7 +92,7 @@ def series_detail(request, id):
         if event.start_time_elapsed() and results and event.result_locked:
             row_class = 'race-complete'
         else:
-            if event.guess_deadline_elapsed():
+            if not series.guess_once_per_series and event.guess_deadline_elapsed():
                 row_class = 'guess-deadline'
             else:
                 row_class = 'race-future'
@@ -108,9 +108,9 @@ def series_detail(request, id):
                     try:
                         result = Result.objects.get(event=event, competitor=pick)
                     except Result.DoesNotExist:
-                        guesses.append(str(pick))
+                        guesses.append(pick)
                     else:
-                        guesses.append(str(pick) + ' (%s)' % result.place)
+                        guesses.append(u'(%s) ' % result.result + unicode(pick))
             events.append({'event': event, 'guesses': guesses, 'row_class': row_class})
         else:
             events.append({'event': event, 'guesses': None, 'row_class': row_class})
@@ -133,7 +133,7 @@ def series_points_list(series):
     points_list = []
     
     scoresys_results = series.scoring_system.results()
-    place_blank = dict.fromkeys(scoresys_results, 0)
+    result_blank = dict.fromkeys(scoresys_results, 0)
     
     event_blank = {}
     # create a list of dictionaries of all events, ordered by date
@@ -146,8 +146,8 @@ def series_points_list(series):
         else:
             event_blank[event] = '-'
         
-    place_keys = place_blank.keys()
-    place_keys.sort()
+    result_keys = result_blank.keys()
+    result_keys.sort()
     event_keys = events # Event queryset should already be properly sorted
 
     user_list = series.guesser_list()
@@ -164,22 +164,22 @@ def series_points_list(series):
                                               event__guesses__user=u,
                                               event__guesses__competitor=F('competitor'))
         points = 0
-        place_totals = copy.copy(place_blank)
+        result_totals = copy.copy(result_blank)
         event_points = copy.copy(event_blank)
         for r in result_qs:
-            result_points = series.scoring_system.points(str(r.place))
+            result_points = series.scoring_system.points(r.result)
             points += result_points
             
             # number of times user's guess resulted in points for each place
-            if str(r.place) in scoresys_results:
-                place_totals[str(r.place)] += 1
+            if r.result in scoresys_results:
+                result_totals[r.result] += 1
                 
             # total points for each event
             event_points[r.event] += result_points
             
         points_list.append({'name': str(u.user.username),
                             'points': points,
-                            'place_totals': [{'key':key, 'val':place_totals[key]} for key in place_keys],
+                            'place_totals': [{'key':key, 'val':result_totals[key]} for key in result_keys],
                             'event_points': [{'key':key, 'val':event_points[key]} for key in event_keys]}
                                              )
         
@@ -205,7 +205,8 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
-    scoresys_results = sorted(series.scoring_system.results(), key=int)
+    scoresys_results = series.scoring_system.results()
+    #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
         'points_list': series_points_list(series),
@@ -653,17 +654,17 @@ def event_result(request, id):
     # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
         return HttpResponseRedirect(reverse('fantasy-root'))
 
-    result_qs = Result.objects.filter(event=event, place__in=series.scoring_system.results())
+    result_qs = Result.objects.filter(event=event, result__in=series.scoring_system.results())
 
     # Get the content_type and object_id for referencing guesses made for this Event.
     ctype, obj_id = event.guess_generics()
 
     bad_guess_list = []
     # list of results for this event where the place yielded no points.
-    no_points_list = Result.objects.filter(~Q(place__in=series.scoring_system.results()), event=event).order_by('place')
+    no_points_list = Result.objects.filter(~Q(result__in=series.scoring_system.results()), event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
-        bad_guess_list.append({'competitor': result.competitor, 'place': result.place, 'guessers': [g.user for g in guessers ]})
+        bad_guess_list.append({'competitor': result.competitor, 'place': result.result, 'guessers': [g.user for g in guessers ]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
@@ -685,7 +686,7 @@ def event_result(request, id):
                                               event__guesses__competitor=F('competitor'))
         points = 0
         for r in all_result_qs:
-            result_points = series.scoring_system.points(str(r.place))
+            result_points = series.scoring_system.points(r.result)
             points += result_points
             
         event_points_list.append({'name': str(u.user.username),
@@ -731,15 +732,19 @@ def result_edit(request, id):
     
     curr_results = Result.objects.filter(event=event)
     
-    places = len(all_competitors)
+    all_result_list = series.scoring_system.results()
     ResultFormset = formset_factory(ResultForm, GuessAndResultBaseFormset,
-                            max_num=places)
+                            max_num=len(all_result_list))
 
+    # Create a list of results for this Event
     if not curr_results:
-        results = [{'place': i} for i in range(1, places+1)]
+        results = [{'result': s} for s in all_result_list]
     else:
-        results = [{'place': r.place, 'competitor': r.competitor.pk} for r in curr_results]
-        results.extend([{'place': ''} for i in range(0, places - len(curr_results))])
+        results = [{'result': r.result, 'competitor': r.competitor.pk} for r in curr_results]
+        curr_result_list = [r.result for r in curr_results]
+        unassigned_results = list(set(all_result_list) - set(curr_result_list))
+        unassigned_results.sort()
+        results.extend([{'result': s} for s in unassigned_results])
         
     if request.method == 'POST':
         formset = ResultFormset(request.POST, initial=results, competitors=competitor_choices)
@@ -748,10 +753,11 @@ def result_edit(request, id):
             event = options_form.save()
             curr_results.delete()   # delete all existing results for this event
             for result in formset.cleaned_data:
-                if result['place'] and result['competitor']:
+                if result['result'] and result['competitor']:
                     r = Result(event=event,
-                               place=result['place'],
-                               competitor=Competitor.objects.get(pk=result['competitor']))
+                               result=result['result'],
+                               competitor=Competitor.objects.get(pk=result['competitor']),
+                               entered_by=scup)
                     r.save()
             return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:

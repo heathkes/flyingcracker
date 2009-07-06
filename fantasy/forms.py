@@ -75,13 +75,6 @@ class GuessAndResultBaseFormset(formsets.BaseFormSet):
     def _construct_form(self, i, **kwargs):
         kwargs["competitors"] = self.competitors
         return super(GuessAndResultBaseFormset, self)._construct_form(i, **kwargs)
-    
-    def clean(self):
-        super(GuessAndResultBaseFormset,self).clean()
-        if self.is_valid() and self.cleaned_data:
-            competitors = [dct['competitor'] for dct in self.cleaned_data if dct.get('competitor',None)]
-            if len(competitors) is not len(set(competitors)):
-                raise forms.ValidationError, u'Duplicate competitor.'
 
 
 class GuessForm(forms.Form):
@@ -95,7 +88,7 @@ class GuessForm(forms.Form):
 
 
 class ResultForm(forms.Form):
-    place = forms.IntegerField(required=False)
+    result = forms.CharField(required=False)
     competitor = forms.ChoiceField(choices=[], required=False)
 
     def __init__(self, *args, **kwargs):
@@ -105,10 +98,10 @@ class ResultForm(forms.Form):
         self['competitor'].field.choices = competitor_list
 
     def clean(self):
-        place = self.cleaned_data.get('place', None)
+        result = self.cleaned_data.get('result', None)
         competitor = self.cleaned_data.get('competitor', None)
-        if competitor and not place:
-            raise forms.ValidationError, _(u'This competitor has no place!')
+        if competitor and not result:
+            raise forms.ValidationError, _(u'This competitor has no result!')
         return self.cleaned_data
 
 

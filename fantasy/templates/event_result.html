@@ -23,13 +23,16 @@
         <tbody>
 {% for r in result_list %}
             <tr>
-                <td class="center">{{ r.place }}</td>
+                <td class="center">{{ r.result }}</td>
                 <td>{{ r.competitor }}</td>
                 <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>
 {% endfor %}
         </tbody>
     </table>
+    {% with result_list.0.entered_by.user.username as entered_by %}
+    {% if entered_by %}<div class="cbnewspubdate">[results entered by {{ entered_by }}]</div>{% endif %}
+    {% endwith %}
 {% else %}
     No results found.
 {% endif %}
@@ -55,7 +58,7 @@
         <tbody>
 {% for g in bad_guess_list %}
             <tr>
-                <td class="center">{{ g.place }}</td>
+                <td class="center">{{ g.result }}</td>
                 <td>{{ g.competitor }}</td>
                 <td>{% with g.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>

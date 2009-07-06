@@ -27,7 +27,7 @@ Enter as many or as few results as you wish.
             {% for form in formset.forms %}
             <tr>
                 <td>{{ form.competitor }} {{ form.competitor.errors }}</td>
-                <td>{{ form.place }} {{ form.place.errors }}</td>
+                <td>{{ form.result }} {{ form.result.errors }}</td>
                 {% if form.non_field_errors %}<td class="nobg"> {{ form.non_field_errors }}</td>{% endif %}
             </tr>
             {% endfor %}
