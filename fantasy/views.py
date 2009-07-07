@@ -738,8 +738,7 @@ def result_edit(request, id):
 
     # Create a list of results for this Event
     if not ordered_results:
-        results = [{'result': s} for s in all_result_list]
-        unassigned_results=[]
+        unassigned_results = results = [{'result': s} for s in all_result_list]
     else:
         results = [{'result': r.result, 'competitor': r.competitor.pk} for r in ordered_results]
         curr_result_list = [r.result for r in ordered_results]
