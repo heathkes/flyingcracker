@@ -679,12 +679,14 @@ def event_result(request, id):
     for u in user_list:
         if series.guess_once_per_series:
             all_result_qs = Result.objects.filter(event=event,
-                                              event__series__guesses__user=u,
-                                              event__series__guesses__competitor=F('competitor'))
+                                                  event__result_locked=True,
+                                                  event__series__guesses__user=u,
+                                                  event__series__guesses__competitor=F('competitor'))
         else:
-            all_result_qs = Result.objects.filter(event__result_locked=True,
-                                              event__guesses__user=u,
-                                              event__guesses__competitor=F('competitor'))
+            all_result_qs = Result.objects.filter(event=event,
+                                                  event__result_locked=True,
+                                                  event__guesses__user=u,
+                                                  event__guesses__competitor=F('competitor'))
         points = 0
         for r in all_result_qs:
             result_points = series.scoring_system.points(r.result)
