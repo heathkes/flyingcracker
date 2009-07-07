@@ -25,7 +25,7 @@
 {% for r in result_list %}
             <tr>
                 <td class="center">{{ r.result }}</td>
-                <td>{{ r.points_for_result }}</td>
+                <td class="center">{{ r.points_for_result }}</td>
                 <td>{{ r.competitor }}</td>
                 <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>
@@ -84,12 +84,15 @@
         <tbody>
 {% for r in event_points_list %}
             <tr>
-                <td class="center">{{ r.name }}</td>
-                <td class="center">{{ r.points }}</td>
+                <td class="center{% if r.late %} late-entry{% endif %}">{% if r.late %}* {% endif %}{{ r.name }}</td>
+                <td class="center{% if r.late %} late-entry{% endif %}">{{ r.points }}</td>
             </tr>
 {% endfor %}
         </tbody>
     </table>
+    {% if late_guesses %}
+    <p class="late-entry">* These users entered late guesses. Their points do not count towards the Series standings.</p>
+    {% endif %}
 {% endif %}
 </div>
 

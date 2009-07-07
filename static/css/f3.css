@@ -1066,3 +1066,11 @@ hr.comment-separator {
 	padding-top: 1em;
 	padding-right: 1em;
 }
+.late-entry {
+	color: #FF4062;
+}
+#results-entered-by {
+	padding: 0.5em;
+	font-size: 108%;
+	color: #FF4062;
+}

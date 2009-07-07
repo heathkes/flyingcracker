@@ -28,12 +28,12 @@
             </tr>
         </thead>
         <tbody>
-{% for p in points_list %}
+{% for u in points_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{{ p.name }}</td>
-                <td>{{ p.points }}</td>
-{% for p in p.event_points %}
+                <td>{{ u.name }}</td>
+                <td>{{ u.points }}</td>
+{% for p in u.event_points %}
                 <td class="event-points">{{ p.val }}</td>
 {% endfor %}
             </tr>
@@ -55,16 +55,49 @@
             </tr>
         </thead>
         <tbody>
-{% for p in points_list %}
+{% for u in points_list %}
             <tr>
-                <td>{{ p.name }}</td>
-{% for p in p.place_totals %}
+                <td>{{ u.name }}</td>
+{% for p in u.place_totals %}
                 <td class="event-points">{{ p.val }}</td>
 {% endfor %}
             </tr>
 {% endfor %}
         </tbody>
     </table>
+{% if late_points_list %}
+    
+    <table id="leaderboard-events-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th colspan="2">Late Entry</th>
+                <th colspan={{ points_list.0.event_points|length }}>{{ series.event_label }} points</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Fan</th>
+                <th>Total<br />Points</th>
+{% for p in late_points_list.0.event_points %}
+                <th><a href="{{ p.key.get_absolute_url }}"><span class="event-header">{{ forloop.counter }}</span></a></th>
+{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+{% for p in late_points_list %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td class="late-entry">* {{ p.name }}</td>
+                <td class="late-entry">{{ p.points }}</td>
+{% for p in p.event_points %}
+                <td class="event-points late-entry">{{ p.val }}</td>
+{% endfor %}
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+    <p class="late-entry">* These users entered late guesses. Their points do not count towards the Series standings.</p>
+{% endif %}    
 {% else %}
 No leaders yet!<br /><br />
 <h2>Guessers in this Series</h2>

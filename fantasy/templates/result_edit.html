@@ -10,6 +10,7 @@ Pick a {{ series.competitor_label }} and enter their place for each result.<br /
 Clear {{ series.competitor_label|capfirst }} name to delete a result.<br />
 Enter as many or as few results as you wish.
 </div>
+{% if entered_by %}<div id="results-entered-by">&gt;&gt;&gt; Results shown below entered by {{ entered_by }} &lt;&lt;&lt;</div>{% endif %}
 <div class="fantasy-form-container">
     <form method="POST" action="">
     {% if formset %}

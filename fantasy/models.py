@@ -22,6 +22,7 @@ class Series(models.Model):
     event_label             = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
     num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
     guess_once_per_series   = models.BooleanField('Pick competitors once for entire series', default=False)
+    allow_late_guesses      = models.BooleanField('Allow late guesses', help_text='Late guesses will not count in Series standings', default=False)
     invite_only             = models.BooleanField('Users must be invited', default=False)
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
@@ -184,6 +185,8 @@ class Guess(models.Model):
     content_type    = models.ForeignKey(ContentType)
     object_id       = models.PositiveIntegerField()
     guess_for       = generic.GenericForeignKey()
+    late_entry      = models.BooleanField(default=False)
+    timestamp       = models.DateTimeField(default=datetime.utcnow)
 
     class Meta:
         verbose_name_plural = 'guesses'
