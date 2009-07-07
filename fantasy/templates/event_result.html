@@ -16,6 +16,7 @@
         <thead>
             <tr>
                 <th>Place</th>
+                <th>Fantasy<br />Points</th>
                 <th>{{ series.competitor_label }}</th>
                 <th>Picked By</th>
             </tr>
@@ -24,6 +25,7 @@
 {% for r in result_list %}
             <tr>
                 <td class="center">{{ r.result }}</td>
+                <td>{{ r.points_for_result }}</td>
                 <td>{{ r.competitor }}</td>
                 <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
             </tr>

@@ -175,6 +175,9 @@ class Result(models.Model):
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=self.competitor)
         return [g.user for g in guessers]
 
+    def points_for_result(self):
+        return self.event.series.scoring_system.points(self.result)
+    
 class Guess(models.Model):
     user            = models.ForeignKey(SCUP)
     competitor      = models.ForeignKey(Competitor)
