@@ -761,7 +761,7 @@ def result_edit(request, id):
 
     # Create a list of results for this Event
     if not ordered_results:
-        unassigned_results = results = [{'result': s} for s in all_result_list]
+        unassigned_results = results = initial_results = [{'result': s} for s in all_result_list]
         entered_by = None
     else:
         entered_by = ordered_results[0].entered_by
