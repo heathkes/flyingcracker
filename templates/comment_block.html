@@ -5,7 +5,7 @@
 {% if comment_list %}
 <h2>Comments</h2>
 <div class="comment-list">
-{% for comment in comment_list %}
+{% for comment in comment_list reversed %}
     {% include "comment_item.html" %}
 {% endfor %}
 </div>
