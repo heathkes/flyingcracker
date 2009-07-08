@@ -588,10 +588,13 @@ def event_detail(request, id):
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
     
     guess_deadline_elapsed = event.guess_deadline_elapsed()
+    late_entry = False
     if guess_deadline_elapsed:
         if series.allow_late_guesses:
             if guesses:
                 return event_result(request, id)
+            else:
+                late_entry = True
         else:
             return event_result(request, id)
 
@@ -646,6 +649,7 @@ def event_detail(request, id):
         'competitor_form': competitor_form,
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
+        'late_entry': late_entry,
         'is_admin': series.is_admin(scup),
         'guessers': guessers,
     })

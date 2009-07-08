@@ -84,7 +84,7 @@
         <tbody>
 {% for r in event_points_list %}
             <tr>
-                <td class="center{% if r.late %} late-entry{% endif %}">{% if r.late %}* {% endif %}{{ r.name }}</td>
+                <td class="{% if r.late %} late-entry{% endif %}">{% if r.late %}* {% endif %}{{ r.name }}</td>
                 <td class="center{% if r.late %} late-entry{% endif %}">{{ r.points }}</td>
             </tr>
 {% endfor %}

@@ -18,6 +18,12 @@ Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.nu
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.
 {% endif %}
 </div>
+{% if late_entry %}
+<div class="late-entry">
+Since you are picking {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} after the deadline,
+once you submit your picks you will not be able to change them. Pick carefully!
+</div>
+{% endif %}
 <div id="event-guess-container" class="fantasy-form-container">
     <form name="guess-form" method="POST" action="">
     {% if formset %}
