@@ -189,12 +189,25 @@ def series_points_list(series, late_entries=False):
             # total points for each event
             event_points[r.event] += result_points
             
+        # Figure the cumulative points for this user
+        cumulative_points = []
+        last = 0
+        for e in event_keys:
+            epoints = event_points[e]
+            if type(epoints) is int:
+                total = epoints + last
+            else:
+                total = last
+            cumulative_points.append(total)
+            last = total
+            
         points_list.append({'name': str(u.user.username),
                             'points': points,
                             'late': late_guess_events or late_guess_series,
                             'place_totals': [{'key':key, 'val':result_totals[key]} for key in result_keys],
-                            'event_points': [{'key':key, 'val':event_points[key]} for key in event_keys]}
-                                             )
+                            'event_points': [{'key':key, 'val':event_points[key]} for key in event_keys],
+                            'cumulative_points': cumulative_points,
+                           })
         
     import operator
     points_list.sort(key=operator.itemgetter('points'), reverse=True)
@@ -218,11 +231,12 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
+    points_list = series_points_list(series)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
-        'points_list': series_points_list(series),
+        'points_list': points_list,
         'late_points_list': series_points_list(series, late_entries=True),
         'scoresys_results': scoresys_results,
         'user_list': user_list,

@@ -40,6 +40,8 @@
 {% endfor %}
         </tbody>
     </table>
+
+    <div id="chart_div"></div>
     
     <table id="leaderboard-places-table" class="fantasy-list-table">
         <thead>
@@ -113,4 +115,37 @@ No leaders yet!<br /><br />
 {% include "comment_block.html" %}
 {% endwith %}
 </div>
+
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["linechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Event');
+    /* Add users */
+    {% for u in points_list %}
+    data.addColumn('number', '{{ u.name }}');
+    {% endfor %}
+    
+    /* Add the number of events */
+    data.addRows({{ points_list.0.event_points|length }});
+    
+    /* Add all events */
+    {% for p in points_list.0.cumulative_points %}
+    data.setValue({{ forloop.counter0 }}, 0, '{{ forloop.counter }}');
+    {% endfor %}
+    
+    /* data.setValue(event_idx, user_idx, val) */
+    {% for u in points_list %}
+        {% for p in u.cumulative_points %}
+    data.setValue({{ forloop.counter0 }}, {{ forloop.parentloop.counter }}, {{ p }});
+        {% endfor %}
+    {% endfor %}
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, {width: 800, height: 240, min:0, legend: 'bottom', title: 'Series Points'});
+  }
+</script>
+
 {% endblock %}
