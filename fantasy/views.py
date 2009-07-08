@@ -197,7 +197,7 @@ def series_points_list(series, late_entries=False):
             if type(epoints) is int:
                 total = epoints + last
             else:
-                total = last
+                break
             cumulative_points.append(total)
             last = total
             
