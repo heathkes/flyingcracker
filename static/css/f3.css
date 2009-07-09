@@ -1074,3 +1074,10 @@ hr.comment-separator {
 	font-size: 108%;
 	color: #FF4062;
 }
+.chart-help {
+	padding-bottom: 2em;
+	padding-left: 4em;
+	font-weight: bold;
+    font-style: italic;
+    color: #555555
+}	
