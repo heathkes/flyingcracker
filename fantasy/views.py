@@ -141,7 +141,8 @@ def series_points_list(series, late_entries=False):
     # zero (for events that have occurred) or some other character.
     events = Event.objects.filter(series=series)
     for event in events:
-        if event.guess_deadline_elapsed():
+        elapsed = event.start_time_elapsed()
+        if elapsed:
             event_blank[event] = 0
         else:
             event_blank[event] = '-'
