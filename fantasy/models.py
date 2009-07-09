@@ -14,7 +14,7 @@ class Series(models.Model):
     A series of one or more events, i.e. Formula One 2009.
     
     '''
-    name                    = models.CharField('Series name', max_length=100, unique=True)
+    name                    = models.CharField(max_length=100, unique=True)
     description             = models.CharField(max_length=100, blank=True, null=True)
     start_date              = models.DateField()
     end_date                = models.DateField()
@@ -88,10 +88,10 @@ class Event(models.Model):
     An event in a series, i.e. Monaco Grand Prix.
     
     '''
-    name            = models.CharField('Event name', max_length=100)
+    name            = models.CharField(max_length=100)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    start_date      = models.DateField('Event start date')
-    start_time      = models.TimeField('Event start time', help_text='in UTC (Greenwich time)')
+    start_date      = models.DateField()
+    start_time      = models.TimeField(help_text='in UTC (Greenwich time)')
     guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)

@@ -47,7 +47,7 @@ class EventForm(forms.ModelForm):
     
     class Meta:
         model = Event
-    
+
     def clean(self):
         name = self.cleaned_data.get('name')
         series = self.cleaned_data.get('series')

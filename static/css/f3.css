@@ -1080,4 +1080,7 @@ hr.comment-separator {
 	font-weight: bold;
     font-style: italic;
     color: #555555
-}	
+}
+.action-title {
+	font-style: italic;
+}

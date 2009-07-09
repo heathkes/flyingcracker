@@ -2,11 +2,11 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a>{% if action_title %}<span class="action-title">&nbsp;&nbsp;&sim;&nbsp;&nbsp;{{ action_title|capfirst }} {{ series.event_label }}</span>{% endif %}</div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">
-Enter information about an event for {{ series }}. Click Submit when you are done.
+Enter information about a {{ series.event_label }} for {{ series }}. Click Submit when you are done.
 </div>
 <div class="fantasy-form-container">
     <form method="POST" action="">
