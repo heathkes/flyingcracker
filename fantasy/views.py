@@ -505,7 +505,6 @@ def event_add(request, series_id):
         'event_form': event_form,
         'series': series,
         'event': event,
-        'action_title': 'Add',
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
@@ -542,7 +541,6 @@ def event_edit(request, id):
         'event_form': event_form,
         'series': series,
         'event': event,
-        'action_title': 'Edit',
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
