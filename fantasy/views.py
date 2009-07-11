@@ -714,15 +714,19 @@ def event_result(request, id):
     user_list = series.guesser_list()
     for u in user_list:
         user_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=u)
-        late_entry = user_guesses[0].late_entry
-        if late_entry:
-            late_guesses = True
-        if series.guess_once_per_series:
-            all_result_qs = Result.objects.filter(event=event,
-                                                  event__series__guesses__user=u,
-                                                  event__series__guesses__competitor=F('competitor'))
+        if not user_guesses:
+            late_entry = False
+            all_result_qs = []
         else:
-            all_result_qs = Result.objects.filter(event=event,
+            late_entry = user_guesses[0].late_entry
+            if late_entry:
+                late_guesses = True
+            if series.guess_once_per_series:
+                all_result_qs = Result.objects.filter(event=event,
+                                                      event__series__guesses__user=u,
+                                                      event__series__guesses__competitor=F('competitor'))
+            else:
+                all_result_qs = Result.objects.filter(event=event,
                                                   event__guesses__user=u,
                                                   event__guesses__competitor=F('competitor'))
         points = 0
