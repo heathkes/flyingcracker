@@ -31,7 +31,7 @@
 {% for u in points_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{% if u.late %}*&nbsp;{% endif %}{{ u.name }}</td>
+                <td>{{ u.name }}{% if u.late %}&nbsp;*{% endif %}</td>
                 <td>{{ u.points }}</td>
 {% for p in u.event_points %}
                 <td class="event-points">{{ p.val }}</td>
