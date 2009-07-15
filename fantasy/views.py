@@ -123,7 +123,7 @@ def series_detail(request, id):
     })
     return render_to_response('event_list.html', c)
     
-def series_points_list(series, late_entries=False):
+def series_points_list(series, late_entries=True):
     '''
     Returns a list of usernames and their accumulated points in a Series.
     
@@ -229,7 +229,7 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
-    points_list = series_points_list(series, late_entries=True)
+    points_list = series_points_list(series)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {

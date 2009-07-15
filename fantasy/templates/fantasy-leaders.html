@@ -1,13 +1,19 @@
         <div id="fantasy-top-ten" class="fantasy-nav-item">
-            <div class="series-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
-            <div class="title">Series Top Ten</div>
+            <div class="series-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a>
+                <div class="subhead">Top Ten Players</div>
+            </div>
+            
             <div class="body">
             {% if points_list %}
-            <ul>
+            <table class="fantasy-list-table">
             {% for p in points_list %}
-                <li>{{ forloop.counter }}. {{ p.name }} - {{ p.points }}</li>
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ p.name }}{% if p.late %}&nbsp;*{% endif %}</td>
+                    <td class="center">{{ p.points }}</td>
+                </tr>
             {% endfor %}
-            </ul>
+            </table>
             {% else %}
             No leaders yet!
             {% endif %}

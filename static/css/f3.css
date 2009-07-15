@@ -1084,3 +1084,11 @@ hr.comment-separator {
 .action-title {
 	font-style: italic;
 }
+.series-title {
+	text-align: center;
+	font-size: 108%;
+}
+.series-title .subhead {
+	margin-top: 0.5em;
+	font-weight: bold;
+}
