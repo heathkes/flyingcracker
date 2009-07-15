@@ -162,9 +162,6 @@ def series_points_list(series, late_entries=False):
         if not late_entries:
             if late_guess_events or late_guess_series:
                 continue
-        else:
-            if not late_guess_events and not late_guess_series:
-                continue
 
         if series.guess_once_per_series:
             result_qs = Result.objects.filter(event__result_locked=True,
@@ -232,13 +229,12 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
-    points_list = series_points_list(series)
+    points_list = series_points_list(series, late_entries=True)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
-        'late_points_list': series_points_list(series, late_entries=True),
         'scoresys_results': scoresys_results,
         'user_list': user_list,
         'is_admin': series.is_admin(scup),

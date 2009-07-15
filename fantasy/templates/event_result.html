@@ -84,14 +84,14 @@
         <tbody>
 {% for r in event_points_list %}
             <tr>
-                <td class="{% if r.late %} late-entry{% endif %}">{% if r.late %}* {% endif %}{{ r.name }}</td>
-                <td class="center{% if r.late %} late-entry{% endif %}">{{ r.points }}</td>
+                <td>{% if r.late %}*&nbsp;{% endif %}{{ r.name }}</td>
+                <td class="center">{{ r.points }}</td>
             </tr>
 {% endfor %}
         </tbody>
     </table>
     {% if late_guesses %}
-    <p class="late-entry">* These users entered late guesses. Their points do not count towards the Series standings.</p>
+    <p>*&nbsp;<span class="late-entry">These users entered late picks.</span></p>
     {% endif %}
 {% endif %}
 </div>
