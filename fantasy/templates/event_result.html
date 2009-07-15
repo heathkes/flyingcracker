@@ -84,7 +84,7 @@
         <tbody>
 {% for r in event_points_list %}
             <tr>
-                <td>{% if r.late %}*&nbsp;{% endif %}{{ r.name }}</td>
+                <td>{{ r.name }}{% if r.late %}&nbsp;*{% endif %}</td>
                 <td class="center">{{ r.points }}</td>
             </tr>
 {% endfor %}
