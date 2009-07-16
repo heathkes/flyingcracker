@@ -91,7 +91,7 @@
         </tbody>
     </table>
     {% if late_guesses %}
-    <p>*&nbsp;<span class="late-entry">player entered late picks.</span></p>
+    <p>*&nbsp;<span class="late-entry">{{ series.late_entry_footnote }}</span></p>
     {% endif %}
 {% endif %}
 </div>
