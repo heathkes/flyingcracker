@@ -57,9 +57,7 @@ def series_edit(request, id=None):
     if request.method == 'POST':
         series_form = SeriesForm(data=request.POST, instance=series)
         if series_form.is_valid():
-            series = series_form.save(commit=False)
-            series.owner = scup
-            series.save()
+            series = series_form.save()
             return HttpResponseRedirect(reverse('fantasy-root'))
     else:
         series_form = SeriesForm(instance=series)
