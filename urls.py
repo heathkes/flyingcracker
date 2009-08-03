@@ -14,7 +14,7 @@ except:
 urlpatterns = patterns('',
     # Admin URLs
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
-    (r'^admin/(.*)',                        admin.site.root),
+    (r'^admin/',                            include(admin.site.urls)),
     (r'^comments/',                         include('django.contrib.comments.urls')),
     
     # Application URLs
