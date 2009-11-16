@@ -41,7 +41,7 @@ def weather(request):
     mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
     now = datetime.now(tzlocal()).astimezone(mountain_tz)
     
-    cbac = None # = CBAC() # comment out for summer.
+    cbac = CBAC() # comment out for summer.
     # Don't display CBAC stuff if older than 36 hours.
     # In this case they are probably closed for the season.
     if cbac:
