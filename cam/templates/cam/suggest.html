@@ -66,7 +66,7 @@ YAHOO.util.Event.onDOMReady(init);
 <div id="dialog1">
     <div class="hd">Suggest a webcam</div>
     <div class="bd">
-        <form method="POST" action="/cam/suggest/">
+        <form method="POST" action="/cam/suggest/">{% csrf_token %}
             <label for="url">URL address:</label><input type="textbox" name="url" />
             <label for="description">Description:</label><textarea id="id_description" name="description" rows="2" cols="40"></textarea>
         </form>

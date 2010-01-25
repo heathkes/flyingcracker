@@ -11,7 +11,7 @@
     The {{ series.competitor_label }} name must be unique within the series.
 </div>
 <div class="fantasy-form-container">
-    <form method="POST" action="">
+    <form method="POST" action="">{% csrf_token %}
         {{ competitor_form.as_p }}
         <input type="submit" value="Submit" />
     </form>

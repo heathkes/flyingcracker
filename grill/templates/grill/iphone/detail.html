@@ -17,7 +17,7 @@
 Surprisingly, we have no entries for {{ food }} cooked on a {{ hardware }}.<br />
 </div>
 {% endif %}
-<form id="grilling-ids" action="">
+<form id="grilling-ids" action="">{% csrf_token %}
     <input type="hidden" id="food-id" value="{{ food.id }}" />
     <input type="hidden" id="doneness-id" value="{{ doneness.id }}" />
     <input type="hidden" id="hardware-id" value="{{ hardware.id }}" />

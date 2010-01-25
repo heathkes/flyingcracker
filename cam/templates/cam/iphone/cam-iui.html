@@ -13,7 +13,7 @@
 {% block content %}
 <div>
     <div class="cam_form_category">
-    <form action="." method="post">
+    <form action="." method="post">{% csrf_token %}
         <select id="id-category">
         {% for cat in catlist %}
             <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
@@ -23,7 +23,7 @@
     </form>
     </div>
     
-    <form action="." method="post">
+    <form action="." method="post">{% csrf_token %}
         <select id="id-image">
         {% for cam in camlist %}
             <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
@@ -113,7 +113,7 @@ YAHOO.util.Event.onDOMReady(init);
 <div id="dialog1">
     <div class="hd">Suggest a webcam</div>
     <div class="bd">
-        <form method="POST" action="/cam/suggest/">
+        <form method="POST" action="/cam/suggest/">{% csrf_token %}
             <label for="url">URL address:</label><input type="textbox" name="url" />
             <label for="description">Description:</label><textarea id="id_description" name="description" rows="2" cols="40"></textarea>
         </form>

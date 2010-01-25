@@ -9,7 +9,7 @@
     Choose a series from which to import competitors.
 </div>
 <div class="fantasy-form-container">
-    <form method="POST" action="">
+    <form method="POST" action="">{% csrf_token %}
         {{ import_form.as_p }}
         <input type="submit" value="Import" />
     </form>

@@ -9,7 +9,7 @@ Please log in to {{ system_name }}:
 (Note: If you are not registered at {{ system_name }} you should <a href="{% url registration_register %}">Sign up</a>.)
 {% endif %}
 
-<form method="post" action=".">
+<form method="post" action=".">{% csrf_token %}
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>

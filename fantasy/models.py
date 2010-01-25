@@ -76,6 +76,9 @@ class Series(models.Model):
     def is_hidden(self):
         return self.status == self.HIDDEN_STATUS
     
+    def is_complete(self):
+        return self.status == self.COMPLETE_STATUS
+    
     def __unicode__(self):
         return u'%s' % self.name
     

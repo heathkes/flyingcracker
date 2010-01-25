@@ -18,7 +18,6 @@ urlpatterns = patterns('',
     (r'^comments/',                         include('django.contrib.comments.urls')),
     
     # Application URLs
-#    (r'^comments/',                         include('django.contrib.comments.urls.comments')),
     (r'^accounts/',                         include('registration.urls')),
 #    (r'^client/',                           include('serviceclient.urls')),
     (r'^blog/',                             include('fc3.blog.urls')),

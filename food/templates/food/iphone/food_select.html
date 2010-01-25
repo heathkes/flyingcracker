@@ -1,6 +1,6 @@
 <div id="ft">
     <div class="yui-b" id="recipe-select">
-        <form action="." method="post">
+        <form action="." method="post">{% csrf_token %}
             <select id="id-cocktail" class="selectLink">
                 <option value="">Select a recipe</option>
                 {% for item in recipe_list %}
@@ -15,7 +15,7 @@
     <div class="select-or">or</div>
     
     <div class="yui-b" id="ingredient-select">
-        <form action="." method="post">
+        <form action="." method="post">{% csrf_token %}
             <select id="id-foodstuff" class="selectLink">
                 <option value="">Select an ingredient</option>
                 {% for item in foodstuff_list %}

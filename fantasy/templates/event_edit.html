@@ -9,7 +9,7 @@
 Enter information about a {{ series.event_label }} for {{ series }}. Click Submit when you are done.
 </div>
 <div class="fantasy-form-container">
-    <form method="POST" action="">
+    <form method="POST" action="">{% csrf_token %}
         {{ event_form.as_p }}
         <input type="submit" value="Submit" />
     </form>

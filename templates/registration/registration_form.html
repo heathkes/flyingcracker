@@ -13,7 +13,7 @@ Click on Submit and wait for an email from us...
 </div>
 
 <div  class="fantasy-list-container">
-<form method="POST" action="">
+<form method="POST" action="">{% csrf_token %}
 
 {{ form.as_p }}
 

@@ -25,7 +25,7 @@ once you submit your picks you will not be able to change them. Pick carefully!
 </div>
 {% endif %}
 <div id="event-guess-container" class="fantasy-form-container">
-    <form name="guess-form" method="POST" action="">
+    <form name="guess-form" method="POST" action="">{% csrf_token %}
     {% if formset %}
         {{ formset.management_form }}
         {% for error in formset.non_form_errors %}

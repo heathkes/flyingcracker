@@ -1,4 +1,4 @@
-<form action="." method="post">
+<form action="." method="post">{% csrf_token %}
     <select id="id-doneness" class="selectLink">
     {% for temp in doneness_list %}
     <option value="{{ temp.id }}"{% ifequal temp doneness %} selected="selected"{% endifequal %}>{{ temp.title }}</option>
