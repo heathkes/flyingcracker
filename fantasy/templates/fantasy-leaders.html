@@ -9,12 +9,11 @@
             {% for p in points_list %}
                 <tr>
                     <td>{{ forloop.counter }}.</td>
-                    <td>{{ p.name }}{% if p.late %}&nbsp;*{% endif %}</td>
+                    <td>{{ p.name }}</td>
                     <td class="center">{{ p.points }}</td>
                 </tr>
             {% endfor %}
             </table>
-            <p>*&nbsp;{{ series.late_entry_footnote }}</p>
             {% else %}
             No leaders yet!
             {% endif %}

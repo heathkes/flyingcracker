@@ -29,15 +29,33 @@
         </thead>
         <tbody>
 {% for u in points_list %}
+{% if not u.late %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{{ u.name }}{% if u.late %}&nbsp;*{% endif %}</td>
+                <td>{{ u.name }}</td>
                 <td>{{ u.points }}</td>
 {% for p in u.event_points %}
                 <td class="event-points">{{ p.val }}</td>
 {% endfor %}
             </tr>
+{% endif %}            
 {% endfor %}
+
+            <tr></tr>
+            
+{% for u in points_list %}
+{% if u.late %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ u.name }}&nbsp;*</td>
+                <td>{{ u.points }}</td>
+{% for p in u.event_points %}
+                <td class="event-points">{{ p.val }}</td>
+{% endfor %}
+            </tr>
+{% endif %}
+{% endfor %}
+
         </tbody>
     </table>
     <p>*&nbsp;<span class="late-entry">{{ series.late_entry_footnote }}</span></p>
