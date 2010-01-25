@@ -130,6 +130,9 @@ def series_points_list(series, late_entries=True):
     
     points_list = []
     
+    if not series.scoring_system:
+        return points_list
+    
     scoresys_results = series.scoring_system.results()
     result_blank = dict.fromkeys(scoresys_results, 0)
     
