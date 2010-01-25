@@ -11,17 +11,18 @@ from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup, get_scup
 
 def root(request):
+    active_queryset = Series.objects.filter(~Q(status=Series.COMPLETE_STATUS)).distinct()
     if request.user.is_authenticated():
         scup = get_scup(request)
         service_client = scup.service_client
-        if scup and scup.user.is_staff:
-            qs = Series.objects.all()
-        else:
-            qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
+        if not scup or not scup.user.is_staff:
+            active_queryset = active_queryset.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
     else:
         scup = None
         service_client = None
-        qs = Series.objects.filter(~Q(status=Series.HIDDEN_STATUS)).distinct()
+        active_queryset = active_queryset.filter(~Q(status=Series.HIDDEN_STATUS)).distinct()
+        
+    completed_queryset = Series.objects.filter(status=Series.COMPLETE_STATUS)
     
     # BUGBUG
     # filter to:
@@ -29,7 +30,8 @@ def root(request):
     # plus
     #   series which have 1+ associated Event and 2+ associated Athletes
     c = RequestContext(request, {
-        'series_list': qs,
+        'active_series': active_queryset,
+        'completed_series': completed_queryset,
         'scup': scup,
     })
     return render_to_response('series_list.html', c)

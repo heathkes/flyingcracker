@@ -3,24 +3,23 @@
 {% block fantasy-main %}
 <div class="fantasy-form-help">Click on a series to view events.</div>
 
+
 <div id="series-list-container" class="fantasy-list-container">
-    {% if series_list %}
+
+{% if active_series %}
     <br />
-    <h2>Active Fantasy Series</h2>
+    <h2>Fantasy Series</h2>
     <table id="series-list-table" class="fantasy-list-table">
         <thead>
             <tr>
-                <th>&nbsp;</th>
                 <th>Series</th>
                 <th>Description</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-{% for series in series_list %}
-    {% if not series.is_complete %}
+{% for series in active_series %}
             <tr>
-                <td>{{ forloop.counter }}.</td>
                 <td><a href="{{ series.get_absolute_url }}">{{ series }}</a></td>
                 <td>{{ series.description|truncatewords:10 }}</td>
                 <td>
@@ -29,28 +28,29 @@
                 {% endifequal %}
                 </td>
             </tr>
-    {% endif %}
 {% endfor %}
         </tbody>
-    </table>
+    </table>    
+{% else %}
+<p>No active fantasy series.</p>
+{% endif %}
+
     <br />
     <p><a href="{% url fantasy-series-add %}">Create new Series</a></p>
-    <br />
+    
+{% if completed_series %}
     <h2>Completed Fantasy Series</h2>
     <table id="series-list-table" class="fantasy-list-table">
         <thead>
             <tr>
-                <th>&nbsp;</th>
                 <th>Series</th>
                 <th>Description</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-{% for series in series_list %}
-    {% if series.is_complete %}
+{% for series in completed_series %}
             <tr>
-                <td>{{ forloop.counter }}.</td>
                 <td><a href="{{ series.get_absolute_url }}">{{ series }}</a></td>
                 <td>{{ series.description|truncatewords:10 }}</td>
                 <td>
@@ -59,13 +59,10 @@
                 {% endifequal %}
                 </td>
             </tr>
-    {% endif %}
 {% endfor %}
         </tbody>
     </table>
-    
-    {% else %}
-    <p>No fantasy series in database.</p>
-    {% endif %}
+{% endif %}
+
 </div>
 {% endblock %}
