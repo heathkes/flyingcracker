@@ -118,12 +118,12 @@ def series_detail(request, id):
     c = RequestContext(request, {
         'series': series,
         'event_list': events,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_list.html', c)
     
-def series_points_list(series, late_entries=True):
+def series_points_list(series, include_late_entries=False, include_timely_entries=True):
     '''
     Returns a list of usernames and their accumulated points in a Series.
     
@@ -162,8 +162,12 @@ def series_points_list(series, late_entries=True):
         late_guess_series = Series.objects.filter(guesses__user=u,
                                                   guesses__late_entry=True,
                                                   pk=series.pk)
-        if not late_entries:
+        if not include_late_entries:
             if late_guess_events or late_guess_series:
+                continue
+            
+        if not include_timely_entries:
+            if not late_guess_events and not late_guess_series:
                 continue
 
         if series.guess_once_per_series:
@@ -232,12 +236,14 @@ def leaderboard(request, id):
 
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
-    points_list = series_points_list(series)
+    points_list = series_points_list(series, include_late_entries=False)
+    late_points_list = series_points_list(series, include_late_entries=True, include_timely_entries=False)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
+        'late_points_list': late_points_list,
         'scoresys_results': scoresys_results,
         'user_list': user_list,
         'is_admin': series.is_admin(scup),
@@ -282,7 +288,7 @@ def competitor_list(request, id):
         'series': series,
         'competitor_list': qs,
         'competitor_form': competitor_form,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_list.html', c)
@@ -504,7 +510,7 @@ def event_add(request, series_id):
         'event_form': event_form,
         'series': series,
         'event': event,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_edit.html', c)
@@ -540,7 +546,7 @@ def event_edit(request, id):
         'event_form': event_form,
         'series': series,
         'event': event,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_edit.html', c)
@@ -567,7 +573,7 @@ def event_delete(request, id):
             'series': series,
             'event': event,
             'result_list': results,
-            'points_list': series_points_list(series, False)[:10],
+            'points_list': series_points_list(series)[:10],
             'is_admin': series.is_admin(scup),
         })
         return render_to_response('event_delete.html', c)
@@ -659,7 +665,7 @@ def event_detail(request, id):
     c = RequestContext(request, {
         'series': event.series,
         'event': event,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'competitor_form': competitor_form,
         'formset': formset,
         'add_competitor_ok': series.users_enter_competitors,
@@ -748,7 +754,7 @@ def event_result(request, id):
         'bad_guess_list': bad_guess_list,
         'event_points_list': event_points_list,
         'late_guesses': late_guesses,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_result.html', c)
@@ -826,7 +832,7 @@ def result_edit(request, id):
         'formset': formset,
         'options_form': options_form,
         'entered_by': entered_by,
-        'points_list': series_points_list(series, False)[:10],
+        'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)

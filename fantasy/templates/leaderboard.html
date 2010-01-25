@@ -22,43 +22,70 @@
                 <th></th>
                 <th>Player</th>
                 <th>Total<br />Points</th>
-{% for p in points_list.0.event_points %}
+    {% for p in points_list.0.event_points %}
                 <th><a href="{{ p.key.get_absolute_url }}"><span class="event-header">{{ forloop.counter }}</span></a></th>
-{% endfor %}
+    {% endfor %}
             </tr>
         </thead>
         <tbody>
-{% for u in points_list %}
-{% if not u.late %}
+    {% for u in points_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ u.name }}</td>
                 <td>{{ u.points }}</td>
-{% for p in u.event_points %}
+        {% for p in u.event_points %}
                 <td class="event-points">{{ p.val }}</td>
-{% endfor %}
+        {% endfor %}
             </tr>
-{% endif %}            
-{% endfor %}
+    {% endfor %}
 
             <tr></tr>
-            
-{% for u in points_list %}
-{% if u.late %}
+        </tbody>
+    </table>
+{% else %}
+No leaders yet!<br /><br />
+<h2>Guessers in this Series</h2>
+<ul>
+{% for u in user_list %}
+    <li>{{ u.user }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+    
+{% if late_points_list %}
+    <table class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th colspan={{ late_points_list.0.event_points|length }}>{{ series.event_label }} points</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Player</th>
+                <th>Total<br />Points</th>
+    {% for p in late_points_list.0.event_points %}
+                <th><a href="{{ p.key.get_absolute_url }}"><span class="event-header">{{ forloop.counter }}</span></a></th>
+    {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+    {% for u in late_points_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ u.name }}&nbsp;*</td>
                 <td>{{ u.points }}</td>
-{% for p in u.event_points %}
+        {% for p in u.event_points %}
                 <td class="event-points">{{ p.val }}</td>
-{% endfor %}
+        {% endfor %}
             </tr>
-{% endif %}
-{% endfor %}
+    {% endfor %}
 
         </tbody>
     </table>
     <p>*&nbsp;<span class="late-entry">{{ series.late_entry_footnote }}</span></p>
+{% endif %}
 
     <div id="chart_div">
     </div>
@@ -82,22 +109,13 @@
 {% for u in points_list %}
             <tr>
                 <td>{{ u.name }}</td>
-{% for p in u.place_totals %}
+    {% for p in u.place_totals %}
                 <td class="event-points">{{ p.val }}</td>
-{% endfor %}
+    {% endfor %}
             </tr>
 {% endfor %}
         </tbody>
     </table>
-{% else %}
-No leaders yet!<br /><br />
-<h2>Guessers in this Series</h2>
-<ul>
-{% for u in user_list %}
-    <li>{{ u.user }}</li>
-{% endfor %}
-</ul>
-{% endif %}
 </div>
 <div id="comment-block">
 {% with series as comment_obj %}
