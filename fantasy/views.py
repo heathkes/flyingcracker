@@ -844,7 +844,7 @@ def team_add(request, series_id):
     Enter a new Team.
     
     '''
-    from fantasy.forms import TeamEditForm
+    from fc3.fantasy.forms import TeamEditForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -886,7 +886,7 @@ def team_edit(request, id):
     Edit a Team.
     
     '''
-    from fantasy.forms import TeamEditForm
+    from fc3.fantasy.forms import TeamEditForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
