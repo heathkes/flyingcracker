@@ -21,4 +21,11 @@ urlpatterns = patterns('fc3.fantasy.views',
     url(r'^event/(?P<id>[0-9]+)/delete/$',           'event_delete', name='fantasy-event-delete'),
     url(r'^event/(?P<id>[0-9]+)/result/$',           'event_result', name='fantasy-event-result'),
     url(r'^event/(?P<id>[0-9]+)/result/edit/$',      'result_edit', name='fantasy-result-edit'),
+
+    url(r'^series/(?P<series_id>[0-9]+)/team/list/$','team_list', name='fantasy-team-list'),
+    url(r'^series/(?P<series_id>[0-9]+)/team/add/$', 'team_add', name='fantasy-team-add'),
+    url(r'^team/(?P<id>[0-9]+)/$',                   'team_detail', name='fantasy-team-detail'),
+    url(r'^team/(?P<id>[0-9]+)/edit/$',              'team_edit', name='fantasy-team-edit'),
+    url(r'^team/(?P<id>[0-9]+)/delete/$',            'team_delete', name='fantasy-team-delete'),
+
 )

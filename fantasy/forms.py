@@ -3,7 +3,7 @@ import datetime
 from django import forms
 from django.forms import formsets
 from django.utils.translation import ugettext_lazy as _
-from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
+from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
 
 
 attrs_dict = { 'class': 'required' }
@@ -119,3 +119,16 @@ class CompetitorImportForm(forms.Form):
         series_qs = kwargs.pop('series_qs', [])
         super(CompetitorImportForm, self).__init__(*args, **kwargs)
         self['series'].field.queryset = series_qs
+        
+
+class TeamEditForm(forms.ModelForm):
+    
+    class Meta:
+        model = Team
+        fields = ('name', 'competitors')
+
+    def __init__(self, *args, **kwargs):
+        competitor_qs = kwargs.pop('competitor_qs', None)
+        super(TeamEditForm, self).__init__(*args, **kwargs)
+        if competitor_qs:
+            self['competitors'].field.queryset = competitor_qs

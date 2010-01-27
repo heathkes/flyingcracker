@@ -1,0 +1,47 @@
+{% extends "fantasy-admin.html" %}
+
+{% block fantasy-main %}
+<div class="section-header">
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+</div>
+<div class="fantasy-form-help">
+</div>
+{% if team_list %}
+<div id="team-list-container" class="fantasy-list-container">
+    <table id="team-list-table" class="fantasy-list-table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Team</th>
+                <th>{{ series.competitor_label }}s</th>
+                <th class="nobg">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for t in team_list %}
+            <tr class="{{ r.row_class }}">
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ t }}</td>
+                <td>{{ t.competitors.all|join:"<br />" }}</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-team-edit t.pk %}">Edit team</a>{% endif %}</td>
+            </tr>
+{% empty %}
+            <tr>
+                <td>&nbsp;</td>
+                <td>No teams for {{ series }} in database</td>
+                <td>&nbsp;</td>
+                <td class="nobg">&nbsp;</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+No teams found.<br />
+{% endif %}
+{% if is_admin %}
+<a href="{% url fantasy-team-add series.pk %}">Add a team to {{ series }}</a><br />
+<a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
+{% endif %}
+{% endblock %}

@@ -65,10 +65,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'djangodblog.DBLogMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+#    'djangodblog.DBLogMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.http.SetRemoteAddrFromForwardedFor',
 )
 
 ROOT_URLCONF = 'fc3.urls'
@@ -97,7 +97,7 @@ INSTALLED_APPS = (
     'serviceclient',
     'scoresys',
     'south',
-    'djangodblog',
+#    'djangodblog',
     'fc3.home',
     'fc3.weatherstation',
     'fc3.weather',

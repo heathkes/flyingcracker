@@ -5,6 +5,7 @@ from fc3.weatherstation.models import Weather
 import traceback
 from datetime import datetime
 from fc3.weatherstation.tz import USTimeZone
+from decimal import Decimal
 
 def upload_data(request):
     """
@@ -55,23 +56,26 @@ def upload_data(request):
                             )
             if created is not True:
                 # Record already exists, replace with good values and save.
-                rec.wind_dir = int(wind_dir),
-                rec.wind_speed = float(wind_speed),
-                rec.wind_peak = float(wind_peak),
-                rec.temp = float(temp),
-                rec.barometer = float(barometer),
-                #rec.dewpoint = dewpoint,
-                rec.humidity = int(humidity),
-                rec.temp_inside = float(temp_inside),
-                #rec.baro_trend = baro_trend,
-                rec.windchill = float(windchill),
+                rec.wind_dir = int(wind_dir)
+                rec.wind_speed = Decimal(wind_speed)
+                rec.wind_peak = Decimal(wind_peak)
+                rec.temp = Decimal(temp)
+                rec.barometer = Decimal(barometer)
+                rec.dewpoint = Decimal(dewpoint)
+                rec.humidity = int(humidity)
+                rec.temp_inside = Decimal(temp_inside)
+                rec.baro_trend = Decimal(baro_trend)
+                rec.windchill = Decimal(windchill)
                 #rec.rain = rain,
-                rec.station_id = station_id,
+                rec.station_id = station_id
                 rec.save()
+                success_str = "weather record updated"
+            else:
+                success_str = "weather record created"
         except:
-            response=HttpResponse("failed: '%s'" % traceback.format_exc())
+            response=HttpResponse("upload_data failed: '%s'" % traceback.format_exc())
         else:
-            response = HttpResponse("success")
+            response = HttpResponse(success_str)
     else:
         response = HttpResponse("failed: missing dateutc field in URL")
     return response

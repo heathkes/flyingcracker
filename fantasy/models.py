@@ -28,7 +28,6 @@ class Series(models.Model):
     only_members_can_view   = models.BooleanField('Only members can view results')
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
     scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
-    #scoring_systems         = models.ManyToManyField(ScoringSystem, blank=True, null=True)
     HIDDEN_STATUS = 'H'
     ACTIVE_STATUS = 'A'
     COMPLETE_STATUS = 'C'
@@ -161,6 +160,12 @@ class Competitor(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
+    def team(self):
+        teams = self.team_set.all()
+        if teams:
+            return teams[0]
+        else:
+            return ''
 
 class Result(models.Model):
     competitor  = models.ForeignKey(Competitor)
@@ -183,6 +188,7 @@ class Result(models.Model):
     def points_for_result(self):
         return self.event.series.scoring_system.points(self.result)
     
+    
 class Guess(models.Model):
     user            = models.ForeignKey(SCUP)
     competitor      = models.ForeignKey(Competitor)
@@ -198,3 +204,11 @@ class Guess(models.Model):
     def __unicode__(self):
         return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
 
+
+class Team(models.Model):
+    series          = models.ForeignKey(Series)
+    name            = models.CharField(max_length=100)
+    competitors     = models.ManyToManyField(Competitor, blank=True, null=True)
+    
+    def __unicode__(self):
+        return u'%s' % self.name

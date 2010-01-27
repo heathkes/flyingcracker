@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.contrib.contenttypes.models import ContentType
-from fc3.fantasy.models import Series, Event, Competitor, Guess, Result
+from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
 from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup, get_scup
 
@@ -629,7 +629,7 @@ def event_detail(request, id):
                                     extra=series.num_guesses)
 
     competitor_choices = [('', '------')]
-    competitor_choices.extend([(a.pk, str(a)) for a in Competitor.objects.filter(series=series)])
+    competitor_choices.extend([(a.pk, str(a) + ' - ' + str(a.team())) for a in Competitor.objects.filter(series=series)])
     
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
@@ -836,3 +836,150 @@ def result_edit(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('result_edit.html', c)
+
+@login_required
+@set_scup
+def team_add(request, series_id):
+    '''
+    Enter a new Team.
+    
+    '''
+    from fantasy.forms import TeamEditForm
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
+    series = get_object_or_404(Series, pk=series_id)
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
+    team = Team(series=series)
+    competitor_qs = Competitor.objects.filter(series=series)
+    
+    if request.method == 'POST':
+        team_form = TeamEditForm(data=request.POST,
+                                 instance=team,
+                                 competitor_qs=competitor_qs)
+        if team_form.is_valid():
+            team = team_form.save()
+            #request.flash['notice'] = 'Added new team "%s".' % str(team)
+            return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+    else:
+        team_form = TeamEditForm(instance=team,
+                                 competitor_qs=competitor_qs)
+
+    c = RequestContext(request, {
+        'team_form': team_form,
+        'series': series,
+        'team': team,
+        'points_list': series_points_list(series)[:10],
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('team_edit.html', c)
+
+
+@login_required
+@set_scup
+def team_edit(request, id):
+    '''
+    Edit a Team.
+    
+    '''
+    from fantasy.forms import TeamEditForm
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    team = get_object_or_404(Team, pk=id)
+    series = team.series
+    
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
+    
+    competitor_qs = Competitor.objects.filter(series=series)
+
+    if request.method == 'POST':
+        team_form = TeamEditForm(data=request.POST,
+                                 instance=team,
+                                 competitor_qs=competitor_qs)
+        if team_form.is_valid():
+            team = team_form.save()
+            #request.flash['notice'] = 'Saved team "%s".' % str(team)
+            return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+    else:
+        team_form = TeamEditForm(instance=team,
+                                 competitor_qs=competitor_qs)
+
+    c = RequestContext(request, {
+        'team_form': team_form,
+        'series': series,
+        'team': team,
+        'points_list': series_points_list(series)[:10],
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('team_edit.html', c)
+
+@login_required
+@set_scup
+def team_list(request, series_id):
+    '''
+    List all Teams for a Series.
+    
+    '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+    
+    series = get_object_or_404(Series, pk=series_id)
+    team_qs = Team.objects.filter(series=series)
+
+    c = RequestContext(request, {
+        'series': series,
+        'team_list': team_qs,
+        'points_list': series_points_list(series)[:10],
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('team_list.html', c)
+
+@login_required
+@set_scup
+def team_detail(request, id):
+    '''
+    Show detail on the specified Team.
+    
+    '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    team = get_object_or_404(Team, pk=id)
+    series = team.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
+    c = RequestContext(request, {
+        'series': series,
+        'team': team,
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('team_detail.html', c)
+
+@login_required
+@set_scup
+def team_delete(request, id):
+    '''
+    Delete the specified Team from the Series.
+    
+    '''
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    team = get_object_or_404(Team, pk=id)
+    series = team.series
+    if not series.is_admin(scup):
+        # cannot edit Series if you're not an admin
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
+    team.delete()
+    return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))

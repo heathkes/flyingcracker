@@ -23,6 +23,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
             <tr>
                 <th>&nbsp;</th>
                 <th>{{ series.competitor_label }}</th>
+                <th>Team</th>
                 <th class="nobg">&nbsp;</th>
             </tr>
         </thead>
@@ -31,6 +32,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ competitor }}</td>
+                <td>{{ competitor.team_set.all|join:"<br />" }}</td>
                 <td class="nobg">{% if is_admin %}<a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
             </tr>
 {% empty %}
@@ -43,4 +45,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
         </tbody>
     </table>
 </div>
+{% if is_admin %}
+<a href="{% url fantasy-team-list series.pk %}">Team List</a><br />
+{% endif %}
 {% endblock %}

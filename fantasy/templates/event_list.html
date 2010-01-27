@@ -41,6 +41,7 @@ No {{ series.event_label|lower }}s found.<br />
 {% if is_admin %}
 <a href="{% url fantasy-event-add series.pk %}">Add {{ series.event_label }} to Series</a><br />
 <a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
+<a href="{% url fantasy-team-list series.pk %}">Team List</a><br />
 <a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a>
 {% endif %}
 {% endblock %}
