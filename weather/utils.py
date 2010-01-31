@@ -443,7 +443,12 @@ def get_date(request=None, date=None):
             except:
                 return datetime.date.today()
             else:
-                return datetime.date(year, month, day)
+                try:
+                    specified_date = datetime.date(year, month, day)
+                except ValueError:
+                    return datetime.date.today()
+                else:
+                    return specified_date
     
 def get_today(request=None):
     '''
