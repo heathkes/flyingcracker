@@ -437,9 +437,9 @@ def get_date(request=None, date=None):
         else:
             # parse the YYYYMMDD date string
             try:
-                year = date[0:4]
-                month = date[4:6]
-                day = date[6:8]
+                year = int(date[0:4])
+                month = int(date[4:6])
+                day = int(date[6:8])
             except:
                 return datetime.date.today()
             else:
