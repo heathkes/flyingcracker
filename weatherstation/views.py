@@ -36,38 +36,62 @@ def upload_data(request):
         rain        = request.GET.get('rainin', None)
         station_id  = request.GET.get('ID', None)
 
+        defaults = {}
+        if wind_dir:
+            defaults['wind_dir'] = wind_dir
+        if wind_speed:
+            defaults['wind_speed'] = wind_speed
+        if wind_peak:
+            defaults['wind_peak'] = wind_peak
+        if temp:
+            defaults['temp'] = temp
+        if barometer:
+            defaults['barometer'] = barometer
+        if dewpoint:
+            defaults['dewpoint'] = dewpoint
+        if humidity:
+            defaults['humidity'] = humidity
+        if temp_inside:
+            defaults['temp_inside'] = temp_inside
+        if baro_trend:
+            defaults['baro_trend'] = baro_trend
+        if windchill:
+            defaults['windchill'] = windchill
+        if rain:
+            defaults['rain'] = rain
+        if station_id:
+            defaults['station_id'] = station_id
         try:
             rec,created = Weather.objects.get_or_create(
                              timestamp = timestamp,
-                             defaults = {
-                                 'wind_dir': wind_dir,
-                                 'wind_speed': wind_speed,
-                                 'wind_peak': wind_peak,
-                                 'temp': temp,
-                                 'barometer': barometer,
-                                 'dewpoint': dewpoint,
-                                 'humidity': humidity,
-                                 'temp_inside': temp_inside,
-                                 'baro_trend': baro_trend,
-                                 'windchill': windchill,
-                                 'rain': rain,
-                                 'station_id': station_id,
-                             }
+                             defaults = defaults,
                             )
             if created is not True:
                 # Record already exists, replace with good values and save.
-                rec.wind_dir = int(wind_dir)
-                rec.wind_speed = Decimal(wind_speed)
-                rec.wind_peak = Decimal(wind_peak)
-                rec.temp = Decimal(temp)
-                rec.barometer = Decimal(barometer)
-                rec.dewpoint = Decimal(dewpoint)
-                rec.humidity = int(humidity)
-                rec.temp_inside = Decimal(temp_inside)
-                rec.baro_trend = Decimal(baro_trend)
-                rec.windchill = Decimal(windchill)
-                #rec.rain = rain,
-                rec.station_id = station_id
+                if wind_dir:
+                    rec.wind_dir = int(wind_dir)
+                if wind_speed:
+                    rec.wind_speed = Decimal(wind_speed)
+                if wind_peak:
+                    rec.wind_peak = Decimal(wind_peak)
+                if temp:
+                    rec.temp = Decimal(temp)
+                if barometer:
+                    rec.barometer = Decimal(barometer)
+                if dewpoint:
+                    rec.dewpoint = Decimal(dewpoint)
+                if humidity:
+                    rec.humidity = int(humidity)
+                if temp_inside:
+                    rec.temp_inside = Decimal(temp_inside)
+                if baro_trend:
+                    rec.baro_trend = Decimal(baro_trend)
+                if windchill:
+                    rec.windchill = Decimal(windchill)
+                if rain:
+                    rec.rain = rain
+                if station_id:
+                    rec.station_id = station_id
                 rec.save()
                 success_str = "weather record updated"
             else:
