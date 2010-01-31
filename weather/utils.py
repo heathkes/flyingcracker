@@ -420,6 +420,31 @@ def request_is_local(request):
     else:
         return False
     
+def get_date(request=None, date=None):
+    '''
+    Returns a datetime.date object corresponding to the date
+    provided, unless the requesting address is local in which case
+    we return a specific date (for which our local database has
+    weather records).
+    If the date is not provided or is invalid, today is returned.
+    
+    '''
+    if request_is_local(request):
+        return datetime.date(2008,4,1)
+    else:
+        if not date:
+            return datetime.date.today()
+        else:
+            # parse the YYYYMMDD date string
+            try:
+                year = date[0:4]
+                month = date[4:6]
+                day = date[6:8]
+            except:
+                return datetime.date.today()
+            else:
+                return datetime.date(year, month, day)
+    
 def get_today(request=None):
     '''
     Returns a datetime.date object corresponding to today,
