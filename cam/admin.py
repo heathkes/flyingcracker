@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from django.contrib import admin
-import fc3.cam.models as cam
+import cam.models as cam
 
 
 class CamAdmin(admin.ModelAdmin):

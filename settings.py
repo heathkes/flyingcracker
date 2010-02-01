@@ -5,6 +5,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = BASE_DIR
 
 ALLOWED_INCLUDE_ROOTS = BASE_DIR
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
@@ -28,11 +32,6 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -53,25 +52,28 @@ TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.miniblog',
                                'fc3.context_processors.system_version',
                                'fc3.context_processors.login_url_with_redirect',
+                               'djangoflash.context_processors.flash',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',
-                               'mobileadmin.context_processors.user_agent',
+                               'django.core.context_processors.media',
+                               'django.core.context_processors.request',
                                )
-
-APPEND_SLASH = True
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'djangoflash.middleware.FlashMiddleware',
 #    'djangodblog.DBLogMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'fc3.urls'
+
+APPEND_SLASH = True
 
 from unipath import FSPath as Path
 TEMPLATE_DIRS = (
@@ -80,33 +82,33 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.markup',
-    'django.contrib.comments',
     'django.contrib.humanize',
-    'django.contrib.flatpages',
-    'mobileadmin',
+    'django.contrib.comments',
     'django_extensions',
+    'django.contrib.flatpages',
+
+    'south',
+    'uni_form',
     'registration',
+#    'djangodblog',
     'serviceclient',
     'scoresys',
-    'south',
-#    'djangodblog',
-    'fc3.home',
-    'fc3.weatherstation',
-    'fc3.weather',
-    'fc3.food',
-    'fc3.blog',
-    'fc3.cam',
-    'fc3.miniblog',
-    'fc3.grill',
-    'fc3.fantasy',
+    'home',
+    'weatherstation',
+    'weather',
+    'food',
+    'blog',
+    'cam',
+    'miniblog',
+    'grill',
+    'fantasy',
 )
 
 AUTHENTICATION_BACKENDS = (

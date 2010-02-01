@@ -3,13 +3,12 @@ from django.contrib import admin
 from django.conf import settings
 from fc3 import views
 
-admin.autodiscover()
-
-import mobileadmin
 try:
-    mobileadmin.autoregister()
-except:
-    pass
+    from fc3 import pattern_views
+except ImportError:
+    pattern_views = None
+
+admin.autodiscover()
 
 urlpatterns = patterns('',
     # Admin URLs
@@ -20,16 +19,21 @@ urlpatterns = patterns('',
     # Application URLs
     (r'^accounts/',                         include('registration.urls')),
 #    (r'^client/',                           include('serviceclient.urls')),
-    (r'^blog/',                             include('fc3.blog.urls')),
-    (r'^cam/',                              include('fc3.cam.urls')),
-    (r'^(?P<recipe_type>cocktail|food)/',   include('fc3.food.urls')),
-    (r'^weatherstation/',                   include('fc3.weatherstation.urls')),
-    (r'^weather/',                          include('fc3.weather.urls')),
-    (r'^grill/',                            include('fc3.grill.urls')),
-    (r'^miniblog/',                         include('fc3.miniblog.urls')),
-    (r'^fantasy/',                          include('fc3.fantasy.urls')),
-    (r'^',                                  include('fc3.home.urls')),
+    (r'^blog/',                             include('blog.urls')),
+    (r'^cam/',                              include('cam.urls')),
+    (r'^(?P<recipe_type>cocktail|food)/',   include('food.urls')),
+    (r'^weatherstation/',                   include('weatherstation.urls')),
+    (r'^weather/',                          include('weather.urls')),
+    (r'^grill/',                            include('grill.urls')),
+    (r'^miniblog/',                         include('miniblog.urls')),
+    (r'^fantasy/',                          include('fantasy.urls')),
+    (r'^',                                  include('home.urls')),
 )
+
+if pattern_views and settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^patterns/$',                        pattern_views.show_url_patterns),
+    )
 
 if settings.STATIC_URL[ :5] != 'http:':
     urlpatterns += patterns('django.views.static',
@@ -40,18 +44,6 @@ if hasattr(settings, 'LOCAL_URL') and hasattr(settings, 'LOCAL_ROOT'):
     urlpatterns += patterns('django.views.static',
         (r'^' + settings.LOCAL_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.LOCAL_ROOT }),
     )
-
-
-# Support for mobileadmin app
-
-urlpatterns += patterns('',
-    (r'^ma/(.*)', mobileadmin.sites.site.root),
-)
-
-from mobileadmin.conf import settings as ma_settings
-urlpatterns += patterns('django.views.static',
-    (ma_settings.MEDIA_REGEX, 'serve', {'document_root': ma_settings.MEDIA_PATH}),
-)
 
 #
 # Put the feeds stuff after all other URLs so URL resolution works!
