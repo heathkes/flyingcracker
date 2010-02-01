@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from django.contrib import admin
-import fc3.blog.models as blog
+import blog.models as blog
 from fc3.settings import YUI_VERSION
 
 

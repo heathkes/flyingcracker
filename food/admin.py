@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-import fc3.food.models as food
+import food.models as food
 
 
 class FoodstuffAdmin(admin.ModelAdmin):

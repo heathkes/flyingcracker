@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-import fc3.grill.models as grill
+import grill.models as grill
 
 
 class DonenessAdmin(admin.ModelAdmin):

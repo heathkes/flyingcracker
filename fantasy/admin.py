@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-import fc3.fantasy.models as fantasy
+import fantasy.models as fantasy
 
 
 admin.site.register(fantasy.Series)

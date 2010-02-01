@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from django.contrib import admin
-import fc3.weatherstation.models as weatherstation
+import weatherstation.models as weatherstation
 
 
 class WeatherAdmin(admin.ModelAdmin):
