@@ -8,7 +8,7 @@ class GuessAdmin(admin.ModelAdmin):
     list_display = ('series', 'event', 'username', 'competitor', 'late_entry', 'timestamp')
     list_display_links = ('competitor',)
     list_filter = ('user', 'late_entry')
-    list_editable = ('late_entry', 'timestamp')
+    list_editable = ('late_entry',)
     
     def series(self, obj):
         return "%s" % obj.guess_for.series.__unicode__()
