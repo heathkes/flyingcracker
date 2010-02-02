@@ -183,7 +183,7 @@ class Result(models.Model):
     def guessers(self):
         ctype, obj_id = self.event.guess_generics()
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=self.competitor)
-        return [g.user for g in guessers]
+        return [g.user.user.username for g in guessers]
 
     def points_for_result(self):
         return self.event.series.scoring_system.points(self.result)
@@ -202,7 +202,7 @@ class Guess(models.Model):
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
-        return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
+        return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user.user.username)
 
 
 class Team(models.Model):
