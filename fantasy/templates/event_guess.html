@@ -69,10 +69,10 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
 {% endif %}
 <div  class="fantasy-list-container">
     {% if guessers %}
-    <h2>Fans with picks in this {{ series.event_label }}</h2>
+    <h2>Players with picks in this {{ series.event_label }}</h2>
     <ul>
-    {% for fan in guessers %}
-    <li>{{ fan }}</li>
+    {% for scup in guessers %}
+    <li>{{ scup.user.username }}</li>
     {% endfor %}
     </ul>
     {% endif %}
