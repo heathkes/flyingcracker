@@ -18,5 +18,5 @@
             No leaders yet!
             {% endif %}
             </div>
-            <a href="{% url fantasy-series-leaderboard series.pk %}">Complete Series Standings</a>
+            {% if series.pk %}<a href="{% url fantasy-series-leaderboard series.pk %}">Complete Series Standings</a>{% endif %}
         </div>
