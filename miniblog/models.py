@@ -2,12 +2,22 @@ from django.db import models
 from datetime import datetime
 from django.template.defaultfilters import truncatewords_html
 
+#class Blog(models.Model):
+#    title = models.CharField(max_length=50, index=True)
+#    slug = models.SlugField()
+#    associated_with = generic relation
+#    image = image
+    
 class Post(models.Model):
-    pub_date = models.DateTimeField(default=datetime.now)
     title = models.CharField(max_length=50)
     slug = models.SlugField()
     body = models.TextField()
-
+    pub_date = models.DateTimeField(default=datetime.now) # , index=True)
+    # new fields:
+    # up_date = models.DateTimeField(auto_now=True)
+    # author = models.ForeignKey(User, related_name='posts')
+    # blog = models.ForeignKey(MiniBlog)
+    
     def __unicode__(self):
         return str(self.pub_date) + ' -  "' + truncatewords_html(self.body, 10) + '"'
     
