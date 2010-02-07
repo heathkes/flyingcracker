@@ -529,10 +529,24 @@ def baro_dict(l):
     return unit_dict
 
 
-def get_URL_data(url, filename):
+def get_URL_data(url, filename, max_file_age=60):
+    '''
+    Given a URL and a filename, if the file exists and it's timestamp
+    is not older than 'max_file_age' minutes, return file contents.
+    If the file does not exist or is older than 'max_file_age' minutes
+    obtain data from the URL and save in filename before returning.
+    
+    '''
     import os
     if not os.path.isfile(filename):
         return save_URL_data(url, filename)
+
+    filetime_t = os.path.getmtime(filename)
+    filestamp = datetime.datetime.fromtimestamp(filetime_t)
+    now = datetime.datetime.now()
+    if (now - filestamp) > datetime.timedelta(minutes=max_file_age) or (now < filestamp):
+        return save_URL_data(url, filename)
+    
     try:
         f = open(filename, 'r')
     except:
